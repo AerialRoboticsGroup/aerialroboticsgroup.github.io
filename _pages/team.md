@@ -73,7 +73,7 @@ nav_order: 1
   <img src="../assets/img/prof_pic.jpg" alt="Ziniu Wu" width="150"><br>
   <strong>Ziniu Wu</strong><br>
   <em>PhD Student</em><br>
-  Continual Learning<br>
+  Robot Learning<br>
   <a href="https://ziniuw.com/" class="fa fa-home"></a>
   <a href="#" class="fa fa-graduation-cap"></a>
   <a href="https://www.linkedin.com/in/ziniu-wu18/" class="fab fa-linkedin"></a>
