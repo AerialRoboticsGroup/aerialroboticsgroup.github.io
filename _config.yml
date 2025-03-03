@@ -16,7 +16,7 @@ footer_text: >
   Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a>.
 keywords: jekyll, jekyll-theme, academic-website, portfolio-website # add your own keywords or leave empty
 lang: en # the language of your site (for example: en, fr, cn, ru, etc.)
-icon: ./assets/img/UoB_Graphic_RGB_24.svg # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
+icon: https://github.com/AerialRoboticsGroup/aerialroboticsgroup.github.io/blob/5af67d4d643cf146dc013f0b9f12bb57ae22443c/assets/img/UoB_Graphic_RGB_24.svg # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
 
 url: https://aerialroboticsgroup.github.io # the base hostname & protocol for your site
 baseurl:  # the subpath of your site, e.g. /blog/. Leave blank for root
