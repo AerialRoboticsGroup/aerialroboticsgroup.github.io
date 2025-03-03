@@ -2,7 +2,7 @@
 layout: about
 title: Homepage
 permalink: /
-subtitle: <a href='#'>Affiliations</a>. Address. Contacts. Motto. Etc.
+subtitle: Focus on Aerial Robotics.
 
 profile:
   align: right
