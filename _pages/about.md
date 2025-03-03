@@ -6,7 +6,7 @@ subtitle: Focus on Aerial Robotics.
 
 profile:
   align: right
-  image: prof_pic.jpg
+  image: 2025_group.jpg
   image_circular: false # crops the image to make it circular
   more_info: >
     <p>School of Civil, Aerospace and Design Engineering</p>
