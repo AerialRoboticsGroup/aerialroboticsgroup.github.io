@@ -91,7 +91,7 @@ permalink: /team/
   <img src="../assets/img/prof_pic.jpg" alt="Jianduo Chai" width="150"><br>
   <strong>Jianduo Chai</strong><br>
   <em>PhD Student</em><br>
-  YOUR RESEARCH AREA<br>
+  Trajectory Prediction<br>
   <a href="https://research-information.bris.ac.uk/en/persons/jianduo-chai" class="fa fa-home"></a>
   <a href="#" class="fa fa-graduation-cap"></a>
   <a href="#" class="fab fa-linkedin"></a>
