@@ -27,15 +27,15 @@ nav_order: 1
 
 </div>
 
-# Postdoc
+# Visiting Research Fellow
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
 
 <div align="center">
   <img src="../assets/img/prof_pic.jpg" alt="Ali Karasahin" width="150"><br>
   <strong>Dr. Ali Karasahin</strong><br>
-  <em>Postdoc</em><br>
-  Continual Learning<br>
+  <em>Visiting Research Fellow</em><br>
+  Learning-based Control<br>
   <a href="https://tahirkarasahin.netlify.app/" class="fa fa-home"></a>
   <a href="https://scholar.google.com/citations?user=F1QthcIAAAAJ&hl=tr&oi=ao" class="fa fa-graduation-cap"></a>
   <a href="https://www.linkedin.com/in/tahirkarasahin/" class="fab fa-linkedin"></a>
