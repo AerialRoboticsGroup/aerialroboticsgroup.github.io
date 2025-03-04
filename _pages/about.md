@@ -32,9 +32,9 @@ We explore the integration of design, perception, and control in aerial robots, 
 
 <img height=100px width=auto src="../assets/img/arg_logo-cropped.svg" alt="University of Bristol Logo">
 
-Contact: Dr. Bahadir Kocer
-Email: b.kocer (at) bristol.ac.uk
+Contact: Dr. Bahadir Kocer  
+Email: b.kocer (at) bristol.ac.uk  
 
-School of Civil, Aerospace and Design Engineering
-University of Bristol
+School of Civil, Aerospace and Design Engineering  
+University of Bristol  
 United Kingdom
