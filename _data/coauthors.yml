@@ -32,3 +32,8 @@
 "planck":
   - firstname: ["Max"]
     url: https://en.wikipedia.org/wiki/Max_Planck
+
+
+"kocer":
+  - firstname: ["Basaran", "Bahadir", "Basaran Bahadir", "BB"]
+    url: https://scholar.google.com/citations?user=AVt5qrAAAAAJ&hl=en
