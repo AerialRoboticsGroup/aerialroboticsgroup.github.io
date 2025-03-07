@@ -13,7 +13,7 @@ nav_order: 1
 <!-- Researchers -->
 
 <div align="center">
-  <img src="../assets/img/prof_pic.jpg" alt="Ali Karasahin" width="150"><br>
+  <img src="../assets/img/team_default.png" alt="Ali Karasahin" width="150"><br>
   <strong>Dr. Bahadir Kocer</strong><br>
   <em>Lecturer</em><br>
   <a href="https://research-information.bris.ac.uk/en/persons/basaran-bahadir-kocer" class="fa fa-home"></a>
@@ -32,7 +32,7 @@ nav_order: 1
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
 
 <div align="center">
-  <img src="../assets/img/prof_pic.jpg" alt="Ali Karasahin" width="150"><br>
+  <img src="../assets/img/team_default.png" alt="Ali Karasahin" width="150"><br>
   <strong>Dr. Ali Karasahin</strong><br>
   <em>Visiting Research Fellow</em><br>
   Learning-based Control<br>
@@ -50,7 +50,7 @@ nav_order: 1
 
 <!-- Researchers -->
 <div align="center">
-  <img src="../assets/img/prof_pic.jpg" alt="Haichuan Li" width="150"><br>
+  <img src="../assets/img/team_default.png" alt="Haichuan Li" width="150"><br>
   <strong>Haichuan Li</strong><br>
   <em>PhD Student</em><br>
   Perching Mechanism<br>
@@ -60,7 +60,7 @@ nav_order: 1
 </div>
 
 <div align="center">
-  <img src="../assets/img/prof_pic.jpg" alt="Ziang Zhao" width="150"><br>
+  <img src="../assets/img/team_default.png" alt="Ziang Zhao" width="150"><br>
   <strong>Ziang Zhao</strong><br>
   <em>PhD Student</em><br>
   Silent Drone<br>
@@ -70,7 +70,7 @@ nav_order: 1
 </div>
 
 <div align="center">
-  <img src="../assets/img/prof_pic.jpg" alt="Ziniu Wu" width="150"><br>
+  <img src="../assets/img/team_default.png" alt="Ziniu Wu" width="150"><br>
   <strong>Ziniu Wu</strong><br>
   <em>PhD Student</em><br>
   Robot Learning<br>
@@ -80,7 +80,7 @@ nav_order: 1
 </div>
 
 <div align="center">
-  <img src="../assets/img/prof_pic.jpg" alt="Alex Dunnett" width="150"><br>
+  <img src="../assets/img/team_default.png" alt="Alex Dunnett" width="150"><br>
   <strong>Alex Dunnett</strong><br>
   <em>PhD Student</em><br>
   Perception and Guidance<br>
@@ -90,7 +90,7 @@ nav_order: 1
 </div>
 
 <div align="center">
-  <img src="../assets/img/prof_pic.jpg" alt="Jianduo Chai" width="150"><br>
+  <img src="../assets/img/team_default.png" alt="Jianduo Chai" width="150"><br>
   <strong>Jianduo Chai</strong><br>
   <em>PhD Student</em><br>
   Trajectory Prediction<br>
