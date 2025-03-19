@@ -63,7 +63,7 @@ nav_order: 1
   <img src="../assets/img/team_default.png" alt="Ziang Zhao" width="150"><br>
   <strong>Ziang Zhao</strong><br>
   <em>PhD Student</em><br>
-  Silent Drone<br>
+  Minimal Invasive Design<br>
   <a href="https://research-information.bris.ac.uk/en/persons/ziang-zhao" class="fa fa-home"></a>
   <a href="#" class="fa fa-graduation-cap"></a>
   <a href="https://www.linkedin.com/in/ziang-zhao-9a6a1b1a9/" class="fab fa-linkedin"></a>
