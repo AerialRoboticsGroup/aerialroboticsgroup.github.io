@@ -30,7 +30,7 @@ latest_posts:
 
 We explore the integration of design, perception, and control in aerial robots, investigating their impact on the operation and sustainable solutions for the future. Our research focuses on aerial physical interaction for applications including environmental sensing and aerial manufacturing, to advance the eco-friendly and efficient use of aerial robots. Inspired by nature, We study flexible and efficient learning schemes to develop designs, algorithms and approaches that can adapt to diverse aerial robots and tasks. Our emphasis on continuous learning enables us to tackle the complex and dynamic challenges in aerial systems and the environment.
 
-Contact: Dr. Bahadir Kocer  
+Contact: Dr. Basaran Bahadir Kocer  
 Email: b.kocer (at) bristol.ac.uk  
 
 School of Civil, Aerospace and Design Engineering  
