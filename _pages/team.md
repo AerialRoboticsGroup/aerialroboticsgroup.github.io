@@ -54,7 +54,7 @@ nav_order: 1
   <em>PhD Student</em><br>
   Robot Learning<br>
   <a href="https://ziniuw.com/" class="fa fa-home"></a>
-  <a href="#" class="fa fa-graduation-cap"></a>
+  <a href="https://scholar.google.com/citations?view_op=list_works&hl=en&hl=en&tzom=-60&user=FdB-xB0AAAAJ&sortby=pubdate" class="fa fa-graduation-cap"></a>
   <a href="https://www.linkedin.com/in/ziniu-wu18/" class="fab fa-linkedin"></a>
 </div>
 
