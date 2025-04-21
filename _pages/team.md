@@ -6,30 +6,16 @@ nav: true
 nav_order: 1
 ---
 
-
-
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-
-<!-- Researchers -->
 
 <div align="center">
   <img src="../assets/img/team_bahadir.jpg" alt="Ali Karasahin" width="150"><br>
   <strong>Dr. Bahadir Kocer</strong><br>
-  <em>Lecturer</em><br>
+  <em>Lecturer in Aerial Robotics </em><br>
   <a href="https://research-information.bris.ac.uk/en/persons/basaran-bahadir-kocer" class="fa fa-home"></a>
   <a href="https://scholar.google.com/citations?user=AVt5qrAAAAAJ&hl=en" class="fa fa-graduation-cap"></a>
   <a href="https://www.linkedin.com/in/basaran-bahadir-kocer-6920a7340/" class="fab fa-linkedin"></a>
 </div>
-
-<div align="Left">
-  I explore the integration of design, perception, and control in aerial robots, investigating their impact on the operation and sustainable solutions for the future. My research focuses on aerial physical interaction for applications including environmental sensing and aerial manufacturing, to advance the eco-friendly and efficient use of aerial robots. Inspired by nature, I study flexible and efficient learning schemes to develop designs, algorithms and approaches that can adapt to diverse aerial robots and tasks. Our emphasis on continuous learning enables us to tackle the complex and dynamic challenges in aerial systems and the environment.
-</div>
-
-</div>
-
-# Visiting Research Fellow
-
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
 
 <div align="center">
   <img src="../assets/img/team_ali.jpg" alt="Ali Karasahin" width="150"><br>
@@ -40,13 +26,6 @@ nav_order: 1
   <a href="https://scholar.google.com/citations?user=F1QthcIAAAAJ&hl=tr&oi=ao" class="fa fa-graduation-cap"></a>
   <a href="https://www.linkedin.com/in/tahirkarasahin/" class="fab fa-linkedin"></a>
 </div>
-
-</div>
-
-
-# PhD Students
-
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
 
 <!-- Researchers -->
 <div align="center">
