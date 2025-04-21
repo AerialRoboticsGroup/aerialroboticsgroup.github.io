@@ -32,7 +32,7 @@ nav_order: 1
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
 
 <div align="center">
-  <img src="../assets/img/team_ali.png" alt="Ali Karasahin" width="150"><br>
+  <img src="../assets/img/team_ali.jpg" alt="Ali Karasahin" width="150"><br>
   <strong>Dr. Ali Karasahin</strong><br>
   <em>Visiting Research Fellow</em><br>
   Learning-based Control<br>
