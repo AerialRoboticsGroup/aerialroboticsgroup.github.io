@@ -44,7 +44,7 @@ United Kingdom
 <!-- Researchers -->
 
 <div align="center">
-  <img src="../assets/img/team_default.png" alt="Ali Karasahin" width="150"><br>
+  <img src="../assets/img/team_bahadir.png" alt="Ali Karasahin" width="150"><br>
   <strong>Dr. Bahadir Kocer</strong><br>
   <em>Lecturer</em><br>
   <a href="https://research-information.bris.ac.uk/en/persons/basaran-bahadir-kocer" class="fa fa-home"></a>
