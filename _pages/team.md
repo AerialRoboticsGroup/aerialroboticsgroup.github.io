@@ -49,7 +49,7 @@ nav_order: 1
 </div>
 
 <div align="center">
-  <img src="../assets/img/team_default.png" alt="Ziniu Wu" width="150"><br>
+  <img src="../assets/img/team_ziniu.JPG" alt="Ziniu Wu" width="150"><br>
   <strong>Ziniu Wu</strong><br>
   <em>PhD Student</em><br>
   Robot Learning<br>
@@ -59,7 +59,7 @@ nav_order: 1
 </div>
 
 <div align="center">
-  <img src="../assets/img/team_default.png" alt="Alex Dunnett" width="150"><br>
+  <img src="../assets/img/team_alex.jpg" alt="Alex Dunnett" width="150"><br>
   <strong>Alex Dunnett</strong><br>
   <em>PhD Student</em><br>
   Perception and Guidance<br>
