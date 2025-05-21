@@ -30,7 +30,7 @@ nav_order: 1
 
 <!-- Researchers -->
 <div align="center">
-  <img src="../assets/img/team_default.png" alt="Haichuan Li" width="150"><br>
+  <img src="../assets/img/team_haichuan.jpg" alt="Haichuan Li" width="150"><br>
   <strong>Haichuan Li</strong><br>
   <em>PhD Student</em><br>
   Perching Mechanism<br>
@@ -40,7 +40,7 @@ nav_order: 1
 </div>
 
 <div align="center">
-  <img src="../assets/img/team_default.png" alt="Ziang Zhao" width="150"><br>
+  <img src="../assets/img/team_ziang.jpg" alt="Ziang Zhao" width="150"><br>
   <strong>Ziang Zhao</strong><br>
   <em>PhD Student</em><br>
   Minimal Invasive Design<br>
