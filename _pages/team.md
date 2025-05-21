@@ -11,7 +11,8 @@ nav_order: 1
 <div align="center">
   <img src="../assets/img/team_bahadir.jpg" alt="Ali Karasahin" width="150"><br>
   <strong>Dr. Bahadir Kocer</strong><br>
-  <em>Lecturer in Aerial Robotics </em><br>
+  <em>Lecturer</em><br>
+  Aerial Robotics<br>
   <a href="https://research-information.bris.ac.uk/en/persons/basaran-bahadir-kocer" class="fa fa-home"></a>
   <a href="https://scholar.google.com/citations?user=AVt5qrAAAAAJ&hl=en" class="fa fa-graduation-cap"></a>
   <a href="https://www.linkedin.com/in/basaran-bahadir-kocer-6920a7340/" class="fab fa-linkedin"></a>
