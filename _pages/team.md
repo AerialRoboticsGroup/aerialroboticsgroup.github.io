@@ -70,7 +70,7 @@ nav_order: 1
 </div>
 
 <div align="center">
-  <img src="../assets/img/team_default.png" alt="Jianduo Chai" width="150"><br>
+  <img src="../assets/img/team_jianduo.png" alt="Jianduo Chai" width="150"><br>
   <strong>Jianduo Chai</strong><br>
   <em>PhD Student</em><br>
   Trajectory Prediction<br>
