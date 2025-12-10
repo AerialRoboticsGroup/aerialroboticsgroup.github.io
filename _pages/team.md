@@ -50,7 +50,7 @@ nav_order: 1
 </div>
 
 <div align="center">
-  <img src="../assets/img/team_ziniu.JPG" alt="Ziniu Wu" width="150"><br>
+  <img src="../assets/img/team_ziniu.png" alt="Ziniu Wu" width="150"><br>
   <strong>Ziniu Wu</strong><br>
   <em>PhD Student</em><br>
   Robot Learning<br>
