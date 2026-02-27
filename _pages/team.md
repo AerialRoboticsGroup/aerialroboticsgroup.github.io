@@ -90,10 +90,10 @@ nav_order: 1
 </div>
 
 <div align="center">
-  <img src="../assets/img/team_default.png" alt="Ke Tian" width="150"><br>
+  <img src="../assets/img/team_ke.jpg" alt="Ke Tian" width="150"><br>
   <strong>Ke Tian</strong><br>
   <em>PhD Student</em><br>
-  Aerial Robotics<br>
+  Energy-aware Control, UAV Path Planning, Reinforcement Learning<br>
   <a href="https://research-information.bris.ac.uk/en/persons/" class="fa fa-home"></a>
   <a href="#" class="fa fa-graduation-cap"></a>
   <a href="#" class="fab fa-linkedin"></a>
