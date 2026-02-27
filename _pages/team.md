@@ -79,6 +79,36 @@ nav_order: 1
   <a href="#" class="fab fa-linkedin"></a>
 </div>
 
+<div align="center">
+  <img src="../assets/img/team_default.png" alt="Luke Wainwright" width="150"><br>
+  <strong>Luke Wainwright</strong><br>
+  <em>PhD Student</em><br>
+  Aerial Robotics<br>
+  <a href="https://research-information.bris.ac.uk/en/persons/" class="fa fa-home"></a>
+  <a href="#" class="fa fa-graduation-cap"></a>
+  <a href="#" class="fab fa-linkedin"></a>
+</div>
+
+<div align="center">
+  <img src="../assets/img/team_default.png" alt="Ke Tian" width="150"><br>
+  <strong>Ke Tian</strong><br>
+  <em>PhD Student</em><br>
+  Aerial Robotics<br>
+  <a href="https://research-information.bris.ac.uk/en/persons/" class="fa fa-home"></a>
+  <a href="#" class="fa fa-graduation-cap"></a>
+  <a href="#" class="fab fa-linkedin"></a>
+</div>
+
+<div align="center">
+  <img src="../assets/img/team_default.png" alt="Jelly Liu" width="150"><br>
+  <strong>Jelly Liu</strong><br>
+  <em>PhD Student</em><br>
+  Aerial Robotics<br>
+  <a href="https://research-information.bris.ac.uk/en/persons/" class="fa fa-home"></a>
+  <a href="#" class="fa fa-graduation-cap"></a>
+  <a href="#" class="fab fa-linkedin"></a>
+</div>
+
 
 </div>
 
