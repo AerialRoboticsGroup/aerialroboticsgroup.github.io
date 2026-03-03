@@ -100,13 +100,13 @@ nav_order: 1
 </div>
 
 <div align="center">
-  <img src="../assets/img/team_default.png" alt="Jelly Liu" width="150"><br>
+  <img src="../assets/img/team_jelly.jpg" alt="Jelly Liu" width="150"><br>
   <strong>Jelly Liu</strong><br>
   <em>PhD Student</em><br>
   Aerial Robotics<br>
-  <a href="https://research-information.bris.ac.uk/en/persons/" class="fa fa-home"></a>
-  <a href="#" class="fa fa-graduation-cap"></a>
-  <a href="#" class="fab fa-linkedin"></a>
+  <a href="https://jellyjinzheliu.com/experience-phd/" class="fa fa-home"></a>
+  <a href="https://jellyjinzheliu.com/experience-phd/" class="fa fa-graduation-cap"></a>
+  <a href="https://jellyjinzheliu.com/experience-phd/" class="fab fa-linkedin"></a>
 </div>
 
 
