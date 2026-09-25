@@ -18,16 +18,6 @@ nav_order: 1
   <a href="https://www.linkedin.com/in/basaran-bahadir-kocer-6920a7340/" class="fab fa-linkedin"></a>
 </div>
 
-<div align="center">
-  <img src="../assets/img/team_ali.jpg" alt="Ali Karasahin" width="150"><br>
-  <strong>Dr. Ali Karasahin</strong><br>
-  <em>Visiting Research Fellow</em><br>
-  Learning-based Control<br>
-  <a href="https://tahirkarasahin.netlify.app/" class="fa fa-home"></a>
-  <a href="https://scholar.google.com/citations?user=F1QthcIAAAAJ&hl=tr&oi=ao" class="fa fa-graduation-cap"></a>
-  <a href="https://www.linkedin.com/in/tahirkarasahin/" class="fab fa-linkedin"></a>
-</div>
-
 <!-- Researchers -->
 <div align="center">
   <img src="../assets/img/team_haichuan.jpg" alt="Haichuan Li" width="150"><br>
@@ -109,6 +99,24 @@ nav_order: 1
   <a href="https://jellyjinzheliu.com/experience-phd/" class="fab fa-linkedin"></a>
 </div>
 
+
+</div>
+
+<h2 style="margin: 40px 0 20px;">Alumni</h2>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
+
+<div align="center">
+  <img src="../assets/img/team_ali.jpg" alt="Ali Karasahin" width="150"><br>
+  <strong>Dr. Ali Karasahin</strong><br>
+  <em>Visiting Research Fellow</em><br>
+  Learning-based Control<br>
+  Next position:<br>
+  Assistant Professor at Necmettin Erbakan University<br>
+  <a href="https://tahirkarasahin.netlify.app/" class="fa fa-home"></a>
+  <a href="https://scholar.google.com/citations?user=F1QthcIAAAAJ&hl=tr&oi=ao" class="fa fa-graduation-cap"></a>
+  <a href="https://www.linkedin.com/in/tahirkarasahin/" class="fab fa-linkedin"></a>
+</div>
 
 </div>
 
