@@ -99,6 +99,14 @@ nav_order: 1
   <a href="https://jellyjinzheliu.com/experience-phd/" class="fab fa-linkedin"></a>
 </div>
 
+<div align="center">
+  <img src="../assets/img/team_jack.jpg" alt="Jack Forrest" width="150"><br>
+  <strong>Jack Forrest</strong><br>
+  <em>PhD Student</em><br>
+  Learning-based Sensing and Control<br>
+  <a href="https://www.linkedin.com/in/jack-forrest-2b9666330/" class="fab fa-linkedin"></a>
+</div>
+
 
 </div>
 
