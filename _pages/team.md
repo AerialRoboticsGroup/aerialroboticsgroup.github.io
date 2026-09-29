@@ -118,6 +118,16 @@ nav_order: 1
   <a href="https://www.linkedin.com/in/jack-forrest-2b9666330/" class="fab fa-linkedin"></a>
 </div>
 
+<div align="center">
+  <img src="../assets/img/team_simon.jpg" alt="Šimon Prokop" width="150"><br>
+  <strong>Šimon Prokop</strong><br>
+  <em>Research Intern</em><br>
+  Visual Robot Navigation<br>
+  <a href="https://xismoos.github.io/Simon-Homepage/" class="fa fa-home"></a>
+  <a href="https://scholar.google.com/citations?user=hku3YHMAAAAJ&hl=en" class="fa fa-graduation-cap"></a>
+  <a href="https://www.linkedin.com/in/simon-prokop/" class="fab fa-linkedin"></a>
+</div>
+
 
 </div>
 
