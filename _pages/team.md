@@ -104,6 +104,7 @@ nav_order: 1
   <strong>Jack Forrest</strong><br>
   <em>PhD Student</em><br>
   Learning-based Sensing and Control<br>
+  <a href="https://research-information.bris.ac.uk/en/persons/jack-w-forrest/" class="fa fa-home"></a>
   <a href="https://www.linkedin.com/in/jack-forrest-2b9666330/" class="fab fa-linkedin"></a>
 </div>
 
