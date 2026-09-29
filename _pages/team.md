@@ -18,6 +18,16 @@ nav_order: 1
   <a href="https://www.linkedin.com/in/basaran-bahadir-kocer-6920a7340/" class="fab fa-linkedin"></a>
 </div>
 
+<div align="center">
+  <img src="../assets/img/team_ahmet.jpg" alt="Ahmet Fevzi Bozkurt" width="150"><br>
+  <strong>Dr. Ahmet Fevzi Bozkurt</strong><br>
+  <em>Visiting Research Fellow</em><br>
+  Soft Robotics for UAVs<br>
+  <a href="http://afbozkurt.com/" class="fa fa-home"></a>
+  <a href="https://scholar.google.com/citations?user=6iHkTRsAAAAJ" class="fa fa-graduation-cap"></a>
+  <a href="https://www.linkedin.com/in/ahmet-fevzi-bozkurt-655176198/" class="fab fa-linkedin"></a>
+</div>
+
 <!-- Researchers -->
 <div align="center">
   <img src="../assets/img/team_haichuan.jpg" alt="Haichuan Li" width="150"><br>
