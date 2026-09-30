@@ -166,7 +166,7 @@ nav_order: 1
 <div align="center">
   <img src="../assets/img/team_ken.jpg" alt="Pongporn Supa" width="150"><br>
   <strong>Pongporn Supa</strong><br>
-  <em>MSc Student at Bristol <span style="white-space: nowrap;">(25-26)</span></em><br>
+  <em>MSc Student at Bristol <span style="white-space: nowrap;">(24-25)</span></em><br>
   Soft Aerial Robotics<br>
   Next position:<br>
   PhD Student in Max Planck Institute &amp; University of Stuttgart<br>
