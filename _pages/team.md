@@ -131,7 +131,7 @@ nav_order: 1
 
 </div>
 
-<h2 style="margin: 40px 0 20px;">Alumni</h2>
+<h2 style="margin: 40px 0 20px;">Postdoc Alumni</h2>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
 
@@ -145,6 +145,33 @@ nav_order: 1
   <a href="https://tahirkarasahin.netlify.app/" class="fa fa-home"></a>
   <a href="https://scholar.google.com/citations?user=F1QthcIAAAAJ&hl=tr&oi=ao" class="fa fa-graduation-cap"></a>
   <a href="https://www.linkedin.com/in/tahirkarasahin/" class="fab fa-linkedin"></a>
+</div>
+
+</div>
+
+<h2 style="margin: 40px 0 20px;">MSc Alumni</h2>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
+
+<div align="center">
+  <img src="../assets/img/team_kangle.jpg" alt="Kangle Yuan" width="150"><br>
+  <strong>Kangle Yuan</strong><br>
+  <em>MSc Student at Imperial <span style="white-space: nowrap;">(23-24)</span></em><br>
+  Bio-inspired Drone Perching<br>
+  Next position:<br>
+  PhD Student in MAVLab, TU&nbsp;Delft<br>
+  <a href="mailto:K.Yuan-1@tudelft.nl" class="fa fa-envelope"></a>
+</div>
+
+<div align="center">
+  <img src="../assets/img/team_ken.jpg" alt="Pongporn Supa" width="150"><br>
+  <strong>Pongporn Supa</strong><br>
+  <em>MSc Student at Bristol <span style="white-space: nowrap;">(25-26)</span></em><br>
+  Soft Aerial Robotics<br>
+  Next position:<br>
+  PhD Student in Max Planck Institute &amp; University of Stuttgart<br>
+  <a href="https://www.ifr.uni-stuttgart.de/institut/team/Supa" class="fa fa-home"></a>
+  <a href="mailto:pongporn.supa@ifr.uni-stuttgart.de" class="fa fa-envelope"></a>
 </div>
 
 </div>
