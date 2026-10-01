@@ -53,7 +53,7 @@ United Kingdom
   <div class="col-sm-9">
     <div class="title">Autumn 2026 update</div>
     <p>This autumn, Dr. Bahadir Kocer is serving as an Associate Editor for <a href="https://2027.ieee-icra.org/">ICRA 2027</a>, the IEEE International Conference on Robotics and Automation, which will be held in Seoul in May 2027. We wish all authors the very best of luck and hope they receive helpful, constructive feedback.</p>
-    <p>We are also delighted to welcome <a href="../team/">Jack Forrest</a>, who recently joined the group as a PhD student working on learning-based sensing and control for aerial robots.</p>
+    <p>We are also delighted to welcome <a href="/team/">Jack Forrest</a>, who recently joined the group as a PhD student working on learning-based sensing and control for aerial robots.</p>
   </div>
 </div>
 </li>
