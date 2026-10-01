@@ -176,3 +176,21 @@ nav_order: 1
 
 </div>
 
+<h2 style="margin: 40px 0 20px;">Intern Alumni</h2>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
+
+<div align="center">
+  <img src="../assets/img/team_parth.jpg" alt="Parth Potdar" width="150"><br>
+  <strong>Parth Potdar</strong><br>
+  <em>Research Intern <span style="white-space: nowrap;">(24-25)</span></em><br>
+  Bio-inspired Drone Perching<br>
+  Next position:<br>
+  Robotics Software and Systems Engineer at Oxford&nbsp;Robotics&nbsp;Institute, University&nbsp;of&nbsp;Oxford<br>
+  <a href="https://parth-potdar.github.io/" class="fa fa-home"></a>
+  <a href="https://scholar.google.com/citations?user=zIqDv1sAAAAJ&hl=en" class="fa fa-graduation-cap"></a>
+  <a href="https://www.linkedin.com/in/parth-potdar/" class="fab fa-linkedin"></a>
+</div>
+
+</div>
+
