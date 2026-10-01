@@ -12,7 +12,7 @@ profile:
     <p>Group Dinner</p>
     <p>February 2025</p>
 
-selected_papers: true # includes a list of papers marked as "selected={true}"
+selected_papers: false # includes a list of papers marked as "selected={true}"
 social: false # includes social icons at the bottom of the page
 
 announcements:
@@ -36,3 +36,27 @@ Email: b.kocer (at) bristol.ac.uk
 School of Civil, Aerospace and Design Engineering  
 University of Bristol  
 United Kingdom
+
+<h2 style="clear: both; margin-top: 40px;">News</h2>
+
+<!-- To add a news item, copy one <li> ... </li> block and put the newest one first.
+     News pictures go in assets/img/news/. The classes reuse the publication list style. -->
+<div class="publications" style="margin-top: 1rem;">
+<ol class="bibliography">
+
+<li>
+<div class="row">
+  <div class="col-sm-3 abbr">
+    <abbr class="badge rounded w-100">October 2026</abbr>
+    <img src="../assets/img/news/icra2027.jpg" class="preview z-depth-1 rounded" width="100%" alt="ICRA 2027 Seoul logo">
+  </div>
+  <div class="col-sm-9">
+    <div class="title">Autumn 2026 update</div>
+    <p>This autumn, Dr. Bahadir Kocer is serving as an Associate Editor for <a href="https://2027.ieee-icra.org/">ICRA 2027</a>, the IEEE International Conference on Robotics and Automation, which will be held in Seoul in May 2027. We wish all authors the very best of luck and hope they receive helpful, constructive feedback.</p>
+    <p>We are also delighted to welcome <a href="../team/">Jack Forrest</a>, who recently joined the group as a PhD student working on learning-based sensing and control for aerial robots.</p>
+  </div>
+</div>
+</li>
+
+</ol>
+</div>
