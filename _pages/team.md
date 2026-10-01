@@ -80,13 +80,13 @@ nav_order: 1
 </div>
 
 <div align="center">
-  <img src="../assets/img/team_default.png" alt="Luke Wainwright" width="150"><br>
+  <img src="../assets/img/team_luke.jpg" alt="Luke Wainwright" width="150"><br>
   <strong>Luke Wainwright</strong><br>
   <em>PhD Student</em><br>
-  Aerial Robotics<br>
+  Safe Autonomous Flight<br>
   <a href="https://research-information.bris.ac.uk/en/persons/luke-w-wainwright/" class="fa fa-home"></a>
   <a href="https://research-information.bris.ac.uk/en/persons/luke-w-wainwright/" class="fa fa-graduation-cap"></a>
-  <a href="https://research-information.bris.ac.uk/en/persons/luke-w-wainwright/" class="fab fa-linkedin"></a>
+  <a href="https://www.linkedin.com/in/luke-wainwright-327519197/" class="fab fa-linkedin"></a>
 </div>
 
 <div align="center">
