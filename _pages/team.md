@@ -164,6 +164,17 @@ nav_order: 1
 </div>
 
 <div align="center">
+  <img src="../assets/img/team_javier.jpg" alt="Javier Paez Franco" width="150"><br>
+  <strong>Javier Paez Franco</strong><br>
+  <em>MSc Student at Imperial <span style="white-space: nowrap;">(24-25)</span></em><br>
+  Continual Non-stationary RL<br>
+  Next position:<br>
+  PhD Candidate at ARL, NTNU<br>
+  <a href="https://jpaefra.com/" class="fa fa-home"></a>
+  <a href="https://www.linkedin.com/in/javier-paez-franco/" class="fab fa-linkedin"></a>
+</div>
+
+<div align="center">
   <img src="../assets/img/team_ken.jpg" alt="Pongporn Supa" width="150"><br>
   <strong>Pongporn Supa</strong><br>
   <em>MSc Student at Bristol <span style="white-space: nowrap;">(24-25)</span></em><br>
