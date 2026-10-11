@@ -1,23 +1,21 @@
 ---
-layout: page
+layout: default
 permalink: /teaching/
 title: Teaching
-description: Courses we teach on, with interactive labs to explore.
+description: Aerial Robotics (AENGM0073) at the University of Bristol, with interactive labs that run in the browser.
 nav: true
 nav_order: 3
 ---
 
-Members of the Aerial Robotics Group teach on the following unit at the University of Bristol.
+# Aerial Robotics (AENGM0073)
 
-## Aerial Robotics (AENGM0073)
-
-_University of Bristol · MSc and final-year undergraduate_
+_[University of Bristol](https://www.bris.ac.uk/unit-programme-catalogue/UnitDetails.jsa?ayrCode=27%2F28&unitCode=AENGM0073)_
 
 Aerial Robotics is a team-taught unit on the fundamentals of flight dynamics, control and avionics
 in the context of aerial robotics systems and applications.
 Alongside the legal requirements for drone (UAV) operations, students use software simulation tools for flight planning and algorithm development,
-including flight dynamics, sensor and control models, and are introduced to disruptive technologies such as autonomous navigation and bio-inspiration.
-By the end of the unit, students can plan a typical UAV operation in UK airspace, explain feedback control for UAVs and its role in flight dynamics
+including flight dynamics, sensor and control models, and are introduced to state-of-the-art approaches in autonomous navigation and bio-inspiration.
+By the end of the unit, students can plan a typical UAV operation in selected airspaces, explain feedback control for UAVs and its role in flight dynamics
 and guidance, apply a route-planning algorithm in simulation, and carry out a design trade-off study for a new aerial robotics platform.
 
 Topics across the unit include:
