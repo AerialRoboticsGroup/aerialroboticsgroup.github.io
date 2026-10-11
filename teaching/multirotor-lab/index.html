@@ -1,0 +1,1922 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Multirotor Control Lab</title>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Sanchez&display=swap");
+/* Layout: lab bench. Header strip (deck-blue slab title, tabs, sim bar); each tab = instrument column (scene + strip charts) beside a control column, "Try this" card under the instruments; one column below 1020px. */
+:root {
+  --bg: #FFFFFF;
+  --panel: #F3F5F6;
+  --ink: #1A1A1A;
+  --ink-2: #52514E;
+  --muted: #6B6A66;
+  --rule: #E1E0D9;
+  --grid: #E1E0D9;
+  --axis: #C3C2B7;
+  --track: #D5D8DA;
+  --thumb: #FFFFFF;
+  --accent: #0070C0;
+  --accent-ink: #005A9E;
+  --accent-wash: #EAF2FA;
+  --on-accent: #FFFFFF;
+  --s1: #0070C0;
+  --s2: #EE7219;
+  --s3: #00A99D;
+  --s4: #AB1F2D;
+  --ok: #1D7A48;
+  --ok-wash: #E6F4EC;
+  --warn: #9A5800;
+  --warn-wash: #FDF1DE;
+  --bad: #B3261E;
+  --bad-wash: #FBE9E7;
+  --sky: #F3F5F6;
+  --ground: #8A8F92;
+  --ground-fill: #E3E5E6;
+  --body: #262626;
+  --arm: #5C6366;
+  --dome: #AB1F2D;
+  --disc: #AEB6BA;
+  --disc-edge: #7F888C;
+  --rotor-neutral: #B9C0C4;
+  --faster: #AB1F2D;
+  --slower: #0070C0;
+  --thrust: #EE7219;
+  --force: #52514E;
+  --payload: #C9A66B;
+  --payload-edge: #8C6D3F;
+  --nose: #FFFFFF;
+  --blade: #262626;
+  --shadow: rgba(0, 0, 0, 0.22);
+  --font-head: "Sanchez", "Rockwell", "Roboto Slab", Georgia, serif;
+  --font-body: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  --font-mono: Consolas, "Cascadia Mono", "SFMono-Regular", Menlo, "Courier New", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121417; --panel: #1A1E22; --ink: #ECEDEE; --ink-2: #BEC2C5; --muted: #9DA2A6;
+    --rule: #2C3136; --grid: #2A2F34; --axis: #474D53; --track: #3A4046; --thumb: #E6E8EA;
+    --accent: #4DA6EC; --accent-ink: #7BBDF1; --accent-wash: #15263A; --on-accent: #0B1620;
+    --s1: #3D9BE9; --s2: #DB7428; --s3: #16AA9D; --s4: #E0505E;
+    --ok: #5CC98C; --ok-wash: #12301F; --warn: #F0B055; --warn-wash: #33260F; --bad: #FF8A80; --bad-wash: #3A1715;
+    --sky: #171B1F; --ground: #6B7378; --ground-fill: #23292E;
+    --body: #4A5157; --arm: #7E878D; --dome: #E0505E; --disc: #8E989E; --disc-edge: #B5BDC2;
+    --rotor-neutral: #59646B; --faster: #E0505E; --slower: #3D9BE9; --thrust: #E8843A; --force: #BEC2C5;
+    --payload: #B08D52; --payload-edge: #D9B97F; --nose: #ECEDEE; --blade: #D5D9DC; --shadow: rgba(0, 0, 0, 0.6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121417; --panel: #1A1E22; --ink: #ECEDEE; --ink-2: #BEC2C5; --muted: #9DA2A6;
+  --rule: #2C3136; --grid: #2A2F34; --axis: #474D53; --track: #3A4046; --thumb: #E6E8EA;
+  --accent: #4DA6EC; --accent-ink: #7BBDF1; --accent-wash: #15263A; --on-accent: #0B1620;
+  --s1: #3D9BE9; --s2: #DB7428; --s3: #16AA9D; --s4: #E0505E;
+  --ok: #5CC98C; --ok-wash: #12301F; --warn: #F0B055; --warn-wash: #33260F; --bad: #FF8A80; --bad-wash: #3A1715;
+  --sky: #171B1F; --ground: #6B7378; --ground-fill: #23292E;
+  --body: #4A5157; --arm: #7E878D; --dome: #E0505E; --disc: #8E989E; --disc-edge: #B5BDC2;
+  --rotor-neutral: #59646B; --faster: #E0505E; --slower: #3D9BE9; --thrust: #E8843A; --force: #BEC2C5;
+  --payload: #B08D52; --payload-edge: #D9B97F; --nose: #ECEDEE; --blade: #D5D9DC; --shadow: rgba(0, 0, 0, 0.6);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.45;
+}
+[hidden] { display: none !important; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+button { font: inherit; color: inherit; }
+sub { font-size: 0.72em; line-height: 0; }
+
+.page {
+  max-width: 1760px;
+  margin-inline: auto;
+  padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 8px 24px;
+}
+@media (min-width: 900px) { .page { padding-inline: 28px; } }
+
+/* ---------- header ---------- */
+.top {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 10px 28px; padding-block: 10px 12px;
+  border-bottom: 1px solid var(--rule);
+}
+.brand { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.eyebrow {
+  margin: 0; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted);
+}
+h1 {
+  margin: 0; font-family: var(--font-head); font-weight: 400; color: var(--accent);
+  font-size: clamp(1.55rem, 1.05rem + 1.3vw, 2.15rem); line-height: 1.1; text-wrap: balance;
+}
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.tab {
+  min-height: 48px; padding: 9px 20px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--axis); background: var(--bg); color: var(--ink-2);
+  font-size: 1rem; font-weight: 700;
+}
+.tab:hover { border-color: var(--accent); color: var(--accent-ink); }
+.tab[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.simbar { margin-left: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.clock { font-variant-numeric: tabular-nums; color: var(--ink-2); font-size: 0.95rem; min-width: 8.5ch; }
+
+/* ---------- buttons ---------- */
+.btn {
+  min-height: 44px; padding: 8px 16px; border-radius: 10px; cursor: pointer;
+  border: 1px solid var(--axis); background: var(--bg); color: var(--ink);
+  font-size: 0.95rem; font-weight: 700;
+}
+.btn:hover { background: var(--panel); border-color: var(--ink-2); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.btn.primary:hover { background: var(--accent-ink); border-color: var(--accent-ink); }
+.btn.quiet { font-weight: 400; color: var(--ink-2); }
+.chip {
+  min-height: 42px; padding: 7px 14px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--axis); background: var(--bg); color: var(--ink);
+  font-size: 0.92rem; font-weight: 700;
+}
+.chip:hover { border-color: var(--accent); color: var(--accent-ink); background: var(--accent-wash); }
+.row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* ---------- lab layout ---------- */
+.lab {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 400px);
+  grid-template-areas: "viz ctl" "try ctl";
+  grid-template-rows: auto 1fr;
+  gap: 16px 28px; padding-block: 16px 8px; align-items: start;
+}
+.viz { grid-area: viz; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.controls { grid-area: ctl; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.try { grid-area: try; min-width: 0; }
+@media (max-width: 1020px) {
+  .lab { grid-template-columns: minmax(0, 1fr); grid-template-areas: "viz" "ctl" "try"; grid-template-rows: auto; }
+}
+
+.fig { margin: 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.fig-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 14px; }
+.fig-title { font-weight: 700; font-size: 0.95rem; }
+.fig-note { font-size: 0.82rem; color: var(--muted); }
+.legend { display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: 0.85rem; color: var(--ink-2); }
+.lg { display: inline-flex; align-items: center; gap: 6px; }
+.key { display: inline-block; width: 22px; height: 0; border-top: 3px solid var(--k, var(--s1)); }
+.key.dash { border-top-style: dashed; border-top-width: 2px; }
+.sw { display: inline-block; width: 14px; height: 14px; border-radius: 50%; background: var(--k, var(--s1)); }
+.cbox {
+  position: relative; width: 100%; height: clamp(160px, 23vh, 250px);
+  border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; background: var(--bg);
+}
+.cbox canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.cbox.scene { height: auto; flex: 1 1 auto; min-height: 300px; }
+.cbox.scene canvas, .cbox.wide canvas { cursor: crosshair; touch-action: none; }
+
+.pid-grid {
+  display: grid; grid-template-columns: minmax(200px, 30%) minmax(0, 1fr);
+  gap: 12px 14px;
+}
+.pid-grid .scene-fig { grid-row: span 2; }
+@media (max-width: 640px) {
+  .pid-grid { grid-template-columns: minmax(0, 1fr); }
+  .pid-grid .scene-fig { grid-row: auto; }
+  .cbox.scene { flex: none; height: 320px; }
+}
+.cbox.wide { height: clamp(260px, 40vh, 440px); }
+.plot-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px 14px; }
+.plot-row .cbox { height: clamp(150px, 21vh, 220px); }
+@media (max-width: 700px) {
+  .plot-row { grid-template-columns: minmax(0, 1fr); }
+  .cbox.wide { height: auto; aspect-ratio: 16 / 10; }
+}
+
+/* ---------- readouts and status ---------- */
+.readouts {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px 18px; margin: 0;
+}
+.ro { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.ro dt { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.ro dt i, .ro dt sub { text-transform: none; letter-spacing: 0; font-size: 1.12em; }
+.ro dt sub { font-size: 0.8em; }
+.ro dd { margin: 0; font-size: 1.2rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.statusrow { display: flex; flex-wrap: wrap; gap: 8px; }
+.state {
+  display: inline-flex; align-items: center; gap: 7px; padding: 3px 11px;
+  border-radius: 999px; border: 1px solid currentColor; font-size: 0.86rem; font-weight: 700;
+}
+.state::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.state[data-s="ok"] { color: var(--ok); background: var(--ok-wash); }
+.state[data-s="warn"] { color: var(--warn); background: var(--warn-wash); }
+.state[data-s="bad"] { color: var(--bad); background: var(--bad-wash); }
+.state[data-s="idle"] { color: var(--muted); background: transparent; }
+.hint { margin: 0; font-size: 0.98rem; color: var(--ink-2); max-width: 78ch; }
+.hint strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+.model { margin: 0; font-size: 0.86rem; color: var(--muted); max-width: 95ch; }
+.model i, .hint i, .try i { font-family: Georgia, "Times New Roman", serif; }
+/* time-derivative dots drawn with CSS: combining marks render offset in most UI fonts */
+.dot, .ddot { position: relative; display: inline-block; line-height: 1; }
+.dot::after, .ddot::after { position: absolute; left: 50%; top: -0.14em; transform: translateX(-38%); font-style: normal; line-height: 1; }
+.dot::after { content: "\02D9"; }
+.ddot::after { content: "\00A8"; }
+.dot.tall::after, .ddot.tall::after { top: -0.34em; }
+
+/* ---------- controls ---------- */
+.group {
+  display: flex; flex-direction: column; gap: 10px;
+  border: 1px solid var(--rule); border-radius: 12px; padding: 12px 16px 14px;
+}
+.group h2 {
+  margin: 0; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted);
+}
+.slider { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 0 12px; }
+.slider label { font-weight: 700; font-size: 1rem; }
+.slider output { font-size: 1rem; font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.slider output .u { font-weight: 400; color: var(--muted); font-size: 0.86rem; }
+.slider input { grid-column: 1 / -1; }
+input[type="range"] {
+  -webkit-appearance: none; appearance: none; width: 100%; height: 34px; margin: 0;
+  background: transparent; cursor: pointer; --p: 50%;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 8px; border-radius: 4px;
+  background: linear-gradient(to right, var(--accent) 0 var(--p), var(--track) var(--p) 100%);
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 28px; height: 28px; margin-top: -10px; border-radius: 50%;
+  background: var(--thumb); border: 3px solid var(--accent); box-shadow: 0 1px 3px var(--shadow);
+}
+input[type="range"]::-moz-range-track { height: 8px; border-radius: 4px; background: var(--track); }
+input[type="range"]::-moz-range-progress { height: 8px; border-radius: 4px; background: var(--accent); }
+input[type="range"]::-moz-range-thumb {
+  width: 22px; height: 22px; border-radius: 50%; background: var(--thumb);
+  border: 3px solid var(--accent); box-shadow: 0 1px 3px var(--shadow);
+}
+input[type="range"]:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+.switch {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px;
+  width: 100%; min-height: 44px; padding: 5px 8px 5px 4px; margin-inline: -4px;
+  border: 0; border-radius: 10px; background: transparent; text-align: left; cursor: pointer; font-size: 1rem;
+}
+.switch:hover { background: var(--panel); }
+.sw-track { position: relative; width: 46px; height: 26px; border-radius: 13px; background: var(--track); }
+.sw-track::after {
+  content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--thumb); box-shadow: 0 1px 2px var(--shadow); transition: transform 0.15s ease;
+}
+.switch[aria-pressed="true"] .sw-track { background: var(--accent); }
+.switch[aria-pressed="true"] .sw-track::after { transform: translateX(20px); }
+.sw-label { min-width: 0; }
+.sw-label small { display: block; font-size: 0.8rem; color: var(--muted); }
+.sw-state { font-size: 0.82rem; font-weight: 700; color: var(--muted); min-width: 3ch; text-align: right; }
+.switch[aria-pressed="true"] .sw-state { color: var(--accent-ink); }
+
+.seg-label { font-weight: 700; font-size: 1rem; }
+.seg { display: flex; border: 1px solid var(--axis); border-radius: 10px; overflow: hidden; }
+.seg button {
+  flex: 1 1 0; min-height: 44px; padding: 6px 8px; border: 0; border-right: 1px solid var(--axis);
+  background: var(--bg); color: var(--ink-2); font-size: 0.95rem; font-weight: 700; cursor: pointer;
+}
+.seg button:last-child { border-right: 0; }
+.seg button:hover { background: var(--panel); }
+.seg button[aria-checked="true"] { background: var(--accent); color: var(--on-accent); }
+.seg button:focus-visible { outline: 3px solid var(--ink); outline-offset: -5px; }
+.seg.tall button { min-height: 52px; line-height: 1.2; }
+
+.ratio { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font-size: 0.98rem; }
+.ratio b { font-variant-numeric: tabular-nums; font-size: 1.1rem; }
+.keys { margin: 0; font-size: 0.82rem; color: var(--muted); }
+kbd {
+  font-family: var(--font-mono); font-size: 0.8rem; padding: 1px 6px; border-radius: 5px;
+  border: 1px solid var(--axis); border-bottom-width: 2px; background: var(--panel); color: var(--ink);
+}
+
+/* ---------- try this ---------- */
+.try { background: var(--accent-wash); border-radius: 12px; padding: 14px 20px 16px; align-self: start; }
+.try h2 { margin: 0 0 6px; font-family: var(--font-head); font-weight: 400; font-size: 1.2rem; color: var(--accent-ink); }
+.try ol { margin: 0; padding-left: 1.4em; display: grid; gap: 7px; font-size: 0.98rem; max-width: 78ch; }
+.try li::marker { color: var(--accent-ink); font-weight: 700; }
+
+/* ---------- allocation tab ---------- */
+.mix-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 16px 22px; align-items: start; }
+.cbox.quad { height: clamp(340px, 54vh, 540px); }
+@media (max-width: 780px) {
+  .mix-grid { grid-template-columns: minmax(0, 1fr); }
+  .cbox.quad { height: auto; aspect-ratio: 1 / 0.92; max-height: 520px; }
+}
+.mix-side { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.scroll-x { overflow-x: auto; }
+.eq-cap { margin: 0 0 4px; font-size: 0.86rem; color: var(--muted); }
+.mateq {
+  display: inline-flex; align-items: center; gap: 10px; padding-block: 2px;
+  font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 0.95rem; line-height: 1.5;
+}
+.br { position: relative; display: grid; gap: 2px 14px; padding: 6px 14px; }
+.br::before, .br::after { content: ""; position: absolute; top: 0; bottom: 0; width: 8px; border: 2px solid var(--ink-2); }
+.br::before { left: 0; border-right: 0; }
+.br::after { right: 0; border-left: 0; }
+.br span { text-align: right; }
+.mat { grid-template-columns: repeat(4, auto); color: var(--ink-2); }
+.vec { grid-template-columns: auto; font-weight: 700; }
+.vlabels { display: grid; gap: 2px; padding-block: 6px; font-family: Georgia, "Times New Roman", serif; font-style: italic; color: var(--ink-2); }
+.op { font-size: 1.15rem; color: var(--ink-2); }
+.cmp { border-collapse: collapse; width: 100%; font-size: 0.95rem; font-variant-numeric: tabular-nums; }
+.cmp caption { text-align: left; font-weight: 700; padding-bottom: 6px; }
+.cmp th, .cmp td { padding: 6px 10px; border-bottom: 1px solid var(--rule); text-align: right; white-space: nowrap; }
+.cmp th[scope="row"], .cmp thead th:first-child { text-align: left; }
+.cmp thead th { font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.cmp td.lost { color: var(--bad); font-weight: 700; }
+.cmp td.kept { color: var(--ok); }
+
+.foot {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 20px;
+  margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--rule);
+  font-size: 0.84rem; color: var(--muted);
+}
+.foot p { margin: 0; }
+.foot .brandline { font-family: var(--font-head); color: var(--s4); }
+
+@media (max-width: 560px) {
+  body { font-size: 17px; }
+  .tab { flex: 1 1 auto; padding: 8px 12px; font-size: 0.92rem; }
+  .simbar { margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
+</style>
+</head>
+<body>
+<div class="page" id="app">
+  <header class="top">
+    <div class="brand">
+      <p class="eyebrow">AENGM0073 · Multirotor Dynamics and Control</p>
+      <h1>Multirotor Control Lab</h1>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Lab sections">
+      <button type="button" class="tab" role="tab" id="tab-pid" aria-controls="panel-pid" aria-selected="true">Altitude PID</button>
+      <button type="button" class="tab" role="tab" id="tab-cascade" aria-controls="panel-cascade" aria-selected="false" tabindex="-1">Cascade &amp; tilt</button>
+      <button type="button" class="tab" role="tab" id="tab-mixer" aria-controls="panel-mixer" aria-selected="false" tabindex="-1">Control allocation</button>
+    </div>
+    <div class="simbar">
+      <button type="button" class="btn" id="sim-pause" aria-keyshortcuts="Space">Pause</button>
+      <span class="clock" id="sim-clock">t = 0.0 s</span>
+      <button type="button" class="btn quiet" id="theme-toggle">Theme: auto</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ================= Tab 1: altitude PID ================= -->
+    <section class="panel" role="tabpanel" id="panel-pid" aria-labelledby="tab-pid">
+      <div class="lab">
+        <div class="viz">
+          <div class="pid-grid">
+            <figure class="fig scene-fig">
+              <figcaption class="fig-head"><span class="fig-title">Side view</span><span class="fig-note">Click or drag to set the target</span></figcaption>
+              <div class="cbox scene"><canvas id="pid-scene" role="img" aria-label="Side view of the drone above the ground with the dashed target altitude. Click or drag to move the target."></canvas></div>
+            </figure>
+            <figure class="fig">
+              <figcaption class="fig-head"><span class="fig-title">Altitude <i>z</i> (m)</span>
+                <span class="legend"><span class="lg"><span class="key" style="--k: var(--s1)"></span>altitude</span><span class="lg"><span class="key dash" style="--k: var(--s1)"></span>target</span></span>
+              </figcaption>
+              <div class="cbox plot"><canvas id="pid-plot-z" role="img" aria-label="Altitude and target altitude over the last 12 seconds"></canvas></div>
+            </figure>
+            <figure class="fig">
+              <figcaption class="fig-head"><span class="fig-title">Thrust (N)</span>
+                <span class="legend"><span class="lg"><span class="key" style="--k: var(--s2)"></span>commanded</span><span class="lg"><span class="key" style="--k: var(--s1)"></span>applied</span><span class="lg"><span class="key dash" style="--k: var(--ink-2)"></span><span><i>T</i><sub>max</sub> and hover <i>m g</i></span></span></span>
+              </figcaption>
+              <div class="cbox plot"><canvas id="pid-plot-t" role="img" aria-label="Commanded and applied thrust over the last 12 seconds, with the thrust limit and the hover thrust"></canvas></div>
+            </figure>
+          </div>
+          <dl class="readouts">
+            <div class="ro"><dt>Error <i>e</i></dt><dd id="pid-ro-err">0.00 m</dd></div>
+            <div class="ro"><dt>Altitude <i>z</i></dt><dd id="pid-ro-z">0.00 m</dd></div>
+            <div class="ro"><dt>Thrust applied</dt><dd id="pid-ro-t">0.0 N</dd></div>
+            <div class="ro"><dt>Integral term</dt><dd id="pid-ro-i">0.0 N</dd></div>
+          </dl>
+          <div class="statusrow">
+            <span class="state" id="pid-st-sat" data-s="idle">Thrust within limits</span>
+            <span class="state" id="pid-st-int" data-s="idle">Integrator running</span>
+          </div>
+          <p class="hint" id="pid-hint">Expected steady state appears here.</p>
+          <p class="model">Plant: <i>m</i> <i class="ddot">z</i> = <i>T</i> − <i>m g</i> − <i>c</i> <i class="dot">z</i>, with <i>m</i> = 1.0 kg (1.4 kg with payload), <i>c</i> = 0.15 N·s/m, 0 ≤ <i>T</i> ≤ <i>T</i><sub>max</sub>. Controller: <i>T</i><sub>cmd</sub> = FF + <i>K</i><sub>p</sub><i>e</i> + <i>K</i><sub>i</sub>∫<i>e</i> d<i>t</i> − <i>K</i><sub>d</sub><i class="dot">z</i><sub>meas</sub>, FF = <i>m</i><sub>nom</sub><i>g</i> with <i>m</i><sub>nom</sub> = 1.0 kg; <i class="dot">z</i><sub>meas</sub> is a finite difference of the measured altitude at the controller rate.</p>
+        </div>
+
+        <aside class="controls" aria-label="Altitude PID controls">
+          <div class="group">
+            <h2>Gains</h2>
+            <div class="slider">
+              <label for="pid-kp"><i>K</i><sub>p</sub> proportional</label>
+              <output id="pid-kp-out" for="pid-kp"><span class="v">30.0</span> <span class="u">N/m</span></output>
+              <input type="range" id="pid-kp" min="0" max="60" step="0.5" value="30">
+            </div>
+            <div class="slider">
+              <label for="pid-ki"><i>K</i><sub>i</sub> integral</label>
+              <output id="pid-ki-out" for="pid-ki"><span class="v">15.0</span> <span class="u">N/(m·s)</span></output>
+              <input type="range" id="pid-ki" min="0" max="40" step="0.5" value="15">
+            </div>
+            <div class="slider">
+              <label for="pid-kd"><i>K</i><sub>d</sub> derivative</label>
+              <output id="pid-kd-out" for="pid-kd"><span class="v">8.0</span> <span class="u">N·s/m</span></output>
+              <input type="range" id="pid-kd" min="0" max="20" step="0.25" value="8">
+            </div>
+          </div>
+          <div class="group">
+            <h2>Target and thrust limit</h2>
+            <div class="slider">
+              <label for="pid-sp">Target altitude</label>
+              <output id="pid-sp-out" for="pid-sp"><span class="v">2.00</span> <span class="u">m</span></output>
+              <input type="range" id="pid-sp" min="0" max="4" step="0.05" value="2">
+            </div>
+            <div class="slider">
+              <label for="pid-tmax"><i>T</i><sub>max</sub></label>
+              <output id="pid-tmax-out" for="pid-tmax"><span class="v">2.00</span> <span class="u">× <i>m</i><sub>nom</sub><i>g</i> =</span> <span id="pid-tmax-n">19.6</span> <span class="u">N</span></output>
+              <input type="range" id="pid-tmax" min="1.2" max="3" step="0.05" value="2">
+            </div>
+          </div>
+          <div class="group">
+            <h2>Controller</h2>
+            <button type="button" class="switch" id="pid-ff" aria-pressed="true"><span class="sw-track" aria-hidden="true"></span><span class="sw-label">Gravity feed-forward<small>adds <i>m</i><sub>nom</sub><i>g</i> = 9.81 N</small></span><span class="sw-state" aria-hidden="true">On</span></button>
+            <button type="button" class="switch" id="pid-aw" aria-pressed="true"><span class="sw-track" aria-hidden="true"></span><span class="sw-label">Anti-windup<small>freeze the integrator while saturated</small></span><span class="sw-state" aria-hidden="true">On</span></button>
+            <button type="button" class="switch" id="pid-noise" aria-pressed="false"><span class="sw-track" aria-hidden="true"></span><span class="sw-label">Sensor noise<small>σ = 2 cm on measured altitude</small></span><span class="sw-state" aria-hidden="true">Off</span></button>
+            <span class="seg-label" id="pid-rate-label">Controller update rate (Hz)</span>
+            <div class="seg" role="radiogroup" aria-labelledby="pid-rate-label" id="pid-rate">
+              <button type="button" role="radio" id="pid-rate-20" data-v="20" aria-checked="false" tabindex="-1">20</button>
+              <button type="button" role="radio" id="pid-rate-50" data-v="50" aria-checked="true">50</button>
+              <button type="button" role="radio" id="pid-rate-250" data-v="250" aria-checked="false" tabindex="-1">250</button>
+              <button type="button" role="radio" id="pid-rate-1000" data-v="1000" aria-checked="false" tabindex="-1">1000</button>
+            </div>
+          </div>
+          <div class="group">
+            <h2>Disturbances</h2>
+            <button type="button" class="switch" id="pid-payload" aria-pressed="false" aria-keyshortcuts="P"><span class="sw-track" aria-hidden="true"></span><span class="sw-label">Payload<small>+40 % mass (1.4 kg), controller still assumes 1.0 kg</small></span><span class="sw-state" aria-hidden="true">Off</span></button>
+            <div class="row">
+              <button type="button" class="btn" id="pid-gust" aria-keyshortcuts="G">Gust (−12 N, 0.25 s)</button>
+              <button type="button" class="btn" id="pid-reset" aria-keyshortcuts="R">Reset</button>
+            </div>
+          </div>
+          <div class="group">
+            <h2>Presets</h2>
+            <div class="row">
+              <button type="button" class="chip" id="pid-pre-p">P only</button>
+              <button type="button" class="chip" id="pid-pre-pd">PD</button>
+              <button type="button" class="chip" id="pid-pre-pdff">PD + feed-forward</button>
+              <button type="button" class="chip" id="pid-pre-pid">PID</button>
+              <button type="button" class="chip" id="pid-pre-windup" title="Restarts from the ground with a low thrust limit, anti-windup off and a 3 m target">Windup demo</button>
+            </div>
+          </div>
+          <p class="keys">Keys: <kbd>Space</kbd> pause · <kbd>R</kbd> reset · <kbd>G</kbd> gust · <kbd>P</kbd> payload</p>
+        </aside>
+
+        <section class="try" aria-labelledby="pid-try-h">
+          <h2 id="pid-try-h">Try this</h2>
+          <ol>
+            <li>Press <b>P only</b>. The drone hangs below the dashed target and keeps bouncing. Is the gap close to <i>m g</i>/<i>K</i><sub>p</sub>? What does adding <i>K</i><sub>d</sub> change, and what does it leave alone?</li>
+            <li>Press <b>PD + feed-forward</b>, then add the payload (<kbd>P</kbd>). Why does a sag come back, and which term removes it?</li>
+            <li>Press <b>Windup demo</b>. The target is 3 m, so why does the drone climb to about 4.5 m? Turn anti-windup on and run the demo again.</li>
+            <li>Turn on sensor noise. Which term turns 2 cm of altitude noise into newtons of thrust noise? Compare 20 Hz with 1000 Hz: why does the update rate matter?</li>
+          </ol>
+        </section>
+      </div>
+    </section>
+
+    <!-- ================= Tab 2: cascade and tilt ================= -->
+    <section class="panel" role="tabpanel" id="panel-cascade" aria-labelledby="tab-cascade" hidden>
+      <div class="lab">
+        <div class="viz">
+          <figure class="fig">
+            <figcaption class="fig-head"><span class="fig-title">Planar side view (<i>x</i> right, <i>z</i> up)</span><span class="fig-note">Click or tap to move the target</span></figcaption>
+            <div class="cbox wide"><canvas id="cas-scene" role="img" aria-label="Planar drone with rotor thrust arrows, a dashed ghost at the desired tilt, the target marker and a faint trail. Click to move the target."></canvas></div>
+          </figure>
+          <div class="plot-row">
+            <figure class="fig">
+              <figcaption class="fig-head"><span class="fig-title">Position (m)</span>
+                <span class="legend"><span class="lg"><span class="key" style="--k: var(--s1)"></span><i>x</i></span><span class="lg"><span class="key dash" style="--k: var(--s1)"></span><i>x</i> target</span><span class="lg"><span class="key" style="--k: var(--s2)"></span><i>z</i></span><span class="lg"><span class="key dash" style="--k: var(--s2)"></span><i>z</i> target</span></span>
+              </figcaption>
+              <div class="cbox plot"><canvas id="cas-plot-pos" role="img" aria-label="Horizontal and vertical position with their targets over the last 12 seconds"></canvas></div>
+            </figure>
+            <figure class="fig">
+              <figcaption class="fig-head"><span class="fig-title">Tilt (deg)</span>
+                <span class="legend"><span class="lg"><span class="key" style="--k: var(--s3)"></span><i>θ</i></span><span class="lg"><span class="key dash" style="--k: var(--s3)"></span><i>θ</i><sub>des</sub></span><span class="lg"><span class="key dash" style="--k: var(--ink-2)"></span>tilt limit</span></span>
+              </figcaption>
+              <div class="cbox plot"><canvas id="cas-plot-th" role="img" aria-label="Tilt angle and desired tilt over the last 12 seconds, with the tilt limit"></canvas></div>
+            </figure>
+          </div>
+          <dl class="readouts">
+            <div class="ro"><dt>Tilt <i>θ</i></dt><dd id="cas-ro-th">0.0°</dd></div>
+            <div class="ro"><dt>Desired <i>θ</i><sub>des</sub></dt><dd id="cas-ro-thd">0.0°</dd></div>
+            <div class="ro"><dt>Rotor <i>F</i><sub>1</sub> (left)</dt><dd id="cas-ro-f1">0.00 N</dd></div>
+            <div class="ro"><dt>Rotor <i>F</i><sub>2</sub> (right)</dt><dd id="cas-ro-f2">0.00 N</dd></div>
+            <div class="ro"><dt>Distance to target</dt><dd id="cas-ro-err">0.00 m</dd></div>
+          </dl>
+          <p class="model"><i class="ddot">x</i> = −(<i>u</i><sub>1</sub>/<i>m</i>) sin <i>θ</i>, <i class="ddot">z</i> = (<i>u</i><sub>1</sub>/<i>m</i>) cos <i>θ</i> − <i>g</i>, <i class="ddot tall">θ</i> = <i>u</i><sub>2</sub>/<i>I</i>, with <i>u</i><sub>1</sub> = <i>F</i><sub>1</sub> + <i>F</i><sub>2</sub>, <i>u</i><sub>2</sub> = (<i>F</i><sub>2</sub> − <i>F</i><sub>1</sub>)<i>L</i>; <i>m</i> = 1 kg, <i>L</i> = 0.25 m, <i>I</i> = 0.01 kg·m², 0 ≤ <i>F<sub>i</sub></i> ≤ <i>m g</i> (<i>z</i> is the slides’ <i>y</i>). Outer loop: <i>a</i> = <i>ω</i><sub>o</sub>²(<i>p</i><sub>target</sub> − <i>p</i>) − 2<i>ω</i><sub>o</sub><i class="dot">p</i>, <i>θ</i><sub>des</sub> = atan2(−<i>a<sub>x</sub></i>, <i>g</i> + <i>a<sub>z</sub></i>), <i>u</i><sub>1</sub> = <i>m</i>(<i>g</i> + <i>a<sub>z</sub></i>)/cos <i>θ</i>. Inner loop: <i>u</i><sub>2</sub> = <i>I</i>(<i>ω</i><sub>i</sub>²(<i>θ</i><sub>des</sub> − <i>θ</i>) − 2<i>ω</i><sub>i</sub><i class="dot tall">θ</i>). Both loops critically damped (<i>ζ</i> = 1).</p>
+        </div>
+
+        <aside class="controls" aria-label="Cascade controls">
+          <div class="group">
+            <h2>Loop bandwidths</h2>
+            <div class="slider">
+              <label for="cas-wo">Outer (position) <i>ω</i><sub>o</sub></label>
+              <output id="cas-wo-out" for="cas-wo"><span class="v">2.0</span> <span class="u">rad/s</span></output>
+              <input type="range" id="cas-wo" min="0.5" max="4" step="0.1" value="2">
+            </div>
+            <div class="slider">
+              <label for="cas-wi">Inner (attitude) <i>ω</i><sub>i</sub></label>
+              <output id="cas-wi-out" for="cas-wi"><span class="v">16.0</span> <span class="u">rad/s</span></output>
+              <input type="range" id="cas-wi" min="2" max="40" step="0.5" value="16">
+            </div>
+            <div class="ratio" aria-live="polite">
+              <span><i>ω</i><sub>i</sub>/<i>ω</i><sub>o</sub> = <b id="cas-ratio">8.0×</b></span>
+              <span class="state" id="cas-ratio-state" data-s="ok">Well separated</span>
+              <span class="fig-note">keep ≥ 5×</span>
+            </div>
+          </div>
+          <div class="group">
+            <h2>Limits</h2>
+            <div class="slider">
+              <label for="cas-tilt">Maximum tilt</label>
+              <output id="cas-tilt-out" for="cas-tilt"><span class="v">30</span> <span class="u">deg</span></output>
+              <input type="range" id="cas-tilt" min="10" max="45" step="1" value="30">
+            </div>
+          </div>
+          <div class="group">
+            <h2>Wind and vehicle</h2>
+            <button type="button" class="switch" id="cas-wind-on" aria-pressed="false"><span class="sw-track" aria-hidden="true"></span><span class="sw-label">Wind<small>steady lateral force</small></span><span class="sw-state" aria-hidden="true">Off</span></button>
+            <div class="slider">
+              <label for="cas-wind">Wind force (+ pushes right)</label>
+              <output id="cas-wind-out" for="cas-wind"><span class="v">3.0</span> <span class="u">N</span></output>
+              <input type="range" id="cas-wind" min="-5" max="5" step="0.5" value="3">
+            </div>
+            <button type="button" class="switch" id="cas-full" aria-pressed="false"><span class="sw-track" aria-hidden="true"></span><span class="sw-label">Fully actuated<small>pushes sideways directly, stays level</small></span><span class="sw-state" aria-hidden="true">Off</span></button>
+            <div class="row">
+              <button type="button" class="btn" id="cas-reset" aria-keyshortcuts="R">Reset</button>
+            </div>
+          </div>
+          <p class="keys">Keys: <kbd>Space</kbd> pause · <kbd>R</kbd> reset (the target stays)</p>
+        </aside>
+
+        <section class="try" aria-labelledby="cas-try-h">
+          <h2 id="cas-try-h">Try this</h2>
+          <ol>
+            <li>Click a target on the far side of the scene. Why does <i>θ</i><sub>des</sub> move before the drone starts to travel sideways?</li>
+            <li>Lower <i>ω</i><sub>i</sub> until the badge reads <b>Too close</b>, then push the ratio below 2×. What happens to <i>x</i>?</li>
+            <li>Turn on 3 N of wind. Why does the drone lean about 17°, and why does it settle 0.75 m downwind of the target? (offset = <i>F</i><sub>w</sub>/(<i>m ω</i><sub>o</sub>²))</li>
+            <li>Switch to <b>Fully actuated</b> and repeat. What changes in <i>θ</i>, and at the start of the <i>x</i> response?</li>
+          </ol>
+        </section>
+      </div>
+    </section>
+
+    <!-- ================= Tab 3: control allocation ================= -->
+    <section class="panel" role="tabpanel" id="panel-mixer" aria-labelledby="tab-mixer" hidden>
+      <div class="lab">
+        <div class="viz">
+          <div class="mix-grid">
+            <figure class="fig">
+              <figcaption class="fig-head"><span class="fig-title">Top view, quad-X (PX4 numbering)</span><span class="fig-note">forward is up the screen</span></figcaption>
+              <div class="cbox quad"><canvas id="mix-quad" role="img" aria-label="Top view of the quadrotor. Each rotor shows its thrust as a bar and a number, its spin direction, and a SAT badge when the motor sits at a limit."></canvas></div>
+              <span class="legend"><span class="lg"><span class="sw" style="--k: var(--slower)"></span>slower than <i>T</i>/4</span><span class="lg"><span class="sw" style="--k: var(--rotor-neutral)"></span>at <i>T</i>/4</span><span class="lg"><span class="sw" style="--k: var(--faster)"></span>faster</span><span class="lg">bars: 0 to 8 N per motor</span></span>
+            </figure>
+            <div class="mix-side">
+              <div>
+                <p class="eq-cap">Achieved [<i>T</i>; <i>τ<sub>x</sub></i>; <i>τ<sub>y</sub></i>; <i>τ<sub>z</sub></i>] (N, N·m) = <i>B</i> × motor thrusts (N), with <i>d</i> = <i>l</i>/√2 = 0.177 m and <i>κ</i> = 0.016 m</p>
+                <div class="scroll-x">
+                  <div class="mateq" role="group" aria-label="Allocation equation with live numbers">
+                    <div class="vlabels" aria-hidden="true"><span>T</span><span>τ<sub>x</sub></span><span>τ<sub>y</sub></span><span>τ<sub>z</sub></span></div>
+                    <div class="br vec"><span id="mx-w0">14.71</span><span id="mx-w1">0.00</span><span id="mx-w2">0.00</span><span id="mx-w3">0.000</span></div>
+                    <span class="op">=</span>
+                    <div class="br mat">
+                      <span>1</span><span>1</span><span>1</span><span>1</span>
+                      <span>−0.177</span><span>0.177</span><span>0.177</span><span>−0.177</span>
+                      <span>0.177</span><span>−0.177</span><span>0.177</span><span>−0.177</span>
+                      <span>0.016</span><span>0.016</span><span>−0.016</span><span>−0.016</span>
+                    </div>
+                    <div class="br vec"><span id="mx-f0">3.68</span><span id="mx-f1">3.68</span><span id="mx-f2">3.68</span><span id="mx-f3">3.68</span></div>
+                    <div class="vlabels" aria-hidden="true"><span>f<sub>1</sub></span><span>f<sub>2</sub></span><span>f<sub>3</sub></span><span>f<sub>4</sub></span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="scroll-x">
+                <table class="cmp">
+                  <caption id="mix-cap">Commanded vs achieved: naive clipping</caption>
+                  <thead><tr><th scope="col">Axis</th><th scope="col">Commanded</th><th scope="col">Achieved</th><th scope="col">Error</th></tr></thead>
+                  <tbody>
+                    <tr><th scope="row"><i>T</i> (N)</th><td id="mx-c0"></td><td id="mx-a0"></td><td id="mx-e0"></td></tr>
+                    <tr><th scope="row"><i>τ<sub>x</sub></i> roll (N·m)</th><td id="mx-c1"></td><td id="mx-a1"></td><td id="mx-e1"></td></tr>
+                    <tr><th scope="row"><i>τ<sub>y</sub></i> pitch (N·m)</th><td id="mx-c2"></td><td id="mx-a2"></td><td id="mx-e2"></td></tr>
+                    <tr><th scope="row"><i>τ<sub>z</sub></i> yaw (N·m)</th><td id="mx-c3"></td><td id="mx-a3"></td><td id="mx-e3"></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="hint" id="mix-summary">All four motors are inside 0 to 8 N, so the command is met exactly.</p>
+            </div>
+          </div>
+          <p class="model">PX4 quad-X in the FRD body frame (<i>x</i> forward, <i>y</i> right, <i>z</i> down; thrust along −<i>z</i><sub>B</sub>): M1 front-right CCW, M2 rear-left CCW, M3 front-left CW, M4 rear-right CW. <i>l</i> = 0.25 m, <i>f</i><sub>max</sub> = 8 N per motor, <i>m</i> = 1.5 kg (hover 14.7 N). Inverse: <i>f</i><sub>1</sub> = <i>T</i>/4 − <i>τ<sub>x</sub></i>/4<i>d</i> + <i>τ<sub>y</sub></i>/4<i>d</i> + <i>τ<sub>z</sub></i>/4<i>κ</i>, and similarly for the others.</p>
+        </div>
+
+        <aside class="controls" aria-label="Control allocation controls">
+          <div class="group">
+            <h2>Commanded thrust and torques</h2>
+            <div class="slider">
+              <label for="mix-t">Thrust <i>T</i></label>
+              <output id="mix-t-out" for="mix-t"><span class="v">14.7</span> <span class="u">N</span></output>
+              <input type="range" id="mix-t" min="0" max="32" step="0.1" value="14.7">
+            </div>
+            <div class="slider">
+              <label for="mix-tx">Roll <i>τ<sub>x</sub></i> (+ right side down)</label>
+              <output id="mix-tx-out" for="mix-tx"><span class="v">0.00</span> <span class="u">N·m</span></output>
+              <input type="range" id="mix-tx" min="-1.5" max="1.5" step="0.01" value="0">
+            </div>
+            <div class="slider">
+              <label for="mix-ty">Pitch <i>τ<sub>y</sub></i> (+ nose up)</label>
+              <output id="mix-ty-out" for="mix-ty"><span class="v">0.00</span> <span class="u">N·m</span></output>
+              <input type="range" id="mix-ty" min="-1.5" max="1.5" step="0.01" value="0">
+            </div>
+            <div class="slider">
+              <label for="mix-tz">Yaw <i>τ<sub>z</sub></i> (+ nose right)</label>
+              <output id="mix-tz-out" for="mix-tz"><span class="v">0.000</span> <span class="u">N·m</span></output>
+              <input type="range" id="mix-tz" min="-0.3" max="0.3" step="0.005" value="0">
+            </div>
+          </div>
+          <div class="group">
+            <h2>Saturation strategy</h2>
+            <div class="seg tall" role="radiogroup" aria-label="Saturation strategy" id="mix-strat">
+              <button type="button" role="radio" id="mix-strat-naive" data-v="naive" aria-checked="true">Naive clipping</button>
+              <button type="button" role="radio" id="mix-strat-prio" data-v="prio" aria-checked="false" tabindex="-1">Prioritise roll &amp; pitch</button>
+            </div>
+            <p class="keys" id="mix-strat-note">Clip each motor to 0–8 N on its own.</p>
+          </div>
+          <div class="group">
+            <h2>Presets</h2>
+            <div class="row">
+              <button type="button" class="chip" id="mix-pre-hover">Hover</button>
+              <button type="button" class="chip" id="mix-pre-roll">Roll right</button>
+              <button type="button" class="chip" id="mix-pre-yaw">Yaw right</button>
+              <button type="button" class="chip" id="mix-pre-aggr">Aggressive roll + yaw (saturates)</button>
+            </div>
+          </div>
+          <p class="keys">Keys: <kbd>R</kbd> back to hover · <kbd>Space</kbd> pause the rotors</p>
+        </aside>
+
+        <section class="try" aria-labelledby="mix-try-h">
+          <h2 id="mix-try-h">Try this</h2>
+          <ol>
+            <li>Press <b>Roll right</b>. Which motors speed up, and why does the total thrust stay at 14.7 N?</li>
+            <li>Press <b>Yaw right</b>. Why do the diagonal pairs change together? At hover, how much <i>τ<sub>z</sub></i> saturates a motor? (Check: 4<i>κ</i>(<i>f</i><sub>max</sub> − <i>m g</i>/4) ≈ 0.28 N·m.)</li>
+            <li>Press <b>Aggressive roll + yaw</b>. Which axes does naive clipping get wrong? Switch strategy: what does the prioritised mixer give up instead?</li>
+            <li>Set <i>τ<sub>x</sub></i> to 1 N·m and raise <i>T</i> towards 32 N. Why does roll authority run out near full throttle, and how does each strategy respond?</li>
+          </ol>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>Physics runs at a fixed 1 kHz step (semi-implicit Euler); plots show the last 12 s. Hover a plot for values.</p>
+    <p>Companion to the lecture slides · every simulation runs in your browser</p>
+  </footer>
+  <div id="errlog" hidden></div>
+</div>
+
+<script>
+(function () {
+  function log(msg) {
+    try { var el = document.getElementById('errlog'); if (el) el.textContent += String(msg) + '\n'; } catch (e) { /* ignore */ }
+  }
+  window.__mclLog = log;
+  window.onerror = function (msg, src, line, col) { log(msg + ' (line ' + line + ':' + col + ')'); };
+  window.addEventListener('unhandledrejection', function (e) {
+    log('Unhandled rejection: ' + (e && e.reason && e.reason.message ? e.reason.message : e.reason));
+  });
+})();
+</script>
+<script>
+(function () {
+'use strict';
+
+/* ======================================================================
+   Multirotor Control Lab: vanilla JS + canvas, no libraries.
+   Physics: fixed 1 kHz step, accumulated from requestAnimationFrame time.
+   ====================================================================== */
+const $ = (id) => document.getElementById(id);
+const G = 9.81;
+const DT = 0.001;            // physics step, s (1 kHz)
+const LOG_EVERY = 10;        // plot sample every 10 steps (100 Hz)
+const WINDOW = 12;           // seconds of history in the strip charts
+const MAX_FRAME = 0.25;      // cap on real time simulated per frame, s (avoids a spiral of death)
+const FONT = 'Arial, "Helvetica Neue", Helvetica, sans-serif';
+const MINUS = '−';
+const clamp = (v, lo, hi) => (v < lo ? lo : v > hi ? hi : v);
+const deg = (r) => r * 180 / Math.PI;
+const rad = (d) => d * Math.PI / 180;
+function fmt(v, n) {
+  if (!isFinite(v)) return '–';
+  const s = (Math.abs(v) < 0.5 * Math.pow(10, -n) ? 0 : v).toFixed(n);
+  return s.charAt(0) === '-' ? MINUS + s.slice(1) : s;
+}
+function randn() { // standard normal, Box-Muller
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+const reduceMQ = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+let reduceMotion = !!(reduceMQ && reduceMQ.matches);
+if (reduceMQ && reduceMQ.addEventListener) reduceMQ.addEventListener('change', (e) => { reduceMotion = e.matches; });
+
+let dirty = true;
+const markDirty = () => { dirty = true; };
+
+/* ---------- colours come from the CSS tokens; re-read on every theme change ---------- */
+const TOKENS = ['bg', 'panel', 'ink', 'ink-2', 'muted', 'grid', 'axis', 'track', 'accent', 'accent-ink',
+  's1', 's2', 's3', 's4', 'ok', 'warn', 'bad', 'bad-wash', 'sky', 'ground', 'ground-fill',
+  'body', 'arm', 'dome', 'disc', 'disc-edge', 'rotor-neutral', 'faster', 'slower', 'thrust', 'force',
+  'payload', 'payload-edge', 'nose', 'blade'];
+const C = {};
+function readColors() {
+  const cs = getComputedStyle(document.documentElement);
+  for (const t of TOKENS) C[t] = (cs.getPropertyValue('--' + t) || '').trim() || '#888888';
+  markDirty();
+}
+function rgbOf(hex) {
+  let h = String(hex).replace('#', '').trim();
+  if (h.length === 3) h = h.split('').map((x) => x + x).join('');
+  const n = parseInt(h.slice(0, 6), 16) || 0;
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+function mixColor(a, b, t) {
+  const A = rgbOf(a), B = rgbOf(b);
+  return 'rgb(' + A.map((v, i) => Math.round(v + (B[i] - v) * t)).join(',') + ')';
+}
+function withAlpha(hex, a) { return 'rgba(' + rgbOf(hex).join(',') + ',' + a + ')'; }
+
+/* ---------- canvas helper: crisp at any device pixel ratio, sized by its box ---------- */
+function makeCanvas(id) {
+  const canvas = $(id);
+  const box = canvas.parentElement;
+  const st = { canvas, ctx: canvas.getContext('2d'), w: 0, h: 0, dpr: 1, hover: null };
+  st.resize = () => {
+    const w = box.clientWidth, h = box.clientHeight;
+    const dpr = Math.min(window.devicePixelRatio || 1, 3);
+    if (w === st.w && h === st.h && dpr === st.dpr) return;
+    st.w = w; st.h = h; st.dpr = dpr;
+    canvas.width = Math.max(1, Math.round(w * dpr));
+    canvas.height = Math.max(1, Math.round(h * dpr));
+    markDirty();
+  };
+  st.begin = () => {
+    st.resize();
+    const c = st.ctx;
+    c.setTransform(st.dpr, 0, 0, st.dpr, 0, 0);
+    c.clearRect(0, 0, st.w, st.h);
+    c.setLineDash([]);
+    c.globalAlpha = 1;
+    return c;
+  };
+  if (window.ResizeObserver) new ResizeObserver(st.resize).observe(box);
+  window.addEventListener('resize', st.resize);
+  st.resize();
+  return st;
+}
+function attachHover(st) {
+  const cv = st.canvas;
+  const set = (e) => { const r = cv.getBoundingClientRect(); st.hover = { x: e.clientX - r.left, y: e.clientY - r.top }; markDirty(); };
+  cv.addEventListener('pointermove', set);
+  cv.addEventListener('pointerdown', set);
+  cv.addEventListener('pointerleave', () => { st.hover = null; markDirty(); });
+}
+
+/* ---------- ring buffer of logged samples ---------- */
+class Ring {
+  constructor(keys, cap) {
+    this.cap = cap; this.keys = keys; this.n = 0; this.head = 0;
+    this.t = new Float64Array(cap); this.d = {};
+    for (const k of keys) this.d[k] = new Float64Array(cap);
+  }
+  push(t, vals) {
+    const i = this.head;
+    this.t[i] = t;
+    for (const k of this.keys) this.d[k][i] = vals[k];
+    this.head = (i + 1) % this.cap;
+    if (this.n < this.cap) this.n++;
+  }
+  clear() { this.n = 0; this.head = 0; }
+  idx(j) { return (this.head - this.n + j + this.cap) % this.cap; }   // j-th oldest sample
+}
+
+/* ---------- small drawing helpers ---------- */
+function roundRect(c, x, y, w, h, r) {
+  c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r);
+  c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath();
+}
+function rrPath(c, cx, cy, w, h, r) {   // rounded rectangle centred at (cx, cy), added to the current path
+  const x = cx - w / 2, y = cy - h / 2;
+  r = Math.min(r, w / 2, h / 2);
+  c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r);
+  c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath();
+}
+function polyPath(c, pts) {
+  c.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 1; i < pts.length; i++) c.lineTo(pts[i][0], pts[i][1]);
+  c.closePath();
+}
+function arrow(c, x0, y0, x1, y1, color, width) {
+  const dx = x1 - x0, dy = y1 - y0, L = Math.hypot(dx, dy);
+  if (L < 2) return;
+  const ux = dx / L, uy = dy / L, nx = -uy, ny = ux;
+  const hl = Math.min(width * 2.6, L * 0.6), hw = width * 1.6, sw = width / 2;
+  const bx = x1 - ux * hl, by = y1 - uy * hl;
+  c.fillStyle = color;
+  c.beginPath();
+  c.moveTo(x0 + nx * sw, y0 + ny * sw); c.lineTo(bx + nx * sw, by + ny * sw); c.lineTo(bx + nx * hw, by + ny * hw);
+  c.lineTo(x1, y1);
+  c.lineTo(bx - nx * hw, by - ny * hw); c.lineTo(bx - nx * sw, by - ny * sw); c.lineTo(x0 - nx * sw, y0 - ny * sw);
+  c.closePath(); c.fill();
+}
+function label(c, text, x, y, o) {     // text with a soft knock-out behind it, vertically centred on y
+  o = o || {};
+  const size = o.size || 14;
+  c.font = (o.bold ? 'bold ' : '') + size + 'px ' + FONT;
+  c.textAlign = o.align || 'left';
+  c.textBaseline = 'middle';
+  const w = c.measureText(text).width;
+  const x0 = o.align === 'right' ? x - w : o.align === 'center' ? x - w / 2 : x;
+  if (o.bg !== false) { c.fillStyle = withAlpha(C.bg, 0.82); c.fillRect(x0 - 4, y - size * 0.72, w + 8, size * 1.44); }
+  c.fillStyle = o.color || C.ink;
+  c.fillText(text, x, y + 0.5);
+}
+function badge(c, text, x, y, align, size) {
+  c.font = 'bold ' + size + 'px ' + FONT;
+  const w = c.measureText(text).width + 14, h = size + 9;
+  const x0 = align === 'right' ? x - w : x;
+  c.fillStyle = C['bad-wash']; c.strokeStyle = C.bad; c.lineWidth = 1.5;
+  roundRect(c, x0, y - h / 2, w, h, h / 2); c.fill(); c.stroke();
+  c.fillStyle = C.bad; c.textAlign = 'center'; c.textBaseline = 'middle';
+  c.fillText(text, x0 + w / 2, y + 0.5);
+}
+function drawPaused(c, x, y, align) {
+  if (paused) label(c, 'Paused · Space to resume', x, y, { align: align, size: 13, bold: true, color: C['ink-2'] });
+}
+
+/* Side view of the planar quad in the style of the course figures (dark body, red dome, grey arms,
+   translucent rotor discs). Geometry is in units of the half-span; (x, y) is the body centre on screen,
+   th the tilt (positive counter-clockwise), k the pixels per unit. */
+function drawSideQuad(c, x, y, th, k, o) {
+  o = o || {};
+  const ghost = !!o.ghost;
+  c.save();
+  c.translate(x, y); c.scale(k, -k); c.rotate(th);
+  const paint = (fill) => {
+    if (ghost) { c.setLineDash([5 / k, 4 / k]); c.lineWidth = 1.8 / k; c.strokeStyle = o.color || C.accent; c.stroke(); c.setLineDash([]); }
+    else { c.fillStyle = fill; c.fill(); }
+  };
+  if (o.payload && !ghost) {
+    c.beginPath(); c.rect(-0.012, -0.37, 0.024, 0.25); paint(C.arm);
+    c.beginPath(); rrPath(c, 0, -0.5, 0.34, 0.26, 0.03); paint(C.payload);
+    c.lineWidth = 1.2 / k; c.strokeStyle = C['payload-edge']; c.stroke();
+  }
+  if (!ghost) {
+    c.beginPath();
+    polyPath(c, [[-0.2, -0.1], [-0.15, -0.1], [-0.27, -0.32], [-0.33, -0.32]]);
+    polyPath(c, [[0.2, -0.1], [0.15, -0.1], [0.27, -0.32], [0.33, -0.32]]);
+    paint(C.arm);
+  }
+  c.beginPath(); c.rect(-1, -0.03, 2, 0.08); paint(C.arm);
+  if (!ghost) { c.beginPath(); rrPath(c, -0.9, 0.12, 0.12, 0.22, 0.03); rrPath(c, 0.9, 0.12, 0.12, 0.22, 0.03); paint(C.body); }
+  c.beginPath(); rrPath(c, 0, -0.01, 0.56, 0.24, 0.06); paint(C.body);
+  c.beginPath(); c.ellipse(0, 0.105, 0.15, 0.17, 0, 0, Math.PI); c.closePath(); paint(C.dome);
+  c.beginPath(); rrPath(c, -0.9, 0.25, 0.84, 0.075, 0.035); rrPath(c, 0.9, 0.25, 0.84, 0.075, 0.035);
+  if (ghost) paint();
+  else { c.fillStyle = withAlpha(C.disc, 0.6); c.fill(); c.lineWidth = 1 / k; c.strokeStyle = C['disc-edge']; c.stroke(); }
+  c.restore();
+}
+
+/* ---------- scrolling strip chart (last 12 s) with a hover crosshair ---------- */
+function niceStep(range, n) {
+  const raw = range / Math.max(1, n);
+  const p = Math.pow(10, Math.floor(Math.log10(raw)));
+  const f = raw / p;
+  return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * p;
+}
+function decimalsFor(step) {
+  for (let d = 0; d < 4; d++) { const s = step * Math.pow(10, d); if (Math.abs(s - Math.round(s)) < 1e-6) return d; }
+  return 3;
+}
+/* cfg: { unit, dec, series: [{ key, color, dash, width, label, dec }], range(lo, hi) -> [y0, y1], refs() -> [{ y, label }] } */
+function drawStrip(st, ring, tNow, cfg) {
+  const c = st.begin(), W = st.w, H = st.h;
+  if (W < 80 || H < 70) return;
+  const m = { l: 50, r: 14, t: 12, b: 28 };
+  const pw = W - m.l - m.r, ph = H - m.t - m.b;
+  const t1 = Math.max(tNow, WINDOW), t0 = t1 - WINDOW;
+  let lo = Infinity, hi = -Infinity;
+  for (let j = 0; j < ring.n; j++) {
+    const i = ring.idx(j);
+    if (ring.t[i] < t0) continue;
+    for (const s of cfg.series) { const v = ring.d[s.key][i]; if (v < lo) lo = v; if (v > hi) hi = v; }
+  }
+  const yr = cfg.range(lo, hi), y0 = yr[0], y1 = yr[1];
+  const X = (t) => m.l + (t - t0) / WINDOW * pw;
+  const Y = (v) => clamp(m.t + (1 - (v - y0) / (y1 - y0)) * ph, -4000, H + 4000);
+  c.lineWidth = 1; c.font = '14px ' + FONT;
+  // horizontal grid and value labels
+  const step = niceStep(y1 - y0, Math.max(2, Math.floor(ph / 40)));
+  const dec = decimalsFor(step);
+  c.textAlign = 'right'; c.textBaseline = 'middle';
+  for (let v = Math.ceil(y0 / step - 1e-9) * step; v <= y1 + 1e-9; v += step) {
+    const y = Math.round(Y(v)) + 0.5;
+    c.strokeStyle = Math.abs(v) < 1e-9 ? C.axis : C.grid;
+    c.beginPath(); c.moveTo(m.l, y); c.lineTo(m.l + pw, y); c.stroke();
+    c.fillStyle = C.muted; c.fillText(fmt(v, dec), m.l - 8, y);
+  }
+  // vertical grid every 2 s
+  c.textAlign = 'center'; c.textBaseline = 'top';
+  for (let tt = Math.ceil(t0 / 2 - 1e-9) * 2; tt <= t1 + 1e-9; tt += 2) {
+    const x = Math.round(X(tt)) + 0.5;
+    c.strokeStyle = C.grid; c.beginPath(); c.moveTo(x, m.t); c.lineTo(x, m.t + ph); c.stroke();
+    c.fillStyle = C.muted; c.fillText(String(Math.round(tt)), x, m.t + ph + 7);
+  }
+  c.textAlign = 'right'; c.fillText('t (s)', m.l - 10, m.t + ph + 7);
+  c.strokeStyle = C.axis; c.beginPath(); c.moveTo(m.l, m.t + ph + 0.5); c.lineTo(m.l + pw, m.t + ph + 0.5); c.stroke();
+  // reference lines (dashed) under the data; their labels are drawn after the series
+  const refs = (cfg.refs ? cfg.refs() : []).filter((r) => r.y >= y0 && r.y <= y1);
+  for (const r of refs) {
+    const y = Math.round(Y(r.y)) + 0.5;
+    c.save(); c.setLineDash([6, 5]); c.strokeStyle = C['ink-2']; c.lineWidth = 1.25;
+    c.beginPath(); c.moveTo(m.l, y); c.lineTo(m.l + pw, y); c.stroke(); c.restore();
+  }
+  // series, clipped to the plot area
+  c.save();
+  c.beginPath(); c.rect(m.l, m.t - 2, pw, ph + 4); c.clip();
+  c.lineJoin = 'round'; c.lineCap = 'round';
+  for (const s of cfg.series) {
+    c.strokeStyle = C[s.color]; c.lineWidth = s.width || 2.25; c.setLineDash(s.dash ? [7, 5] : []);
+    c.beginPath();
+    let started = false;
+    for (let j = 0; j < ring.n; j++) {
+      const i = ring.idx(j), tt = ring.t[i];
+      if (tt < t0 - 0.05) continue;
+      const x = X(tt), y = Y(ring.d[s.key][i]);
+      if (started) c.lineTo(x, y); else { c.moveTo(x, y); started = true; }
+    }
+    c.stroke();
+  }
+  c.restore();
+  c.setLineDash([]);
+  let prevLabelY = null;
+  for (const r of refs) {
+    if (!r.label) continue;
+    const y = Math.round(Y(r.y)) + 0.5;
+    let ly = y - 11;
+    if ((prevLabelY !== null && Math.abs(ly - prevLabelY) < 17) || ly - 8 < m.t) ly = y + 11;
+    label(c, r.label, m.l + pw - 6, ly, { align: 'right', size: 13, color: C['ink-2'] });
+    prevLabelY = ly;
+  }
+  // end markers on solid series, with a 2 px surface ring
+  if (ring.n) {
+    const i = ring.idx(ring.n - 1), x = X(ring.t[i]);
+    for (const s of cfg.series) {
+      if (s.dash) continue;
+      const y = Y(ring.d[s.key][i]);
+      if (y < m.t || y > m.t + ph) continue;
+      c.beginPath(); c.arc(x, y, 4.5, 0, Math.PI * 2); c.fillStyle = C[s.color]; c.fill();
+      c.lineWidth = 2; c.strokeStyle = C.bg; c.stroke();
+    }
+  }
+  // hover crosshair and tooltip
+  if (st.hover && ring.n > 1 && st.hover.x >= m.l && st.hover.x <= m.l + pw) {
+    const th = t0 + (st.hover.x - m.l) / pw * WINDOW;
+    let a = 0, b = ring.n - 1;
+    while (b - a > 1) { const mid = (a + b) >> 1; if (ring.t[ring.idx(mid)] < th) a = mid; else b = mid; }
+    const ia = ring.idx(a), ib = ring.idx(b);
+    const i = Math.abs(ring.t[ia] - th) <= Math.abs(ring.t[ib] - th) ? ia : ib;
+    const tt = ring.t[i];
+    if (tt >= t0 - 0.05 && Math.abs(tt - th) < 0.5) {
+      const x = Math.round(X(tt)) + 0.5;
+      c.strokeStyle = C['ink-2']; c.lineWidth = 1;
+      c.beginPath(); c.moveTo(x, m.t); c.lineTo(x, m.t + ph); c.stroke();
+      for (const s of cfg.series) {
+        const y = Y(ring.d[s.key][i]);
+        if (y < m.t || y > m.t + ph) continue;
+        c.beginPath(); c.arc(x, y, 4, 0, Math.PI * 2); c.fillStyle = C[s.color]; c.fill();
+        c.lineWidth = 2; c.strokeStyle = C.bg; c.stroke();
+      }
+      drawTooltip(c, x, m, pw, 't = ' + fmt(tt, 2) + ' s', cfg.series.map((s) => ({
+        color: C[s.color], dash: !!s.dash, label: s.label,
+        value: fmt(ring.d[s.key][i], s.dec != null ? s.dec : cfg.dec) + ' ' + cfg.unit
+      })));
+    }
+  }
+}
+function drawTooltip(c, x, m, pw, head, rows) {
+  c.font = 'bold 14px ' + FONT;
+  let wv = 0;
+  for (const r of rows) wv = Math.max(wv, c.measureText(r.value).width);
+  c.font = '13px ' + FONT;
+  let wl = 0;
+  for (const r of rows) wl = Math.max(wl, c.measureText(r.label).width);
+  const wh = c.measureText(head).width;
+  const pad = 9, keyW = 18, lineH = 19;
+  const w = Math.max(wh, keyW + 6 + wv + 8 + wl) + pad * 2;
+  const h = pad * 2 + lineH * rows.length + 14;
+  let bx = x + 12;
+  if (bx + w > m.l + pw) bx = x - 12 - w;
+  bx = Math.max(m.l + 2, bx);
+  const by = m.t + 4;
+  c.fillStyle = withAlpha(C.bg, 0.95); c.strokeStyle = C.axis; c.lineWidth = 1;
+  roundRect(c, bx + 0.5, by + 0.5, w, h, 6); c.fill(); c.stroke();
+  c.textAlign = 'left'; c.textBaseline = 'middle';
+  c.fillStyle = C.muted; c.font = '13px ' + FONT;
+  c.fillText(head, bx + pad, by + pad + 6);
+  rows.forEach((r, k) => {
+    const yy = by + pad + 6 + 18 + lineH * k;
+    c.strokeStyle = r.color; c.lineWidth = 3; c.setLineDash(r.dash ? [4, 3] : []);
+    c.beginPath(); c.moveTo(bx + pad, yy); c.lineTo(bx + pad + keyW, yy); c.stroke(); c.setLineDash([]);
+    c.fillStyle = C.ink; c.font = 'bold 14px ' + FONT; c.fillText(r.value, bx + pad + keyW + 6, yy);
+    c.fillStyle = C['ink-2']; c.font = '13px ' + FONT; c.fillText(r.label, bx + pad + keyW + 6 + wv + 8, yy);
+  });
+}
+
+/* ---------- control bindings (every control has a stable id in the markup) ---------- */
+function bindSlider(id, fmtFn, onChange) {
+  const el = $(id), out = $(id + '-out'), v = out ? out.querySelector('.v') : null;
+  const lo = parseFloat(el.min), hi = parseFloat(el.max);
+  const update = (silent) => {
+    const val = parseFloat(el.value);
+    if (v) v.textContent = fmtFn(val);
+    el.style.setProperty('--p', ((val - lo) / (hi - lo) * 100).toFixed(2) + '%');
+    if (!silent) onChange(val);
+    markDirty();
+  };
+  el.addEventListener('input', () => update(false));
+  update(false);
+  return { el, get: () => parseFloat(el.value), set: (val, silent) => { el.value = String(val); update(!!silent); } };
+}
+function bindSwitch(id, onChange) {
+  const el = $(id), stateEl = el.querySelector('.sw-state');
+  const get = () => el.getAttribute('aria-pressed') === 'true';
+  const set = (on, silent) => {
+    el.setAttribute('aria-pressed', on ? 'true' : 'false');
+    if (stateEl) stateEl.textContent = on ? 'On' : 'Off';
+    if (!silent) onChange(on);
+    markDirty();
+  };
+  el.addEventListener('click', () => set(!get()));
+  set(get());
+  return { el, get, set };
+}
+function bindRadio(id, onChange) {
+  const g = $(id), items = Array.prototype.slice.call(g.querySelectorAll('[role="radio"]'));
+  const select = (btn, focus, silent) => {
+    items.forEach((b) => { const on = b === btn; b.setAttribute('aria-checked', on ? 'true' : 'false'); b.tabIndex = on ? 0 : -1; });
+    if (focus) btn.focus();
+    if (!silent) onChange(btn.dataset.v);
+    markDirty();
+  };
+  items.forEach((b, i) => {
+    b.addEventListener('click', () => select(b, false));
+    b.addEventListener('keydown', (e) => {
+      let j = null;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') j = (i + 1) % items.length;
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') j = (i - 1 + items.length) % items.length;
+      else if (e.key === 'Home') j = 0;
+      else if (e.key === 'End') j = items.length - 1;
+      if (j !== null) { e.preventDefault(); select(items[j], true); }
+    });
+  });
+  select(items.find((b) => b.getAttribute('aria-checked') === 'true') || items[0], false);
+  return { set: (val, silent) => { const b = items.find((x) => x.dataset.v === String(val)); if (b) select(b, false, silent); } };
+}
+function setState(id, s, text) {
+  const el = $(id);
+  if (el.dataset.s !== s) el.dataset.s = s;
+  if (el.textContent !== text) el.textContent = text;
+}
+
+/* ======================================================================
+   Tab 1: altitude PID.  Plant m z'' = T - m g - c z', ground at z = 0, 0 <= T <= T_max.
+   Controller T_cmd = FF + Kp e + Ki int(e) - Kd z'_meas (derivative on measurement),
+   updated at the selected rate and held between updates (zero-order hold).
+   ====================================================================== */
+function createPid() {
+  const s = {
+    mNom: 1.0, c: 0.15, sigma: 0.02, gustF: 12, gustT: 0.25,
+    Kp: 30, Ki: 15, Kd: 8, zsp: 2, tmaxK: 2, rate: 50, ff: true, aw: true, noise: false, payload: false,
+    t: 0, k: 0, z: 0, v: 0, iTerm: 0, zPrev: null, u: 0, T: 0, e: 0, frozen: false, gust: 0,
+    ring: new Ring(['z', 'zsp', 'u', 'T'], 1500)
+  };
+  s.mass = () => s.mNom * (s.payload ? 1.4 : 1.0);
+  s.tmax = () => s.tmaxK * s.mNom * G;
+  s.log = () => s.ring.push(s.t, { z: s.z, zsp: s.zsp, u: s.u, T: s.T });
+  s.reset = (z0) => {
+    s.t = 0; s.k = 0; s.z = z0 || 0; s.v = 0; s.iTerm = 0; s.zPrev = null;
+    s.u = 0; s.T = 0; s.e = s.zsp - s.z; s.frozen = false; s.gust = 0;
+    s.ring.clear(); s.log();
+  };
+  s.control = () => {
+    const Ts = Math.round(1000 / s.rate) * DT;
+    const zm = s.z + (s.noise ? s.sigma * randn() : 0);       // measured altitude
+    if (s.zPrev === null) s.zPrev = zm;
+    const vm = (zm - s.zPrev) / Ts;                            // finite-difference velocity
+    s.zPrev = zm;
+    const e = s.zsp - zm;
+    const tmax = s.tmax();
+    const u = (s.ff ? s.mNom * G : 0) + s.Kp * e + s.iTerm - s.Kd * vm;
+    // clamping anti-windup: freeze the integrator while saturated if the error pushes further in
+    s.frozen = s.aw && ((u > tmax && e > 0) || (u < 0 && e < 0));
+    if (!s.frozen) s.iTerm += s.Ki * e * Ts;                  // stored as the term itself (bumpless Ki changes)
+    s.u = u; s.T = clamp(u, 0, tmax); s.e = e;
+  };
+  s.step = (dt) => {
+    if (s.k % Math.round(1000 / s.rate) === 0) s.control();
+    const m = s.mass();
+    let F = s.T - m * G - s.c * s.v;
+    if (s.gust > 0) { F -= s.gustF; s.gust -= dt; }
+    s.v += (F / m) * dt;                                       // semi-implicit Euler
+    s.z += s.v * dt;
+    if (s.z <= 0) { s.z = 0; if (s.v < 0) s.v = 0; }           // resting on the ground
+    s.k++; s.t = s.k * DT;
+    if (s.k % LOG_EVERY === 0) s.log();
+  };
+  return s;
+}
+const pid = createPid();
+const pidUI = {};
+let pidScene, pidPlotZ, pidPlotT;
+
+const pidCfgZ = {
+  unit: 'm', dec: 2,
+  series: [{ key: 'z', color: 's1', label: 'altitude' }, { key: 'zsp', color: 's1', dash: true, width: 1.75, label: 'target' }],
+  range: (lo, hi) => [-0.25, Math.max(5, isFinite(hi) ? Math.ceil(hi + 0.3) : 5)]
+};
+const pidCfgT = {
+  unit: 'N', dec: 1,
+  series: [{ key: 'u', color: 's2', width: 1.75, label: 'commanded' }, { key: 'T', color: 's1', label: 'applied' }],
+  range: () => [-3, Math.max(pid.tmax() * 1.25, pid.mass() * G * 1.5)],
+  refs: () => [
+    { y: pid.tmax(), label: 'max thrust ' + fmt(pid.tmax(), 1) + ' N' },
+    { y: pid.mass() * G, label: 'hover m g ' + fmt(pid.mass() * G, 1) + ' N' }
+  ]
+};
+
+function drawPidScene(st, s) {
+  const c = st.begin(), W = st.w, H = st.h;
+  if (W < 60 || H < 80) return;
+  c.fillStyle = C.sky; c.fillRect(0, 0, W, H);
+  const groundH = 30, top = 24, left = 46;
+  const span = clamp(Math.min((W - left) * 0.19, H * 0.1), 26, 66);    // drone half-span, px
+  const foot = 0.34 * span;
+  const gy = H - groundH;
+  const ppm = (gy - foot - top) / 5.25;                                  // px per metre
+  const Y = (z) => gy - foot - z * ppm;                                  // body-centre y at altitude z
+  s.view = { gy, foot, ppm };
+  // altitude scale
+  c.lineWidth = 1; c.font = '13px ' + FONT; c.textAlign = 'left'; c.textBaseline = 'middle';
+  for (let zz = 0; zz <= 5; zz++) {
+    const y = Math.round(Y(zz)) + 0.5;
+    c.strokeStyle = C.grid; c.beginPath(); c.moveTo(left, y); c.lineTo(W, y); c.stroke();
+    c.fillStyle = C.muted; c.fillText(zz + ' m', 8, y);
+  }
+  // ground
+  c.fillStyle = C['ground-fill']; c.fillRect(0, gy, W, H - gy);
+  c.strokeStyle = C.ground; c.lineWidth = 2; c.beginPath(); c.moveTo(0, gy + 1); c.lineTo(W, gy + 1); c.stroke();
+  const cx = left + (W - left) * 0.4;
+  // dashed target line, label on the side away from the drone
+  const ty = Math.round(Y(s.zsp)) + 0.5;
+  c.save(); c.setLineDash([9, 6]); c.strokeStyle = C.ink; c.lineWidth = 1.6;
+  c.beginPath(); c.moveTo(left, ty); c.lineTo(W - 4, ty); c.stroke(); c.restore();
+  const above = s.z <= s.zsp + 0.02;
+  label(c, 'target ' + fmt(s.zsp, 2) + ' m', W - 8, above ? ty - 13 : ty + 13, { align: 'right', size: 13, bold: true });
+  // vehicle position (the payload box rests on the ground when landed)
+  let y = Y(s.z);
+  const floorY = gy - (s.payload ? 0.64 : 0.33) * span;
+  if (y > floorY) y = floorY;
+  let off = false;
+  if (y < top) { y = top; off = true; }
+  const hoverLen = 0.55 * ppm;                                           // arrow length for m_nom g
+  if (s.gust > 0) {
+    const gx = cx - span * 1.55;
+    arrow(c, gx, y - span * 1.4, gx, y - span * 0.1, C.force, 6);
+    label(c, 'gust', gx - 8, y - span * 0.8, { align: 'right', size: 13, bold: true });
+  }
+  if (s.z > 0.05 && !off) {                                              // weight, while airborne
+    const wTop = y + (s.payload ? 0.66 : 0.36) * span;
+    const wLen = s.mass() / s.mNom * hoverLen;
+    arrow(c, cx, wTop, cx, wTop + wLen, C.force, 5);
+    label(c, 'm g ' + fmt(s.mass() * G, 1) + ' N', cx + 9, wTop + wLen - 9, { size: 13 });
+  }
+  drawSideQuad(c, cx, y, 0, span, { payload: s.payload });
+  const tBase = y - 0.34 * span;
+  const tLen = s.T / (s.mNom * G) * hoverLen;
+  arrow(c, cx, tBase, cx, tBase - tLen, C.thrust, 7);
+  label(c, 'T ' + fmt(s.T, 1) + ' N', cx + 10, tBase - Math.max(tLen, 14) + 6, { size: 13, bold: true });
+  // error bracket between the vehicle and the target
+  const e = s.zsp - s.z;
+  if (Math.abs(e) > 0.08 && !off) {
+    const bx = Math.round(cx + span * 1.5) + 0.5, y1 = Y(s.z), y2 = ty;
+    c.strokeStyle = C['ink-2']; c.lineWidth = 1.5;
+    c.beginPath(); c.moveTo(bx, y1); c.lineTo(bx, y2); c.moveTo(bx - 5, y1); c.lineTo(bx + 5, y1); c.moveTo(bx - 5, y2); c.lineTo(bx + 5, y2); c.stroke();
+    const txt = 'e ' + fmt(e, 2) + ' m';
+    c.font = '13px ' + FONT;
+    label(c, txt, Math.min(bx + 8, W - c.measureText(txt).width - 6), (y1 + y2) / 2, { size: 13 });
+  }
+  if (off) label(c, 'Above the view: z = ' + fmt(s.z, 1) + ' m', (left + W) / 2, 12, { align: 'center', size: 13, bold: true, color: C.bad });
+  drawPaused(c, 10, gy + groundH / 2, 'left');
+}
+
+function updatePidHint() {
+  const s = pid, m = s.mass(), W = m * G, tmax = s.tmax();
+  const need = W - (s.ff ? s.mNom * G : 0);
+  let h;
+  if (W > tmax + 1e-9) {
+    h = 'Hover needs <strong>' + fmt(W, 1) + ' N</strong> but <i>T</i><sub>max</sub> is <strong>' + fmt(tmax, 1) + ' N</strong>: the drone cannot hold altitude.';
+  } else if (s.Ki > 0) {
+    h = 'With <i>K</i><sub>i</sub> &gt; 0 the integral term settles at the thrust that feed-forward does not supply (<strong>' + fmt(need, 2) + ' N</strong> here), so the expected steady-state error is <strong>0 m</strong>.';
+  } else if (s.Kp <= 0) {
+    h = 'With <i>K</i><sub>p</sub> = <i>K</i><sub>i</sub> = 0 nothing pulls the drone back to the target.';
+  } else if (!s.ff) {
+    h = 'Without integral action the expected sag is <i>m g</i>/<i>K</i><sub>p</sub> = ' + fmt(W, 2) + '/' + fmt(s.Kp, 1) + ' = <strong>' + fmt(need / s.Kp, 2) + ' m</strong> below the target.';
+  } else if (Math.abs(need) < 1e-9) {
+    h = 'Feed-forward supplies <i>m g</i> exactly, so the expected sag is <strong>0 m</strong> even without <i>K</i><sub>i</sub>.';
+  } else {
+    h = 'Feed-forward assumes ' + fmt(s.mNom, 1) + ' kg but the drone now has ' + fmt(m, 1) + ' kg: expected sag = (<i>m</i> − <i>m</i><sub>nom</sub>)<i>g</i>/<i>K</i><sub>p</sub> = ' + fmt(need, 2) + '/' + fmt(s.Kp, 1) + ' = <strong>' + fmt(need / s.Kp, 2) + ' m</strong>.';
+  }
+  $('pid-hint').innerHTML = h;
+}
+function updatePidReadouts() {
+  const s = pid, tmax = s.tmax();
+  $('pid-ro-err').textContent = fmt(s.zsp - s.z, 2) + ' m';
+  $('pid-ro-z').textContent = fmt(s.z, 2) + ' m';
+  $('pid-ro-t').textContent = fmt(s.T, 1) + ' N';
+  $('pid-ro-i').textContent = fmt(s.iTerm, 1) + ' N';
+  if (s.u > tmax + 1e-9) setState('pid-st-sat', 'warn', 'Thrust saturated at T max');
+  else if (s.u < -1e-9) setState('pid-st-sat', 'warn', 'Thrust saturated at 0 N');
+  else setState('pid-st-sat', 'ok', 'Thrust within limits');
+  const pushing = (s.u > tmax && s.e > 0) || (s.u < 0 && s.e < 0);
+  if (s.Ki <= 0) setState('pid-st-int', 'idle', 'Integrator off (Ki = 0)');
+  else if (s.frozen) setState('pid-st-int', 'warn', 'Integrator frozen by anti-windup');
+  else if (!s.aw && pushing) setState('pid-st-int', 'bad', 'Integrator winding up');
+  else setState('pid-st-int', 'idle', 'Integrator running');
+}
+function pidGust() { pid.gust = pid.gustT; markDirty(); }
+function pidReset() { pid.reset(0); markDirty(); }
+const PID_PRESETS = {
+  'pid-pre-p': { Kp: 30, Ki: 0, Kd: 0, ff: false, aw: true, tmaxK: 2 },
+  'pid-pre-pd': { Kp: 30, Ki: 0, Kd: 8, ff: false, aw: true, tmaxK: 2 },
+  'pid-pre-pdff': { Kp: 30, Ki: 0, Kd: 8, ff: true, aw: true, tmaxK: 2 },
+  'pid-pre-pid': { Kp: 30, Ki: 15, Kd: 8, ff: true, aw: true, tmaxK: 2 },
+  // low thrust margin + no anti-windup + a big step from the ground: the integrator winds up during the climb
+  'pid-pre-windup': { Kp: 20, Ki: 12, Kd: 7, ff: true, aw: false, tmaxK: 1.3, zsp: 3, restart: true }
+};
+function applyPidPreset(p) {
+  pidUI.kp.set(p.Kp); pidUI.ki.set(p.Ki); pidUI.kd.set(p.Kd); pidUI.tmax.set(p.tmaxK);
+  pidUI.ff.set(p.ff); pidUI.aw.set(p.aw);
+  if (p.zsp != null) pidUI.sp.set(p.zsp);
+  pid.iTerm = 0;
+  if (p.restart) pid.reset(0);
+  if (paused) togglePause();
+  updatePidHint(); markDirty();
+}
+function setupPid() {
+  pidUI.kp = bindSlider('pid-kp', (v) => fmt(v, 1), (v) => { pid.Kp = v; updatePidHint(); });
+  pidUI.ki = bindSlider('pid-ki', (v) => fmt(v, 1), (v) => { pid.Ki = v; updatePidHint(); });
+  pidUI.kd = bindSlider('pid-kd', (v) => fmt(v, 2), (v) => { pid.Kd = v; });
+  pidUI.sp = bindSlider('pid-sp', (v) => fmt(v, 2), (v) => { pid.zsp = v; });
+  pidUI.tmax = bindSlider('pid-tmax', (v) => fmt(v, 2), (v) => {
+    pid.tmaxK = v; $('pid-tmax-n').textContent = fmt(v * pid.mNom * G, 1); updatePidHint();
+  });
+  pidUI.ff = bindSwitch('pid-ff', (on) => { pid.ff = on; updatePidHint(); });
+  pidUI.aw = bindSwitch('pid-aw', (on) => { pid.aw = on; });
+  pidUI.noise = bindSwitch('pid-noise', (on) => { pid.noise = on; });
+  pidUI.payload = bindSwitch('pid-payload', (on) => { pid.payload = on; updatePidHint(); });
+  pidUI.rate = bindRadio('pid-rate', (v) => { pid.rate = parseInt(v, 10); pid.zPrev = null; });
+  $('pid-gust').addEventListener('click', pidGust);
+  $('pid-reset').addEventListener('click', pidReset);
+  Object.keys(PID_PRESETS).forEach((id) => $(id).addEventListener('click', () => applyPidPreset(PID_PRESETS[id])));
+  pidScene = makeCanvas('pid-scene');
+  pidPlotZ = makeCanvas('pid-plot-z');
+  pidPlotT = makeCanvas('pid-plot-t');
+  attachHover(pidPlotZ); attachHover(pidPlotT);
+  // click or drag on the scene sets the target altitude
+  const cv = pidScene.canvas;
+  let dragging = false;
+  const setFrom = (e) => {
+    const v = pid.view;
+    if (!v) return;
+    const r = cv.getBoundingClientRect();
+    const z = (v.gy - v.foot - (e.clientY - r.top)) / v.ppm;
+    pidUI.sp.set(clamp(Math.round(z / 0.05) * 0.05, 0, 4));
+  };
+  cv.addEventListener('pointerdown', (e) => { dragging = true; try { cv.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ } setFrom(e); e.preventDefault(); });
+  cv.addEventListener('pointermove', (e) => { if (dragging) setFrom(e); });
+  cv.addEventListener('pointerup', () => { dragging = false; });
+  cv.addEventListener('pointercancel', () => { dragging = false; });
+  pid.reset(0);
+}
+
+/* ======================================================================
+   Tab 2: cascade and tilt (planar model from the course)
+   x'' = -(u1/m) sin th,  z'' = (u1/m) cos th - g,  th'' = u2/I,  u1 = F1 + F2,  u2 = (F2 - F1) L
+   ====================================================================== */
+const CAS_START = { x: -2.5, z: 1.0 };
+function createCascade() {
+  const s = {
+    m: 1.0, L: 0.25, I: 0.01,
+    wo: 2, wi: 16, tilt: 30, windOn: false, wind: 3, full: false,
+    xs: 2.0, zs: 2.5,
+    t: 0, k: 0, x: CAS_START.x, z: CAS_START.z, th: 0, vx: 0, vz: 0, w: 0,
+    thd: 0, F1: 0, F2: 0, fx: 0, u1: 0, u2: 0,
+    ring: new Ring(['x', 'xs', 'z', 'zs', 'th', 'thd'], 1500),
+    trail: []
+  };
+  s.log = () => s.ring.push(s.t, { x: s.x, xs: s.xs, z: s.z, zs: s.zs, th: deg(s.th), thd: deg(s.thd) });
+  s.reset = () => {
+    s.t = 0; s.k = 0; s.x = CAS_START.x; s.z = CAS_START.z; s.th = 0; s.vx = 0; s.vz = 0; s.w = 0;
+    s.thd = 0; s.F1 = s.F2 = s.m * G / 2; s.fx = 0; s.u1 = s.m * G; s.u2 = 0;
+    s.ring.clear(); s.trail.length = 0; s.log();
+  };
+  s.step = (dt) => {
+    const m = s.m, g = G;
+    // outer loop: position PD from the bandwidth w_o, zeta = 1
+    const ax = s.wo * s.wo * (s.xs - s.x) - 2 * s.wo * s.vx;
+    const az = clamp(s.wo * s.wo * (s.zs - s.z) - 2 * s.wo * s.vz, -0.7 * g, 0.9 * g);
+    const tmax = rad(s.tilt);
+    let thd = 0, fx = 0;
+    if (s.full) {
+      // fully actuated: lateral force straight from the outer loop, same lateral authority as the tilt limit
+      const lim = m * (g + az) * Math.tan(tmax);
+      fx = clamp(m * ax, -lim, lim);
+    } else {
+      thd = clamp(Math.atan2(-ax, g + az), -tmax, tmax);
+    }
+    const u1c = m * (g + az) / Math.max(Math.cos(s.th), 0.5);
+    // inner loop: attitude PD from the bandwidth w_i, zeta = 1
+    let eth = thd - s.th;
+    eth = Math.atan2(Math.sin(eth), Math.cos(eth));
+    const u2c = s.I * (s.wi * s.wi * eth - 2 * s.wi * s.w);
+    // allocation, then rotor limits 0 <= Fi <= m g
+    const fmax = m * g;
+    const F1 = clamp(u1c / 2 - u2c / (2 * s.L), 0, fmax);
+    const F2 = clamp(u1c / 2 + u2c / (2 * s.L), 0, fmax);
+    const u1 = F1 + F2, u2 = (F2 - F1) * s.L;
+    const wind = s.windOn ? s.wind : 0;
+    s.vx += (-(u1 / m) * Math.sin(s.th) + (fx + wind) / m) * dt;
+    s.vz += ((u1 / m) * Math.cos(s.th) - g) * dt;
+    s.w += (u2 / s.I) * dt;
+    s.x += s.vx * dt; s.z += s.vz * dt; s.th += s.w * dt;
+    if (s.z <= 0) { s.z = 0; if (s.vz < 0) s.vz = 0; s.vx = 0; }
+    if (Math.abs(s.x) > 12) { s.x = clamp(s.x, -12, 12); s.vx = 0; }
+    if (s.z > 12) { s.z = 12; if (s.vz > 0) s.vz = 0; }
+    s.thd = thd; s.F1 = F1; s.F2 = F2; s.fx = fx; s.u1 = u1; s.u2 = u2;
+    s.k++; s.t = s.k * DT;
+    if (s.k % LOG_EVERY === 0) s.log();
+    if (s.k % 50 === 0) { s.trail.push(s.x, s.z); if (s.trail.length > 160) s.trail.splice(0, 2); }
+  };
+  return s;
+}
+const cas = createCascade();
+const casUI = {};
+let casScene, casPlotP, casPlotT;
+
+const casCfgP = {
+  unit: 'm', dec: 2,
+  series: [
+    { key: 'x', color: 's1', label: 'x' }, { key: 'xs', color: 's1', dash: true, width: 1.75, label: 'x target' },
+    { key: 'z', color: 's2', label: 'z' }, { key: 'zs', color: 's2', dash: true, width: 1.75, label: 'z target' }
+  ],
+  range: (lo, hi) => [isFinite(lo) ? Math.min(-4.5, Math.floor(lo)) : -4.5, isFinite(hi) ? Math.max(4.5, Math.ceil(hi)) : 4.5]
+};
+const casCfgT = {
+  unit: '°', dec: 1,
+  series: [{ key: 'th', color: 's3', label: 'θ' }, { key: 'thd', color: 's3', dash: true, width: 1.75, label: 'θ desired' }],
+  range: (lo, hi) => {
+    const big = isFinite(lo) ? Math.max(Math.abs(lo), Math.abs(hi)) : 0;
+    const b = Math.max(cas.tilt + 12, Math.ceil((big + 2) / 10) * 10);
+    return [-b, b];
+  },
+  refs: () => (cas.full ? [] : [{ y: cas.tilt, label: 'tilt limit ±' + fmt(cas.tilt, 0) + '°' }, { y: -cas.tilt, label: '' }])
+};
+
+function drawCasScene(st, s) {
+  const c = st.begin(), W = st.w, H = st.h;
+  if (W < 60 || H < 60) return;
+  c.fillStyle = C.sky; c.fillRect(0, 0, W, H);
+  const xMin = -4.3, xMax = 4.3, zMin = -0.42, zMax = 4.35;
+  const ppm = Math.min(W / (xMax - xMin), H / (zMax - zMin));
+  const ox = W / 2, oy = H - (0 - zMin) * ppm;
+  const SX = (x) => ox + x * ppm, SY = (z) => oy - z * ppm;
+  const xv0 = -ox / ppm, xv1 = (W - ox) / ppm, zv1 = oy / ppm;     // visible world range, m
+  s.view = { ppm, ox, oy, xv0, xv1, zv1 };
+  // 1 m grid across the whole canvas, ground, axis labels
+  c.lineWidth = 1; c.strokeStyle = C.grid;
+  for (let x = Math.ceil(xv0); x <= xv1; x++) { const X = Math.round(SX(x)) + 0.5; c.beginPath(); c.moveTo(X, 0); c.lineTo(X, oy); c.stroke(); }
+  for (let z = 1; z < zv1; z++) { const Yz = Math.round(SY(z)) + 0.5; c.beginPath(); c.moveTo(0, Yz); c.lineTo(W, Yz); c.stroke(); }
+  c.fillStyle = C['ground-fill']; c.fillRect(0, oy, W, H - oy);
+  c.strokeStyle = C.ground; c.lineWidth = 2; c.beginPath(); c.moveTo(0, oy + 1); c.lineTo(W, oy + 1); c.stroke();
+  c.font = '13px ' + FONT; c.fillStyle = C.muted; c.textBaseline = 'middle'; c.textAlign = 'center';
+  for (let x = Math.ceil(xv0 / 2) * 2; x <= xv1; x += 2) {
+    if (SX(x) > 24 && SX(x) < W - 24) c.fillText(fmt(x, 0) + ' m', SX(x), oy + (H - oy) / 2 + 1);
+  }
+  c.textAlign = 'left';
+  for (let z = 1; z < zv1 - 0.15; z++) c.fillText(z + ' m', 6, SY(z) - 9);
+  // faint trail (last 4 s)
+  if (s.trail.length >= 4) {
+    c.strokeStyle = withAlpha(C.s1, 0.35); c.lineWidth = 2; c.lineJoin = 'round'; c.beginPath();
+    for (let i = 0; i < s.trail.length; i += 2) { const X = SX(s.trail[i]), Yt = SY(s.trail[i + 1]); if (i === 0) c.moveTo(X, Yt); else c.lineTo(X, Yt); }
+    c.lineTo(SX(s.x), SY(s.z)); c.stroke();
+  }
+  // target marker
+  const tx = SX(s.xs), ty = SY(s.zs);
+  c.strokeStyle = C.ink; c.lineWidth = 2;
+  c.beginPath(); c.arc(tx, ty, 11, 0, Math.PI * 2); c.stroke();
+  c.beginPath();
+  c.moveTo(tx - 18, ty); c.lineTo(tx - 6, ty); c.moveTo(tx + 6, ty); c.lineTo(tx + 18, ty);
+  c.moveTo(tx, ty - 18); c.lineTo(tx, ty - 6); c.moveTo(tx, ty + 6); c.lineTo(tx, ty + 18);
+  c.stroke();
+  const tl = 'target (' + fmt(s.xs, 1) + ', ' + fmt(s.zs, 1) + ') m';
+  c.font = 'bold 13px ' + FONT;
+  const tlw = c.measureText(tl).width;
+  // below the marker (clear of the thrust arrows when the drone sits on the target), above it near the ground
+  label(c, tl, clamp(tx - tlw / 2, 8, W - tlw - 8), ty + 33 < oy - 8 ? ty + 33 : ty - 33, { size: 13, bold: true });
+  // wind indicator
+  if (s.windOn && Math.abs(s.wind) > 1e-9) {
+    const len = 22 + Math.abs(s.wind) * 9, xl = 52, x0 = s.wind > 0 ? xl : xl + len;
+    arrow(c, x0, 22, x0 + Math.sign(s.wind) * len, 22, C.force, 4);
+    label(c, 'wind ' + fmt(Math.abs(s.wind), 1) + ' N', xl + len + 10, 22, { size: 13, bold: true });
+  }
+  // vehicle (drawn about 1.6x real size so the rotors read on a projector)
+  const k = 0.44 * ppm;
+  let px = SX(s.x), py = SY(s.z);
+  const out = px < -k || px > W + k || py < -k;
+  px = clamp(px, k * 0.6, W - k * 0.6); py = clamp(py, k * 0.6, oy);
+  if (!s.full) drawSideQuad(c, px, py, s.thd, k, { ghost: true, color: C.accent });
+  drawSideQuad(c, px, py, s.th, k);
+  const ux = -Math.sin(s.th), uz = Math.cos(s.th);                 // body "up" in the world frame
+  const fl = 1.1 * ppm / (s.m * G);                                 // px per newton (m g draws as 1.1 m)
+  [[-0.9, s.F1, 'F1'], [0.9, s.F2, 'F2']].forEach((r) => {
+    const bx = r[0];
+    const wx = bx * Math.cos(s.th) - 0.29 * Math.sin(s.th), wz = bx * Math.sin(s.th) + 0.29 * Math.cos(s.th);
+    const sx0 = px + wx * k, sy0 = py - wz * k, L = r[1] * fl;
+    arrow(c, sx0, sy0, sx0 + ux * L, sy0 - uz * L, C.thrust, 5);
+    label(c, r[2], sx0 + ux * (L + 13), sy0 - uz * (L + 13), { size: 13, bold: true, align: 'center' });
+  });
+  if (s.full && Math.abs(s.fx) > 0.05) {
+    const L = s.fx * fl;
+    arrow(c, px, py, px + L, py, C.thrust, 5);
+    label(c, 'fx', px + L + Math.sign(L) * 14, py - 14, { size: 13, bold: true, align: 'center' });
+  }
+  if (out) label(c, 'Drone out of view: press R to reset', W / 2, 46, { align: 'center', size: 13, bold: true, color: C.bad });
+  drawPaused(c, W - 10, 22, 'right');
+}
+
+function updateRatio() {
+  const r = cas.wi / cas.wo;
+  $('cas-ratio').textContent = fmt(r, 1) + '×';
+  if (r >= 5) setState('cas-ratio-state', 'ok', 'Well separated');
+  else if (r > 2) setState('cas-ratio-state', 'warn', 'Too close: expect overshoot');
+  else setState('cas-ratio-state', 'bad', 'Unstable: needs more than 2×');
+}
+function updateCasReadouts() {
+  $('cas-ro-th').textContent = fmt(deg(cas.th), 1) + '°';
+  $('cas-ro-thd').textContent = fmt(deg(cas.thd), 1) + '°';
+  $('cas-ro-f1').textContent = fmt(cas.F1, 2) + ' N';
+  $('cas-ro-f2').textContent = fmt(cas.F2, 2) + ' N';
+  $('cas-ro-err').textContent = fmt(Math.hypot(cas.xs - cas.x, cas.zs - cas.z), 2) + ' m';
+}
+function setupCascade() {
+  casUI.wo = bindSlider('cas-wo', (v) => fmt(v, 1), (v) => { cas.wo = v; updateRatio(); });
+  casUI.wi = bindSlider('cas-wi', (v) => fmt(v, 1), (v) => { cas.wi = v; updateRatio(); });
+  casUI.tilt = bindSlider('cas-tilt', (v) => fmt(v, 0), (v) => { cas.tilt = v; });
+  casUI.wind = bindSlider('cas-wind', (v) => fmt(v, 1), (v) => { cas.wind = v; });
+  casUI.windOn = bindSwitch('cas-wind-on', (on) => { cas.windOn = on; });
+  casUI.full = bindSwitch('cas-full', (on) => { cas.full = on; });
+  $('cas-reset').addEventListener('click', () => { cas.reset(); markDirty(); });
+  casScene = makeCanvas('cas-scene');
+  casPlotP = makeCanvas('cas-plot-pos');
+  casPlotT = makeCanvas('cas-plot-th');
+  attachHover(casPlotP); attachHover(casPlotT);
+  // click, tap or drag on the scene moves the target
+  const cv = casScene.canvas;
+  let dragging = false;
+  const setFrom = (e) => {
+    const v = cas.view;
+    if (!v) return;
+    const r = cv.getBoundingClientRect();
+    const x = (e.clientX - r.left - v.ox) / v.ppm, z = (v.oy - (e.clientY - r.top)) / v.ppm;
+    cas.xs = clamp(Math.round(x * 10) / 10, Math.max(v.xv0 + 0.4, -8), Math.min(v.xv1 - 0.4, 8));
+    cas.zs = clamp(Math.round(z * 10) / 10, 0.3, Math.min(v.zv1 - 0.3, 4.2));
+    markDirty();
+  };
+  cv.addEventListener('pointerdown', (e) => { dragging = true; try { cv.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ } setFrom(e); e.preventDefault(); });
+  cv.addEventListener('pointermove', (e) => { if (dragging) setFrom(e); });
+  cv.addEventListener('pointerup', () => { dragging = false; });
+  cv.addEventListener('pointercancel', () => { dragging = false; });
+  cas.reset();
+}
+
+/* ======================================================================
+   Tab 3: control allocation, PX4 quad-X in the FRD body frame (thrust along -z_B)
+   T = f1+f2+f3+f4, tx = d(-f1+f2+f3-f4), ty = d(f1-f2+f3-f4), tz = kappa(f1+f2-f3-f4)
+   ====================================================================== */
+const MX = { l: 0.25, kappa: 0.016, fmax: 8, m: 1.5, hoverT: 14.7 };
+MX.d = MX.l / Math.SQRT2;
+function mixInverse(w) {
+  const T = w[0], tx = w[1], ty = w[2], tz = w[3], d = MX.d, k = MX.kappa;
+  return [T / 4 - tx / (4 * d) + ty / (4 * d) + tz / (4 * k),
+          T / 4 + tx / (4 * d) - ty / (4 * d) + tz / (4 * k),
+          T / 4 + tx / (4 * d) + ty / (4 * d) - tz / (4 * k),
+          T / 4 - tx / (4 * d) - ty / (4 * d) - tz / (4 * k)];
+}
+function mixForward(f) {
+  const d = MX.d, k = MX.kappa;
+  return [f[0] + f[1] + f[2] + f[3], d * (-f[0] + f[1] + f[2] - f[3]), d * (f[0] - f[1] + f[2] - f[3]), k * (f[0] + f[1] - f[2] - f[3])];
+}
+const inRange = (v) => v >= -1e-9 && v <= MX.fmax + 1e-9;
+function allocNaive(w) {
+  const raw = mixInverse(w);
+  return { raw, f: raw.map((v) => clamp(v, 0, MX.fmax)), yaw: 1, shift: 0, clipped: !raw.every(inRange) };
+}
+/* PX4-like priorities: keep roll and pitch; give up yaw first, then shift collective thrust;
+   clip only if roll and pitch alone span more than the motor range. (PX4 also lets yaw borrow
+   about 15 % thrust headroom; that refinement is left out here.) */
+function allocPrio(w) {
+  const raw = mixInverse(w);
+  let f = mixInverse([w[0], w[1], w[2], 0]);
+  const fy = mixInverse([0, 0, 0, w[3]]);
+  const lo = Math.min.apply(null, f), hi = Math.max.apply(null, f);
+  let shift = 0, clipped = false;
+  if (hi - lo > MX.fmax) { shift = MX.fmax / 2 - (hi + lo) / 2; clipped = true; }
+  else if (lo < 0) shift = -lo;
+  else if (hi > MX.fmax) shift = MX.fmax - hi;
+  f = f.map((v) => clamp(v + shift, 0, MX.fmax));
+  let s = 1;                                     // largest yaw fraction that still fits
+  for (let i = 0; i < 4; i++) {
+    if (fy[i] > 1e-12) s = Math.min(s, (MX.fmax - f[i]) / fy[i]);
+    else if (fy[i] < -1e-12) s = Math.min(s, -f[i] / fy[i]);
+  }
+  s = clamp(s, 0, 1);
+  return { raw, f: f.map((v, i) => clamp(v + s * fy[i], 0, MX.fmax)), yaw: s, shift: 4 * shift, clipped };
+}
+
+const MOTORS = [                                  // forward sign, right sign, spin seen from above
+  { f: +1, r: +1, ccw: true, name: 'M1' },        // front-right
+  { f: -1, r: -1, ccw: true, name: 'M2' },        // rear-left
+  { f: +1, r: -1, ccw: false, name: 'M3' },       // front-left
+  { f: -1, r: +1, ccw: false, name: 'M4' }        // rear-right
+];
+const AX_DEC = [2, 2, 2, 3], AX_TOL = [0.005, 0.005, 0.005, 0.0005];
+const mix = { T: MX.hoverT, tx: 0, ty: 0, tz: 0, strat: 'naive', res: null, cmd: [MX.hoverT, 0, 0, 0], ach: [MX.hoverT, 0, 0, 0], blades: [0.3, 1.1, 0.7, 1.9] };
+const mixUI = {};
+let mixQuad;
+const MIX_PRESETS = {
+  'mix-pre-hover': [MX.hoverT, 0, 0, 0],
+  'mix-pre-roll': [MX.hoverT, 0.8, 0, 0],
+  'mix-pre-yaw': [MX.hoverT, 0, 0, 0.15],
+  'mix-pre-aggr': [MX.hoverT, 1.2, 0, 0.25]
+};
+
+function mixSummary() {
+  const r = mix.res, w = mix.cmd, a = mix.ach;
+  const out = r.raw.map((v, i) => (inRange(v) ? null : MOTORS[i].name + ' at ' + fmt(v, 2) + ' N')).filter(Boolean);
+  if (!out.length) return 'All four motors are inside 0 to 8 N, so the command is met exactly.';
+  const need = 'The exact solution needs ' + out.join(' and ') + '. ';
+  if (mix.strat === 'naive') {
+    const axes = ['thrust', 'roll', 'pitch', 'yaw'], units = ['N', 'N·m', 'N·m', 'N·m'];
+    const lost = a.map((v, i) => {
+      const e = v - w[i];
+      return Math.abs(e) > AX_TOL[i] ? axes[i] + ' ' + (e > 0 ? '+' : '') + fmt(e, AX_DEC[i]) + ' ' + units[i] : null;
+    }).filter(Boolean);
+    return need + '<strong>Naive clipping</strong> cuts those motors, so every axis they share is disturbed: ' + (lost.length ? lost.join(', ') : 'none') + '.';
+  }
+  const parts = [r.clipped ? 'Roll and pitch alone exceed the motor range, so the motors are centred and clipped as a last resort'
+                           : 'Roll and pitch are kept exactly'];
+  if (Math.abs(w[3]) > 1e-9) parts.push(r.yaw >= 1 - 1e-9 ? 'yaw is kept' : 'yaw is cut to <strong>' + Math.round(r.yaw * 100) + ' %</strong> of the command');
+  parts.push(Math.abs(r.shift) > 1e-6 ? 'collective thrust shifts by <strong>' + (r.shift > 0 ? '+' : '') + fmt(r.shift, 2) + ' N</strong>' : 'thrust is kept');
+  return need + parts.join('; ') + '.';
+}
+function mixUpdate() {
+  const w = [mix.T, mix.tx, mix.ty, mix.tz];
+  mix.cmd = w;
+  mix.res = mix.strat === 'prio' ? allocPrio(w) : allocNaive(w);
+  mix.ach = mixForward(mix.res.f);
+  for (let i = 0; i < 4; i++) {
+    const err = mix.ach[i] - w[i];
+    $('mx-w' + i).textContent = fmt(mix.ach[i], AX_DEC[i]);
+    $('mx-f' + i).textContent = fmt(mix.res.f[i], 2);
+    $('mx-c' + i).textContent = fmt(w[i], AX_DEC[i]);
+    $('mx-a' + i).textContent = fmt(mix.ach[i], AX_DEC[i]);
+    const cell = $('mx-e' + i);
+    cell.textContent = fmt(err, AX_DEC[i]);
+    cell.className = Math.abs(err) > AX_TOL[i] ? 'lost' : '';
+  }
+  $('mix-cap').textContent = 'Commanded vs achieved: ' + (mix.strat === 'prio' ? 'prioritise roll & pitch' : 'naive clipping');
+  $('mix-summary').innerHTML = mixSummary();
+  markDirty();
+}
+function applyMixPreset(p) {
+  mixUI.T.set(p[0], true); mixUI.tx.set(p[1], true); mixUI.ty.set(p[2], true); mixUI.tz.set(p[3], true);
+  mix.T = mixUI.T.get(); mix.tx = mixUI.tx.get(); mix.ty = mixUI.ty.get(); mix.tz = mixUI.tz.get();
+  mixUpdate();
+}
+function spinArc(c, px, py, R, base, ccw) {     // canvas angles grow clockwise on screen
+  const a0 = base - 0.75, a1 = base + 0.75;
+  c.strokeStyle = C['ink-2']; c.lineWidth = 1.6;
+  c.beginPath(); c.arc(px, py, R, a0, a1); c.stroke();
+  const ae = ccw ? a0 : a1, sg = ccw ? -1 : 1;
+  const ex = px + R * Math.cos(ae), ey = py + R * Math.sin(ae);
+  const tx = -Math.sin(ae) * sg, ty = Math.cos(ae) * sg, nx = Math.cos(ae), ny = Math.sin(ae), h = 9;
+  c.fillStyle = C['ink-2'];
+  c.beginPath(); c.moveTo(ex + tx * h, ey + ty * h); c.lineTo(ex + nx * h * 0.55, ey + ny * h * 0.55); c.lineTo(ex - nx * h * 0.55, ey - ny * h * 0.55); c.closePath(); c.fill();
+}
+function drawQuad(st) {
+  const c = st.begin(), W = st.w, H = st.h;
+  if (W < 80 || H < 80 || !mix.res) return;
+  const res = mix.res, f = res.f;
+  const small = W < 470;
+  const fs = small ? 12 : 14, fsBig = small ? 15 : 17;
+  const textW = small ? 72 : 96, barW = small ? 9 : 12, gap = small ? 6 : 10;
+  const kk = 1 / Math.SQRT2 + 0.42;
+  const A = clamp(Math.min((W - 2 * (gap + barW + 7 + textW) - 8) / (2 * kk), (H - 76) / (2 * kk)), 26, 170);
+  const d = A / Math.SQRT2, r = 0.42 * A;
+  const cx = W / 2, cy = 34 + (H - 34) / 2;
+  const met = mix.ach.every((v, i) => Math.abs(v - mix.cmd[i]) <= AX_TOL[i]);
+  // body-frame indicator (FRD seen from above)
+  const fx0 = 18, fy0 = 58;
+  arrow(c, fx0, fy0, fx0, fy0 - 38, C['ink-2'], 2.5);
+  arrow(c, fx0, fy0, fx0 + 38, fy0, C['ink-2'], 2.5);
+  label(c, 'x forward', fx0 + 8, fy0 - 40, { size: 12, color: C['ink-2'], bg: false });
+  label(c, 'y right', fx0 + 44, fy0, { size: 12, color: C['ink-2'], bg: false });
+  label(c, 'z down, into the screen', fx0 - 4, fy0 + 16, { size: 12, color: C.muted, bg: false });
+  // arms
+  c.lineCap = 'round'; c.strokeStyle = C.arm; c.lineWidth = Math.max(4, 0.06 * A);
+  MOTORS.forEach((mm) => { c.beginPath(); c.moveTo(cx, cy); c.lineTo(cx + mm.r * d, cy - mm.f * d); c.stroke(); });
+  MOTORS.forEach((mm, i) => {
+    const px = cx + mm.r * d, py = cy - mm.f * d;
+    // disc colour: diverging around T/4 (slower blue, neutral grey, faster red)
+    const level = clamp((f[i] - mix.cmd[0] / 4) / 2.5, -1, 1);
+    c.globalAlpha = 0.88;
+    c.fillStyle = level >= 0 ? mixColor(C['rotor-neutral'], C.faster, level) : mixColor(C['rotor-neutral'], C.slower, -level);
+    c.beginPath(); c.arc(px, py, r, 0, Math.PI * 2); c.fill();
+    c.globalAlpha = 1;
+    c.lineWidth = 1; c.strokeStyle = C['disc-edge']; c.stroke();
+    const a = mix.blades[i];
+    c.strokeStyle = C.blade; c.lineWidth = Math.max(2.5, 0.035 * A);
+    c.beginPath(); c.moveTo(px - Math.cos(a) * r * 0.9, py - Math.sin(a) * r * 0.9); c.lineTo(px + Math.cos(a) * r * 0.9, py + Math.sin(a) * r * 0.9); c.stroke();
+    c.fillStyle = C.blade; c.beginPath(); c.arc(px, py, Math.max(4, 0.07 * A), 0, Math.PI * 2); c.fill();
+    spinArc(c, px, py, r + Math.max(5, 0.07 * A), mm.f > 0 ? -Math.PI / 2 : Math.PI / 2, mm.ccw);
+    // thrust bar (0 to f_max) with a tick at T/4, then the numbers, on the outer side
+    const bx = mm.r > 0 ? px + r + gap : px - r - gap - barW;
+    const bh = 1.8 * r, by = py - bh / 2;
+    c.fillStyle = C.grid; c.fillRect(bx, by, barW, bh);
+    const fh = clamp(f[i] / MX.fmax, 0, 1) * bh;
+    c.fillStyle = C.thrust; c.fillRect(bx, by + bh - fh, barW, fh);
+    const qy = Math.round(by + bh - clamp(mix.cmd[0] / 4 / MX.fmax, 0, 1) * bh) + 0.5;
+    c.strokeStyle = C.ink; c.lineWidth = 1.5; c.beginPath(); c.moveTo(bx - 3, qy); c.lineTo(bx + barW + 3, qy); c.stroke();
+    const tx = mm.r > 0 ? bx + barW + 7 : bx - 7, al = mm.r > 0 ? 'left' : 'right';
+    c.textAlign = al; c.textBaseline = 'middle';
+    c.fillStyle = C['ink-2']; c.font = fs + 'px ' + FONT;
+    c.fillText(mm.name + ' · ' + (mm.ccw ? 'CCW' : 'CW'), tx, py - fs * 1.45);
+    c.fillStyle = C.ink; c.font = 'bold ' + fsBig + 'px ' + FONT;
+    c.fillText(fmt(f[i], 2) + ' N', tx, py);
+    let ny = py + fs * 1.65;
+    if (!met && (f[i] <= 1e-6 || f[i] >= MX.fmax - 1e-6)) { badge(c, 'SAT', tx, ny, al, fs); ny += fs * 1.75; }
+    if (Math.abs(res.raw[i] - f[i]) > 0.005) {
+      c.textAlign = al; c.fillStyle = C.muted; c.font = fs + 'px ' + FONT;
+      c.fillText('wants ' + fmt(res.raw[i], 2), tx, ny);
+    }
+  });
+  // body, red dome, nose marker
+  c.fillStyle = C.body; c.beginPath(); rrPath(c, cx, cy, 0.42 * A, 0.62 * A, 0.1 * A); c.fill();
+  c.fillStyle = C.dome; c.beginPath(); c.arc(cx, cy, 0.13 * A, 0, Math.PI * 2); c.fill();
+  c.fillStyle = C.nose; c.beginPath(); polyPath(c, [[cx, cy - 0.29 * A], [cx - 0.07 * A, cy - 0.16 * A], [cx + 0.07 * A, cy - 0.16 * A]]); c.fill();
+  drawPaused(c, W - 10, 20, 'right');
+}
+function mixTick(dt) {
+  if (paused || reduceMotion || !mix.res) return;    // blade spin is decorative: off for reduced motion
+  for (let i = 0; i < 4; i++) {
+    const rate = 4 + 16 * Math.sqrt(clamp(mix.res.f[i], 0, MX.fmax) / MX.fmax);
+    mix.blades[i] += (MOTORS[i].ccw ? -1 : 1) * rate * dt;   // CCW = decreasing canvas angle
+  }
+  markDirty();
+}
+function setupMixer() {
+  mixUI.T = bindSlider('mix-t', (v) => fmt(v, 1), (v) => { mix.T = v; mixUpdate(); });
+  mixUI.tx = bindSlider('mix-tx', (v) => fmt(v, 2), (v) => { mix.tx = v; mixUpdate(); });
+  mixUI.ty = bindSlider('mix-ty', (v) => fmt(v, 2), (v) => { mix.ty = v; mixUpdate(); });
+  mixUI.tz = bindSlider('mix-tz', (v) => fmt(v, 3), (v) => { mix.tz = v; mixUpdate(); });
+  mixUI.strat = bindRadio('mix-strat', (v) => {
+    mix.strat = v;
+    $('mix-strat-note').textContent = v === 'prio'
+      ? 'Keep roll and pitch; give up yaw first, then shift collective thrust; clip only as a last resort (PX4-like).'
+      : 'Clip each motor to 0–8 N on its own.';
+    mixUpdate();
+  });
+  Object.keys(MIX_PRESETS).forEach((id) => $(id).addEventListener('click', () => applyMixPreset(MIX_PRESETS[id])));
+  mixQuad = makeCanvas('mix-quad');
+  mixUpdate();
+}
+
+/* ======================================================================
+   App shell: tabs and deep links, keyboard, theme, fixed-step loop
+   ====================================================================== */
+const TABS = ['pid', 'cascade', 'mixer'];
+let active = 'pid';
+let paused = false;
+const simOf = (t) => (t === 'pid' ? pid : t === 'cascade' ? cas : null);
+
+function updateSimbar() {
+  const pb = $('sim-pause');
+  pb.textContent = paused ? 'Resume' : 'Pause';
+  pb.classList.toggle('primary', paused);
+  const clk = $('sim-clock'), sim = simOf(active);
+  clk.hidden = !sim;
+  if (sim) clk.textContent = 't = ' + fmt(sim.t, 1) + ' s';
+}
+function togglePause() { paused = !paused; updateSimbar(); markDirty(); }
+function selectTab(id, opts) {
+  opts = opts || {};
+  if (TABS.indexOf(id) < 0) id = 'pid';
+  active = id;
+  TABS.forEach((t) => {
+    const on = t === id, tab = $('tab-' + t);
+    tab.setAttribute('aria-selected', on ? 'true' : 'false');
+    tab.tabIndex = on ? 0 : -1;
+    $('panel-' + t).hidden = !on;
+  });
+  if (opts.focus) $('tab-' + id).focus();
+  try { localStorage.setItem('mcl-last-tab', id); } catch (e) { /* storage unavailable */ }
+  if (opts.hash !== false) {
+    try { if (location.hash !== '#' + id) history.replaceState(null, '', '#' + id); } catch (e) { /* not allowed here */ }
+  }
+  [pidScene, pidPlotZ, pidPlotT, casScene, casPlotP, casPlotT, mixQuad].forEach((st) => { if (st) st.resize(); });
+  updateSimbar(); updateReadouts(); markDirty();
+}
+function setupTabs() {
+  TABS.forEach((t, i) => {
+    const el = $('tab-' + t);
+    el.addEventListener('click', () => selectTab(t));
+    el.addEventListener('keydown', (e) => {
+      let j = null;
+      if (e.key === 'ArrowRight') j = (i + 1) % TABS.length;
+      else if (e.key === 'ArrowLeft') j = (i - 1 + TABS.length) % TABS.length;
+      else if (e.key === 'Home') j = 0;
+      else if (e.key === 'End') j = TABS.length - 1;
+      if (j !== null) { e.preventDefault(); selectTab(TABS[j], { focus: true }); }
+    });
+  });
+  window.addEventListener('hashchange', () => {
+    const h = (location.hash || '').replace('#', '');
+    if (TABS.indexOf(h) >= 0 && h !== active) selectTab(h, { hash: false });
+  });
+}
+function resetActive() {
+  if (active === 'pid') pidReset();
+  else if (active === 'cascade') cas.reset();
+  else applyMixPreset(MIX_PRESETS['mix-pre-hover']);
+  markDirty();
+}
+function typingTarget(t) {
+  const tag = t && t.tagName ? t.tagName.toLowerCase() : '';
+  return tag === 'textarea' || tag === 'select' || (tag === 'input' && t.type !== 'range') || !!(t && t.isContentEditable);
+}
+function setupKeys() {
+  // Space pauses everywhere (Enter still activates a focused button); R, G, P act on the visible tab.
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey || e.metaKey || e.altKey || typingTarget(e.target)) return;
+    if (e.key === ' ' || e.code === 'Space') { e.preventDefault(); if (!e.repeat) togglePause(); return; }
+    const k = (e.key || '').toLowerCase();
+    if (k === 'r') resetActive();
+    else if (k === 'g' && active === 'pid') pidGust();
+    else if (k === 'p' && active === 'pid') pidUI.payload.set(!pidUI.payload.get());
+  });
+  document.addEventListener('keyup', (e) => {
+    if ((e.key === ' ' || e.code === 'Space') && !typingTarget(e.target)) e.preventDefault();
+  });
+  $('sim-pause').addEventListener('click', togglePause);
+}
+function setupTheme() {
+  const root = document.documentElement;
+  const modes = [root.getAttribute('data-theme'), 'light', 'dark'].filter((v, i, a) => a.indexOf(v) === i);
+  let idx = 0;
+  const btn = $('theme-toggle');
+  const name = (m) => 'Theme: ' + (m === 'light' ? 'light' : m === 'dark' ? 'dark' : 'auto');
+  btn.textContent = name(modes[0]);
+  btn.addEventListener('click', () => {
+    idx = (idx + 1) % modes.length;
+    const m = modes[idx];
+    if (m) root.setAttribute('data-theme', m); else root.removeAttribute('data-theme');
+    btn.textContent = name(m);
+    readColors();
+  });
+  const mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  if (mq) {
+    if (mq.addEventListener) mq.addEventListener('change', readColors);
+    else if (mq.addListener) mq.addListener(readColors);
+  }
+  if (window.MutationObserver) new MutationObserver(readColors).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+}
+
+function render() {
+  if (active === 'pid') {
+    drawPidScene(pidScene, pid);
+    drawStrip(pidPlotZ, pid.ring, pid.t, pidCfgZ);
+    drawStrip(pidPlotT, pid.ring, pid.t, pidCfgT);
+  } else if (active === 'cascade') {
+    drawCasScene(casScene, cas);
+    drawStrip(casPlotP, cas.ring, cas.t, casCfgP);
+    drawStrip(casPlotT, cas.ring, cas.t, casCfgT);
+  } else {
+    drawQuad(mixQuad);
+  }
+}
+function updateReadouts() {
+  if (active === 'pid') updatePidReadouts();
+  else if (active === 'cascade') updateCasReadouts();
+  updateSimbar();
+}
+let lastTs = null, acc = 0, lastRO = 0, lastTickWall = 0, rafPending = false;
+const MAX_STEPS = Math.ceil(MAX_FRAME / DT);
+function loop() { rafPending = false; tick(performance.now()); schedule(); }   // one clock for both drivers
+function schedule() { if (!rafPending) { rafPending = true; requestAnimationFrame(loop); } }
+// Watchdog: if requestAnimationFrame stalls while the page is visible (throttled embeds, headless capture),
+// drive the same tick from a timer. At a normal display rate it never fires.
+setInterval(() => {
+  if (document.visibilityState !== 'hidden' && performance.now() - lastTickWall > 150) tick(performance.now());
+}, 100);
+function tick(ts) {
+  lastTickWall = performance.now();
+  if (lastTs === null) lastTs = ts;
+  const real = clamp((ts - lastTs) / 1000, 0, MAX_FRAME);
+  lastTs = ts;
+  const sim = simOf(active);
+  if (sim && !paused) {
+    acc += real;
+    let n = 0;
+    while (acc >= DT && n < MAX_STEPS) { sim.step(DT); acc -= DT; n++; }
+    if (n >= MAX_STEPS) acc = 0;
+    if (n) dirty = true;
+  } else {
+    acc = 0;
+  }
+  if (active === 'mixer') mixTick(real);
+  if (dirty) { dirty = false; render(); }
+  if (ts - lastRO > 100) { lastRO = ts; updateReadouts(); }
+}
+
+/* Startup self-test of the maths; failures go to #errlog. */
+function selfTest() {
+  const errs = [];
+  [[14.7, 0.5, -0.3, 0.1], [20, -1.2, 1.0, -0.2], [5, 0, 0, 0.05]].forEach((w) => {
+    const w2 = mixForward(mixInverse(w));
+    if (w.some((v, i) => Math.abs(v - w2[i]) > 1e-9)) errs.push('allocation round trip');
+  });
+  const a = allocPrio([14.7, 1.2, 0, 0.25]), wa = mixForward(a.f);
+  if (Math.abs(wa[1] - 1.2) > 1e-9 || Math.abs(wa[2]) > 1e-9 || Math.abs(wa[0] - 14.7) > 1e-9 || !(a.yaw < 1) || !a.f.every(inRange)) errs.push('prioritised allocation');
+  const p = createPid();
+  Object.assign(p, { Kp: 30, Ki: 0, Kd: 8, ff: false, aw: true, noise: false, rate: 1000, zsp: 2, payload: false });
+  p.reset(2);
+  for (let i = 0; i < 30000; i++) p.step(DT);
+  if (Math.abs((2 - p.z) - G / 30) > 1e-3) errs.push('PD sag ' + fmt(2 - p.z, 4) + ' m');
+  const q = createCascade();
+  Object.assign(q, { windOn: true, wind: 3, wo: 2, wi: 16, tilt: 30, full: false });
+  q.reset();
+  for (let i = 0; i < 20000; i++) q.step(DT);
+  if (Math.abs((q.x - q.xs) - 3 / (q.m * 4)) > 0.01) errs.push('wind offset ' + fmt(q.x - q.xs, 3) + ' m');
+  if (errs.length && window.__mclLog) window.__mclLog('Self-test failed: ' + errs.join('; '));
+}
+
+function init() {
+  readColors();
+  setupTheme();
+  setupPid();
+  setupCascade();
+  setupMixer();
+  setupTabs();
+  setupKeys();
+  selfTest();
+  const fromHash = (location.hash || '').replace('#', '');
+  let first = fromHash;
+  if (TABS.indexOf(first) < 0) {
+    try { first = localStorage.getItem('mcl-last-tab') || 'pid'; } catch (e) { first = 'pid'; }
+  }
+  selectTab(first, { hash: false });
+  updatePidHint();
+  updateRatio();
+  schedule();
+}
+init();
+})();
+</script>
+</body>
+</html>

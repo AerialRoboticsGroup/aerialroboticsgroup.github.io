@@ -1,0 +1,2499 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simulation Lab</title>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Sanchez&display=swap");
+/* Layout: lab bench, same series as the Multirotor Control Lab. Header strip (deck-blue slab title, tabs, sim bar); each tab = instrument column (plots) beside a control column, "Try this" card under the instruments; one column below 1020px. */
+:root {
+  --bg: #FFFFFF;
+  --panel: #F3F5F6;
+  --ink: #1A1A1A;
+  --ink-2: #52514E;
+  --muted: #6B6A66;
+  --rule: #E1E0D9;
+  --grid: #E1E0D9;
+  --axis: #C3C2B7;
+  --track: #D5D8DA;
+  --thumb: #FFFFFF;
+  --accent: #0070C0;
+  --accent-ink: #005A9E;
+  --accent-wash: #EAF2FA;
+  --on-accent: #FFFFFF;
+  --s1: #0070C0;
+  --s2: #EE7219;
+  --s3: #00A99D;
+  --s4: #AB1F2D;
+  --ok: #1D7A48;
+  --ok-wash: #E6F4EC;
+  --warn: #9A5800;
+  --warn-wash: #FDF1DE;
+  --bad: #B3261E;
+  --bad-wash: #FBE9E7;
+  --sky: #F3F5F6;
+  --ground: #8A8F92;
+  --ground-fill: #E3E5E6;
+  --body: #262626;
+  --arm: #5C6366;
+  --dome: #AB1F2D;
+  --disc: #AEB6BA;
+  --disc-edge: #7F888C;
+  --thrust: #EE7219;
+  --force: #52514E;
+  --truth: #1A1A1A;
+  --path: #C9CCCD;
+  --band: #EAF2FA;
+  --shadow: rgba(0, 0, 0, 0.22);
+  --font-head: "Sanchez", "Rockwell", "Roboto Slab", Georgia, serif;
+  --font-body: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  --font-mono: Consolas, "Cascadia Mono", "SFMono-Regular", Menlo, "Courier New", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121417; --panel: #1A1E22; --ink: #ECEDEE; --ink-2: #BEC2C5; --muted: #9DA2A6;
+    --rule: #2C3136; --grid: #2A2F34; --axis: #474D53; --track: #3A4046; --thumb: #E6E8EA;
+    --accent: #4DA6EC; --accent-ink: #7BBDF1; --accent-wash: #15263A; --on-accent: #0B1620;
+    --s1: #3D9BE9; --s2: #DB7428; --s3: #16AA9D; --s4: #E0505E;
+    --ok: #5CC98C; --ok-wash: #12301F; --warn: #F0B055; --warn-wash: #33260F; --bad: #FF8A80; --bad-wash: #3A1715;
+    --sky: #171B1F; --ground: #6B7378; --ground-fill: #23292E;
+    --body: #4A5157; --arm: #7E878D; --dome: #E0505E; --disc: #8E989E; --disc-edge: #B5BDC2;
+    --thrust: #E8843A; --force: #BEC2C5; --truth: #ECEDEE; --path: #3A4046; --band: #15263A; --shadow: rgba(0, 0, 0, 0.6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121417; --panel: #1A1E22; --ink: #ECEDEE; --ink-2: #BEC2C5; --muted: #9DA2A6;
+  --rule: #2C3136; --grid: #2A2F34; --axis: #474D53; --track: #3A4046; --thumb: #E6E8EA;
+  --accent: #4DA6EC; --accent-ink: #7BBDF1; --accent-wash: #15263A; --on-accent: #0B1620;
+  --s1: #3D9BE9; --s2: #DB7428; --s3: #16AA9D; --s4: #E0505E;
+  --ok: #5CC98C; --ok-wash: #12301F; --warn: #F0B055; --warn-wash: #33260F; --bad: #FF8A80; --bad-wash: #3A1715;
+  --sky: #171B1F; --ground: #6B7378; --ground-fill: #23292E;
+  --body: #4A5157; --arm: #7E878D; --dome: #E0505E; --disc: #8E989E; --disc-edge: #B5BDC2;
+  --thrust: #E8843A; --force: #BEC2C5; --truth: #ECEDEE; --path: #3A4046; --band: #15263A; --shadow: rgba(0, 0, 0, 0.6);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.45;
+}
+[hidden] { display: none !important; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+button { font: inherit; color: inherit; }
+sub, sup { font-size: 0.72em; line-height: 0; }
+
+.page {
+  max-width: 1760px;
+  margin-inline: auto;
+  padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 8px 24px;
+}
+@media (min-width: 900px) { .page { padding-inline: 28px; } }
+
+/* ---------- header ---------- */
+.top {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 10px 28px; padding-block: 10px 12px;
+  border-bottom: 1px solid var(--rule);
+}
+.brand { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.eyebrow {
+  margin: 0; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted);
+}
+h1 {
+  margin: 0; font-family: var(--font-head); font-weight: 400; color: var(--accent);
+  font-size: clamp(1.55rem, 1.05rem + 1.3vw, 2.15rem); line-height: 1.1; text-wrap: balance;
+}
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.tab {
+  min-height: 48px; padding: 9px 20px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--axis); background: var(--bg); color: var(--ink-2);
+  font-size: 1rem; font-weight: 700;
+}
+.tab:hover { border-color: var(--accent); color: var(--accent-ink); }
+.tab[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.simbar { margin-left: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.clock { font-variant-numeric: tabular-nums; color: var(--ink-2); font-size: 0.95rem; min-width: 8.5ch; }
+
+/* ---------- buttons ---------- */
+.btn {
+  min-height: 44px; padding: 8px 16px; border-radius: 10px; cursor: pointer;
+  border: 1px solid var(--axis); background: var(--bg); color: var(--ink);
+  font-size: 0.95rem; font-weight: 700;
+}
+.btn:hover { background: var(--panel); border-color: var(--ink-2); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.btn.primary:hover { background: var(--accent-ink); border-color: var(--accent-ink); }
+.btn.quiet { font-weight: 400; color: var(--ink-2); }
+.btn.wide { width: 100%; }
+.chip {
+  min-height: 42px; padding: 7px 14px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--axis); background: var(--bg); color: var(--ink);
+  font-size: 0.92rem; font-weight: 700;
+}
+.chip:hover { border-color: var(--accent); color: var(--accent-ink); background: var(--accent-wash); }
+.chip[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-wash); color: var(--accent-ink); }
+.row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* ---------- lab layout ---------- */
+.lab {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 400px);
+  grid-template-areas: "viz ctl" "try ctl";
+  grid-template-rows: auto 1fr;
+  gap: 16px 28px; padding-block: 16px 8px; align-items: start;
+}
+.viz { grid-area: viz; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.controls { grid-area: ctl; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.try { grid-area: try; min-width: 0; }
+@media (max-width: 1020px) {
+  .lab { grid-template-columns: minmax(0, 1fr); grid-template-areas: "viz" "ctl" "try"; grid-template-rows: auto; }
+}
+
+.fig { margin: 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.fig-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 14px; }
+.fig-title { font-weight: 700; font-size: 0.95rem; }
+.fig-note { font-size: 0.82rem; color: var(--muted); }
+.legend { display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: 0.85rem; color: var(--ink-2); }
+.lg { display: inline-flex; align-items: center; gap: 6px; }
+.key { display: inline-block; width: 22px; height: 0; border-top: 3px solid var(--k, var(--s1)); flex: none; }
+.key.dash { border-top-style: dashed; border-top-width: 2px; }
+.key.thin { border-top-width: 2px; opacity: 0.75; }
+.sw { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: var(--k, var(--s1)); flex: none; }
+.sw.sq { border-radius: 2px; }
+.sw.band { width: 18px; height: 12px; border-radius: 3px; background: var(--band); border: 1px dashed var(--ink-2); }
+.cbox {
+  position: relative; width: 100%; height: clamp(160px, 23vh, 250px);
+  border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; background: var(--bg);
+}
+.cbox canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.cbox.hov canvas { cursor: crosshair; }
+.plot-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px 14px; }
+.plot-row.phy { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr); }
+.plot-row .cbox { height: clamp(200px, 27vh, 300px); }
+.plot-row.phy .cbox { height: clamp(250px, 33vh, 360px); }
+.cbox.att { height: clamp(200px, 26vh, 280px); }
+.cbox.map { height: clamp(300px, 45vh, 520px); }
+.cbox.err { height: clamp(150px, 20vh, 220px); }
+.cbox.xep { height: clamp(260px, 35vh, 400px); }
+@media (max-width: 700px) {
+  .plot-row, .plot-row.phy { grid-template-columns: minmax(0, 1fr); }
+  .plot-row.phy .cbox.phase { height: auto; aspect-ratio: 1 / 1; max-height: 440px; }
+  .cbox.map { height: auto; aspect-ratio: 1.55 / 1; }
+  .cbox.xep { height: auto; aspect-ratio: 1.3 / 1; }
+}
+
+/* ---------- readouts and status ---------- */
+.readouts {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px 18px; margin: 0;
+}
+.ro { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.ro dt { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.ro dt i, .ro dt sub { text-transform: none; letter-spacing: 0; font-size: 1.12em; }
+.ro dt sub { font-size: 0.8em; }
+.ro dd { margin: 0; font-size: 1.2rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.ro dd small { font-size: 0.78rem; font-weight: 400; color: var(--muted); }
+.statusrow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.state {
+  display: inline-flex; align-items: center; gap: 7px; padding: 3px 11px;
+  border-radius: 999px; border: 1px solid currentColor; font-size: 0.86rem; font-weight: 700;
+}
+.state::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.state[data-s="ok"] { color: var(--ok); background: var(--ok-wash); }
+.state[data-s="warn"] { color: var(--warn); background: var(--warn-wash); }
+.state[data-s="bad"] { color: var(--bad); background: var(--bad-wash); }
+.state[data-s="idle"] { color: var(--muted); background: transparent; }
+.hint { margin: 0; font-size: 0.98rem; color: var(--ink-2); max-width: 78ch; }
+.hint strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+.model { margin: 0; font-size: 0.86rem; color: var(--muted); max-width: 100ch; }
+.model i, .hint i, .try i, .eqbox i, .group i, .fig-title i, .ro i, .legend i { font-family: Georgia, "Times New Roman", serif; }
+/* time-derivative dots drawn with CSS: combining marks render offset in most UI fonts */
+.dot, .ddot { position: relative; display: inline-block; line-height: 1; }
+.dot::after, .ddot::after { position: absolute; left: 50%; top: -0.14em; transform: translateX(-38%); font-style: normal; line-height: 1; }
+.dot::after { content: "\02D9"; }
+.ddot::after { content: "\00A8"; }
+.dot.tall::after, .ddot.tall::after { top: -0.34em; }
+.hat { position: relative; display: inline-block; line-height: 1; }
+.hat::after { content: "\02C6"; position: absolute; left: 50%; top: -0.32em; transform: translateX(-35%); font-style: normal; line-height: 1; }
+.ro dt .m { text-transform: none; letter-spacing: 0; }
+
+/* ---------- equation card (tab 1) ---------- */
+.eqbox {
+  display: grid; gap: 4px; padding: 10px 16px 12px; margin: 0;
+  background: var(--panel); border-left: 4px solid var(--accent); border-radius: 0 12px 12px 0;
+}
+.eqhead { font-weight: 700; font-size: 0.95rem; }
+.eqline { font-family: Georgia, "Times New Roman", serif; font-size: 1.1rem; line-height: 1.5; }
+.eqline + .eqline { margin-top: -2px; }
+.eqnote { font-size: 0.93rem; color: var(--ink-2); max-width: 90ch; }
+.eqnote strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+.eqlive { font-size: 0.95rem; font-variant-numeric: tabular-nums; color: var(--ink); }
+
+/* ---------- controls ---------- */
+.group {
+  display: flex; flex-direction: column; gap: 10px;
+  border: 1px solid var(--rule); border-radius: 12px; padding: 12px 16px 14px;
+}
+.group h2 {
+  margin: 0; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted);
+}
+.group h2 .tagline { text-transform: none; letter-spacing: 0; font-weight: 400; }
+.slider { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 0 12px; }
+.slider label { font-weight: 700; font-size: 1rem; }
+.slider output { font-size: 1rem; font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.slider output .u { font-weight: 400; color: var(--muted); font-size: 0.86rem; }
+.slider input { grid-column: 1 / -1; }
+input[type="range"] {
+  -webkit-appearance: none; appearance: none; width: 100%; height: 34px; margin: 0;
+  background: transparent; cursor: pointer; --p: 50%;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 8px; border-radius: 4px;
+  background: linear-gradient(to right, var(--accent) 0 var(--p), var(--track) var(--p) 100%);
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 28px; height: 28px; margin-top: -10px; border-radius: 50%;
+  background: var(--thumb); border: 3px solid var(--accent); box-shadow: 0 1px 3px var(--shadow);
+}
+input[type="range"]::-moz-range-track { height: 8px; border-radius: 4px; background: var(--track); }
+input[type="range"]::-moz-range-progress { height: 8px; border-radius: 4px; background: var(--accent); }
+input[type="range"]::-moz-range-thumb {
+  width: 22px; height: 22px; border-radius: 50%; background: var(--thumb);
+  border: 3px solid var(--accent); box-shadow: 0 1px 3px var(--shadow);
+}
+input[type="range"]:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+.switch {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px;
+  width: 100%; min-height: 44px; padding: 5px 8px 5px 4px; margin-inline: -4px;
+  border: 0; border-radius: 10px; background: transparent; text-align: left; cursor: pointer; font-size: 1rem;
+}
+.switch:hover { background: var(--panel); }
+.sw-track { position: relative; width: 46px; height: 26px; border-radius: 13px; background: var(--track); }
+.sw-track::after {
+  content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--thumb); box-shadow: 0 1px 2px var(--shadow); transition: transform 0.15s ease;
+}
+.switch[aria-pressed="true"] .sw-track { background: var(--accent); }
+.switch[aria-pressed="true"] .sw-track::after { transform: translateX(20px); }
+.sw-label { min-width: 0; }
+.sw-label small { display: block; font-size: 0.8rem; color: var(--muted); }
+.sw-state { font-size: 0.82rem; font-weight: 700; color: var(--muted); min-width: 3ch; text-align: right; }
+.switch[aria-pressed="true"] .sw-state { color: var(--accent-ink); }
+
+.seg-label { font-weight: 700; font-size: 1rem; }
+.seg { display: flex; border: 1px solid var(--axis); border-radius: 10px; overflow: hidden; }
+.seg button {
+  flex: 1 1 0; min-height: 44px; padding: 6px 8px; border: 0; border-right: 1px solid var(--axis);
+  background: var(--bg); color: var(--ink-2); font-size: 0.95rem; font-weight: 700; cursor: pointer;
+}
+.seg button:last-child { border-right: 0; }
+.seg button:hover { background: var(--panel); }
+.seg button[aria-checked="true"] { background: var(--accent); color: var(--on-accent); }
+.seg button:focus-visible { outline: 3px solid var(--ink); outline-offset: -5px; }
+.seg.tall button { min-height: 52px; line-height: 1.2; }
+
+.ratio { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font-size: 0.98rem; }
+.ratio b { font-variant-numeric: tabular-nums; font-size: 1.1rem; }
+.keys { margin: 0; font-size: 0.82rem; color: var(--muted); }
+.note { margin: 0; font-size: 0.86rem; color: var(--ink-2); }
+kbd {
+  font-family: var(--font-mono); font-size: 0.8rem; padding: 1px 6px; border-radius: 5px;
+  border: 1px solid var(--axis); border-bottom-width: 2px; background: var(--panel); color: var(--ink);
+}
+
+/* ---------- legend toggles (tab 2) ---------- */
+.toggles { display: flex; flex-wrap: wrap; gap: 6px; }
+.ltog {
+  display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 4px 12px 4px 9px;
+  border-radius: 999px; border: 1px solid var(--axis); background: var(--bg); color: var(--ink);
+  font-size: 0.86rem; font-weight: 700; cursor: pointer;
+}
+.ltog:hover { border-color: var(--accent); }
+.ltog .tick { width: 1.1em; text-align: center; color: var(--accent-ink); }
+.ltog[aria-pressed="true"] .tick::before { content: "\2713"; }
+.ltog[aria-pressed="false"] { color: var(--muted); border-style: dashed; }
+.ltog[aria-pressed="false"] .ltxt { text-decoration: line-through; }
+.ltog[aria-pressed="false"] .key, .ltog[aria-pressed="false"] .sw { opacity: 0.35; }
+
+/* ---------- real-time factor card ---------- */
+.rtf-out { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.rtf-big { font-size: 1.9rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.rtf-bar { position: relative; height: 26px; border-radius: 6px; background: var(--panel); border: 1px solid var(--rule); overflow: hidden; }
+.rtf-seg { position: absolute; top: 0; bottom: 0; left: 0; }
+.rtf-seg.p { background: var(--s1); }
+.rtf-seg.r { background: var(--s2); }
+.rtf-mark { position: absolute; top: -2px; bottom: -2px; width: 0; border-left: 2px dashed var(--ink); }
+.rtf-scale { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.calc-tag {
+  align-self: flex-start; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 999px; border: 1px dashed var(--ink-2); color: var(--ink-2);
+}
+
+/* ---------- batch result (tab 3) ---------- */
+.batch { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
+.batch-big { font-size: 1.9rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.ranges { margin: 0; padding-left: 1.1em; font-size: 0.86rem; color: var(--ink-2); display: grid; gap: 1px; }
+
+/* ---------- try this ---------- */
+.try { background: var(--accent-wash); border-radius: 12px; padding: 14px 20px 16px; align-self: start; }
+.try h2 { margin: 0 0 6px; font-family: var(--font-head); font-weight: 400; font-size: 1.2rem; color: var(--accent-ink); }
+.try ol { margin: 0; padding-left: 1.4em; display: grid; gap: 7px; font-size: 0.98rem; max-width: 80ch; }
+.try li::marker { color: var(--accent-ink); font-weight: 700; }
+
+.foot {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 20px;
+  margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--rule);
+  font-size: 0.84rem; color: var(--muted);
+}
+.foot p { margin: 0; }
+
+@media (max-width: 560px) {
+  body { font-size: 17px; }
+  .tab { flex: 1 1 auto; padding: 8px 12px; font-size: 0.92rem; }
+  .simbar { margin-left: 0; }
+  .eqline { font-size: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
+</style>
+</head>
+<body>
+<div class="page" id="app">
+  <header class="top">
+    <div class="brand">
+      <p class="eyebrow">AENGM0073 · Aerial Robotics Simulators and PX4 Framework</p>
+      <h1>Simulation Lab</h1>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Lab sections">
+      <button type="button" class="tab" role="tab" id="tab-physics" aria-controls="panel-physics" aria-selected="true">Integrator &amp; step size</button>
+      <button type="button" class="tab" role="tab" id="tab-sensors" aria-controls="panel-sensors" aria-selected="false" tabindex="-1">Sensors &amp; ground truth</button>
+      <button type="button" class="tab" role="tab" id="tab-gap" aria-controls="panel-gap" aria-selected="false" tabindex="-1">Sim-to-real</button>
+    </div>
+    <div class="simbar">
+      <button type="button" class="btn" id="sim-pause" aria-keyshortcuts="Space">Pause</button>
+      <span class="clock" id="sim-clock">t = 0.0 s</span>
+      <button type="button" class="btn quiet" id="theme-toggle">Theme: auto</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ================= Tab 1: integrator and step size ================= -->
+    <section class="panel" role="tabpanel" id="panel-physics" aria-labelledby="tab-physics">
+      <div class="lab">
+        <div class="viz">
+          <div class="plot-row phy">
+            <figure class="fig">
+              <figcaption class="fig-head"><span class="fig-title">Phase portrait, <i>x</i> against <i>v</i>/<i>ω</i></span>
+                <span class="legend"><span class="lg"><span class="key dash" style="--k: var(--ink-2)"></span>exact orbit</span><span class="lg"><span class="key" style="--k: var(--s1)"></span>simulated</span></span>
+              </figcaption>
+              <div class="cbox phase"><canvas id="phy-phase" role="img" aria-label="Phase portrait of the oscillator: the exact solution is the dashed unit circle, the simulated trajectory is the blue curve, with a moving dot for each."></canvas></div>
+            </figure>
+            <figure class="fig">
+              <figcaption class="fig-head"><span class="fig-title">Energy <i>E</i>/<i>E</i><sub>0</sub> (log scale)</span>
+                <span class="legend"><span class="lg"><span class="key" style="--k: var(--s1)"></span>simulated</span><span class="lg"><span class="key dash" style="--k: var(--s2)"></span>predicted</span><span class="lg"><span class="key dash" style="--k: var(--ink-2)"></span>exact (1)</span></span>
+              </figcaption>
+              <div class="cbox hov"><canvas id="phy-energy" role="img" aria-label="Energy relative to the starting energy over the simulated periods, on a logarithmic scale, with the predicted curve and the exact value 1."></canvas></div>
+            </figure>
+          </div>
+          <div class="eqbox" id="phy-eq" aria-live="polite"></div>
+          <dl class="readouts">
+            <div class="ro"><dt>Steps per period</dt><dd id="phy-ro-spp">100</dd></div>
+            <div class="ro"><dt>Per-step energy factor</dt><dd id="phy-ro-step">1.00395</dd></div>
+            <div class="ro"><dt><span class="m"><i>E</i>/<i>E</i><sub>0</sub></span> after <span id="phy-ro-nlab">10</span> periods</dt><dd id="phy-ro-sim">51.4</dd></div>
+            <div class="ro"><dt>Predicted</dt><dd id="phy-ro-pred">51.4</dd></div>
+          </dl>
+
+          <figure class="fig">
+            <figcaption class="fig-head"><span class="fig-title">Attitude loop: tilt response to a 20° step (deg)</span>
+              <span class="legend"><span class="lg"><span class="key" style="--k: var(--s1)"></span>selected integrator at Δ<i>t</i></span><span class="lg"><span class="key dash" style="--k: var(--ink-2)"></span>true 250 Hz loop</span></span>
+            </figcaption>
+            <div class="cbox att hov"><canvas id="phy-att" role="img" aria-label="Tilt angle after a 20 degree step command, simulated with the selected integrator and step size, compared with the true response of the 250 Hz loop."></canvas></div>
+          </figure>
+          <div class="statusrow">
+            <span class="state" id="phy-att-state" data-s="ok">Stable</span>
+            <span class="state" id="phy-att-rate" data-s="idle">Controller at 250 Hz</span>
+          </div>
+          <p class="hint" id="phy-att-note">Real physics engines typically step at Δ<i>t</i> = 1–4 ms (Gazebo's default maximum step size is 1 ms; PX4's Gazebo worlds use 4 ms): small enough that integrator error is invisible for a drone, cheap enough to run faster than real time.</p>
+          <p class="model">Oscillator: <i class="ddot">x</i> = −<i>ω</i>²<i>x</i>, <i>ω</i> = 2π rad/s (period <i>T</i> = 1 s), <i>x</i><sub>0</sub> = 1 m, <i>v</i><sub>0</sub> = 0, energy per unit mass <i>E</i> = ½<i>v</i>² + ½<i>ω</i>²<i>x</i>²; the trajectory is computed directly for <i>n</i> = <i>N T</i>/Δ<i>t</i> steps. Attitude loop: <i class="ddot tall">θ</i> = <i>u</i><sub>2</sub>/<i>I</i>, <i>I</i> = 0.01 kg·m², PD controller <i>u</i><sub>2</sub> = <i>I</i>(<i>K</i><sub>p</sub>(<i>θ</i><sub>ref</sub> − <i>θ</i>) − <i>K</i><sub>d</sub><i class="dot tall">θ</i>) with <i>K</i><sub>p</sub> = <i>ω</i><sub>a</sub>² = 625 s⁻², <i>K</i><sub>d</sub> = 2<i>ζ</i><sub>a</sub><i>ω</i><sub>a</sub> = 25 s⁻¹ (<i>ω</i><sub>a</sub> = 25 rad/s, <i>ζ</i><sub>a</sub> = 0.5), updated at 250 Hz and held between updates. The controller can only see states the physics engine produces, so when Δ<i>t</i> &gt; 4 ms it runs once per physics step (lockstep). Rotor limits are ignored here. Stability is judged over 4 s: an error that still grows between 2–3 s and 3–4 s is flagged.</p>
+        </div>
+
+        <aside class="controls" aria-label="Integrator and step size controls">
+          <div class="group">
+            <h2>Integrator</h2>
+            <div class="seg tall" role="radiogroup" aria-label="Integrator" id="phy-int">
+              <button type="button" role="radio" id="phy-int-ee" data-v="ee" aria-checked="true">Explicit Euler</button>
+              <button type="button" role="radio" id="phy-int-se" data-v="se" aria-checked="false" tabindex="-1">Semi-implicit Euler</button>
+              <button type="button" role="radio" id="phy-int-rk" data-v="rk" aria-checked="false" tabindex="-1">RK4</button>
+            </div>
+          </div>
+          <div class="group">
+            <h2>Physics step</h2>
+            <div class="slider">
+              <label for="phy-dt">Step size Δ<i>t</i> (log scale)</label>
+              <output id="phy-dt-out" for="phy-dt"><span class="v">10</span> <span class="u">ms</span></output>
+              <input type="range" id="phy-dt" min="0" max="28" step="1" value="13" aria-valuetext="10 milliseconds">
+            </div>
+            <div class="row">
+              <button type="button" class="chip" id="phy-dt-1">1 ms (engine)</button>
+              <button type="button" class="chip" id="phy-dt-4">4 ms</button>
+              <button type="button" class="chip" id="phy-dt-10">10 ms</button>
+              <button type="button" class="chip" id="phy-dt-50">50 ms</button>
+            </div>
+            <div class="slider">
+              <label for="phy-n">Periods simulated <i>N</i></label>
+              <output id="phy-n-out" for="phy-n"><span class="v">10</span> <span class="u">× 1 s</span></output>
+              <input type="range" id="phy-n" min="1" max="20" step="1" value="10">
+            </div>
+          </div>
+          <div class="group" id="phy-rtf-card">
+            <h2>Real-time factor</h2>
+            <span class="calc-tag">Conceptual calculator</span>
+            <p class="note">1 kHz physics and 30 fps rendering, run as fast as the computer allows.</p>
+            <div class="slider">
+              <label for="phy-cp">Physics cost per step</label>
+              <output id="phy-cp-out" for="phy-cp"><span class="v">300</span> <span class="u">µs</span></output>
+              <input type="range" id="phy-cp" min="0" max="16" step="1" value="10" aria-valuetext="300 microseconds">
+            </div>
+            <div class="slider">
+              <label for="phy-cr">Rendering cost per frame</label>
+              <output id="phy-cr-out" for="phy-cr"><span class="v">25</span> <span class="u">ms</span></output>
+              <input type="range" id="phy-cr" min="0" max="100" step="1" value="25">
+            </div>
+            <button type="button" class="switch" id="phy-headless" aria-pressed="false"><span class="sw-track" aria-hidden="true"></span><span class="sw-label">Headless<small>no rendering (CI, training runs)</small></span><span class="sw-state" aria-hidden="true">Off</span></button>
+            <div class="rtf-out" aria-live="polite">
+              <span class="rtf-big" id="phy-rtf">0.95×</span>
+              <span class="state" id="phy-rtf-state" data-s="warn">Slower than real time</span>
+            </div>
+            <div>
+              <div class="rtf-bar" aria-hidden="true">
+                <span class="rtf-seg p" id="phy-rtf-bp"></span>
+                <span class="rtf-seg r" id="phy-rtf-br"></span>
+                <span class="rtf-mark" id="phy-rtf-mark"></span>
+              </div>
+              <div class="rtf-scale"><span>0 s</span><span id="phy-rtf-max">wall-clock time per simulated second</span></div>
+            </div>
+            <span class="legend"><span class="lg"><span class="sw sq" style="--k: var(--s1)"></span>physics</span><span class="lg"><span class="sw sq" style="--k: var(--s2)"></span>rendering</span><span class="lg"><span class="key dash" style="--k: var(--ink)"></span>1 s (real time)</span></span>
+            <p class="note" id="phy-rtf-text">RTF = simulated time / wall-clock time.</p>
+          </div>
+          <p class="keys">Keys: <kbd>Space</kbd> pause the dots · <kbd>R</kbd> restart them</p>
+        </aside>
+
+        <section class="try" aria-labelledby="phy-try-h">
+          <h2 id="phy-try-h">Try this</h2>
+          <ol>
+            <li>Explicit Euler at Δ<i>t</i> = 10 ms gains energy every step. Check the readout: is <i>E</i>/<i>E</i><sub>0</sub> after 10 periods equal to (1 + <i>ω</i>²Δ<i>t</i>²)<sup><i>n</i></sup> with <i>n</i> = 1000? Halve Δ<i>t</i>: why does the growth fall from ×51 to about ×7?</li>
+            <li>Switch to <b>Semi-implicit Euler</b> at the same Δ<i>t</i>. The energy now wobbles but never drifts. It costs the same as explicit Euler, so why do physics engines (ODE, Bullet, MuJoCo's default) use it?</li>
+            <li>With explicit Euler, raise Δ<i>t</i> until the attitude loop reads <b>Simulation unstable</b>. Which integrator survives the largest step? The real 250 Hz loop is stable at every step size, so what exactly is failing?</li>
+            <li>In the real-time factor calculator, find the rendering cost that drops RTF below 1. What does <b>Headless</b> buy you, and why is RTF &gt; 1 useful for test suites and learning-based controllers?</li>
+          </ol>
+        </section>
+      </div>
+    </section>
+
+    <!-- ================= Tab 2: sensors and ground truth ================= -->
+    <section class="panel" role="tabpanel" id="panel-sensors" aria-labelledby="tab-sensors" hidden>
+      <div class="lab">
+        <div class="viz">
+          <figure class="fig">
+            <figcaption class="fig-head"><span class="fig-title">Top view: figure-eight at about 4 m/s</span>
+              <span class="toggles" role="group" aria-label="Show or hide">
+                <button type="button" class="ltog" id="sen-show-truth" aria-pressed="true"><span class="tick" aria-hidden="true"></span><span class="key" style="--k: var(--truth)"></span><span class="ltxt">Ground truth</span></button>
+                <button type="button" class="ltog" id="sen-show-gps" aria-pressed="true"><span class="tick" aria-hidden="true"></span><span class="sw" style="--k: var(--s2)"></span><span class="ltxt">GPS fixes</span></button>
+                <button type="button" class="ltog" id="sen-show-dr" aria-pressed="true"><span class="tick" aria-hidden="true"></span><span class="key dash" style="--k: var(--s3)"></span><span class="ltxt">Dead reckoning</span></button>
+                <button type="button" class="ltog" id="sen-show-kf" aria-pressed="true"><span class="tick" aria-hidden="true"></span><span class="key" style="--k: var(--s1)"></span><span class="ltxt">Fused (Kalman)</span></button>
+              </span>
+            </figcaption>
+            <div class="cbox map"><canvas id="sen-map" role="img" aria-label="Top view of the drone flying a figure-eight: the ground-truth trail, recent GPS fixes as dots, the dead-reckoning track and the fused Kalman estimate."></canvas></div>
+          </figure>
+          <figure class="fig">
+            <figcaption class="fig-head"><span class="fig-title">Position error against ground truth (m), last 20 s</span>
+              <span class="legend"><span class="lg"><span class="key" style="--k: var(--s2)"></span>GPS only</span><span class="lg"><span class="key dash" style="--k: var(--s3)"></span>dead reckoning</span><span class="lg"><span class="key" style="--k: var(--s1)"></span>fused</span></span>
+            </figcaption>
+            <div class="cbox err hov"><canvas id="sen-err" role="img" aria-label="Position error of each estimator over the last 20 seconds, computed against the simulator's ground truth."></canvas></div>
+          </figure>
+          <dl class="readouts">
+            <div class="ro"><dt><span class="key" style="--k: var(--s2)"></span>GPS-only RMS</dt><dd id="sen-ro-gps">–</dd></div>
+            <div class="ro"><dt><span class="key dash" style="--k: var(--s3)"></span>Dead reckoning RMS</dt><dd id="sen-ro-dr">–</dd></div>
+            <div class="ro"><dt><span class="key" style="--k: var(--s1)"></span>Fused RMS</dt><dd id="sen-ro-kf">–</dd></div>
+            <div class="ro"><dt>Bias estimate</dt><dd id="sen-ro-bias">–</dd></div>
+          </dl>
+          <div class="statusrow">
+            <span class="state" id="sen-st-gps" data-s="ok">GPS 5 Hz · 200 ms late</span>
+            <span class="state" id="sen-st-comp" data-s="idle">Latency compensated</span>
+          </div>
+          <p class="hint" id="sen-hint">RMS over the last 20 s, against the simulator's ground truth. On a real flight there is no ground truth, so these numbers cannot be measured.</p>
+          <p class="model">Sensor models: accelerometer <i>a</i><sub>m</sub> = <i>a</i> + <i>b</i> + <i>n</i><sub>a</sub> (1 kHz, already rotated into the world frame with gravity removed), where <i>b</i> = turn-on bias (slider, fixed direction) + a slow drift (random walk 0.003 m/s²/√s, mean-reverting over 200 s) and <i>n</i><sub>a</sub> is white noise with σ<sub>a</sub>; GPS <i>p</i><sub>GPS</sub> = <i>p</i> + <i>n</i><sub>p</sub>, white noise σ<sub>p</sub> per axis, sampled at the GPS rate and delivered <i>L</i> late. Ground truth: <i>x</i> = 20 sin(0.2<i>t</i>), <i>y</i> = 10 sin(0.4<i>t</i>) m (speed 2.8–5.7 m/s). Dead reckoning: <i>v</i> ← <i>v</i> + <i>a</i><sub>m</sub>Δ<i>t</i>, <i>p</i> ← <i>p</i> + <i>v</i>Δ<i>t</i> from the last reset. Fused: linear Kalman filter per axis with state (<i>p</i>, <i>v</i>, <i>b</i>); it predicts with <i>a</i><sub>m</sub> − <i class="hat">b</i> at 1 kHz and corrects with each fix, <i class="hat">x</i> ← <i class="hat">x</i> + <i>K</i>(<i>p</i><sub>GPS</sub> − <i class="hat">p</i>), with the Kalman gain <i>K</i> computed from <i>R</i> = (assumed GPS σ)². With latency compensation it rewinds to the fix's timestamp, corrects, and re-predicts to now. GPS-only holds the latest fix.</p>
+        </div>
+
+        <aside class="controls" aria-label="Sensor and estimator controls">
+          <div class="group">
+            <h2>GPS</h2>
+            <div class="slider">
+              <label for="sen-rate">Rate</label>
+              <output id="sen-rate-out" for="sen-rate"><span class="v">5</span> <span class="u">Hz</span></output>
+              <input type="range" id="sen-rate" min="1" max="20" step="1" value="5">
+            </div>
+            <div class="slider">
+              <label for="sen-sig">Noise σ<sub>p</sub> (per axis)</label>
+              <output id="sen-sig-out" for="sen-sig"><span class="v">2.0</span> <span class="u">m</span></output>
+              <input type="range" id="sen-sig" min="0" max="5" step="0.1" value="2">
+            </div>
+            <div class="slider">
+              <label for="sen-lat">Latency <i>L</i></label>
+              <output id="sen-lat-out" for="sen-lat"><span class="v">200</span> <span class="u">ms</span></output>
+              <input type="range" id="sen-lat" min="0" max="500" step="10" value="200">
+            </div>
+          </div>
+          <div class="group">
+            <h2>Accelerometer (IMU)</h2>
+            <div class="slider">
+              <label for="sen-bias">Turn-on bias |<i>b</i>|</label>
+              <output id="sen-bias-out" for="sen-bias"><span class="v">0.050</span> <span class="u">m/s²</span></output>
+              <input type="range" id="sen-bias" min="0" max="0.2" step="0.005" value="0.05">
+            </div>
+            <div class="slider">
+              <label for="sen-noise">Noise σ<sub>a</sub> (per 1 kHz sample)</label>
+              <output id="sen-noise-out" for="sen-noise"><span class="v">0.10</span> <span class="u">m/s²</span></output>
+              <input type="range" id="sen-noise" min="0" max="0.5" step="0.01" value="0.1">
+            </div>
+          </div>
+          <div class="group">
+            <h2>Fusion <span class="tagline">· one tuning knob</span></h2>
+            <div class="slider">
+              <label for="sen-r">Filter's assumed GPS σ</label>
+              <output id="sen-r-out" for="sen-r"><span class="v">2.0</span> <span class="u">m</span></output>
+              <input type="range" id="sen-r" min="0" max="14" step="1" value="8" aria-valuetext="2 metres">
+            </div>
+            <p class="note" id="sen-r-note">Matches the true GPS noise.</p>
+            <button type="button" class="switch" id="sen-comp" aria-pressed="true"><span class="sw-track" aria-hidden="true"></span><span class="sw-label">Compensate GPS latency<small>fuse each fix at its own timestamp</small></span><span class="sw-state" aria-hidden="true">On</span></button>
+          </div>
+          <div class="group">
+            <h2>Actions</h2>
+            <div class="row">
+              <button type="button" class="btn" id="sen-reset" aria-keyshortcuts="R">Reset estimator</button>
+              <button type="button" class="btn" id="sen-dropout" aria-keyshortcuts="D">GPS dropout (5 s)</button>
+            </div>
+          </div>
+          <p class="keys">Keys: <kbd>Space</kbd> pause · <kbd>R</kbd> reset estimator · <kbd>D</kbd> GPS dropout</p>
+        </aside>
+
+        <section class="try" aria-labelledby="sen-try-h">
+          <h2 id="sen-try-h">Try this</h2>
+          <ol>
+            <li>Let it run for 20 s and compare the three RMS readouts. In the first seconds dead reckoning can look best: its error grows as ½<i>b t</i>², so how far should a 0.05 m/s² bias take it in 20 s? Why can you check this in simulation but never on a real flight?</li>
+            <li>Press <b>GPS dropout (5 s)</b> (or <kbd>D</kbd>). Watch the GPS-only marker freeze while the drone flies on. How far does the fused estimate drift without GPS, and how quickly does it recover?</li>
+            <li>Set the latency to 500 ms, then switch <b>Compensate GPS latency</b> off. What happens to the fused RMS, and why? (PX4's EKF2 fuses GPS on a delayed time horizon for exactly this reason.)</li>
+            <li>Sweep the filter's assumed GPS σ from 0.2 m to 15 m, giving the RMS about 20 s to settle each time. Where is the fused RMS lowest, and how does that compare with the true σ<sub>p</sub>?</li>
+          </ol>
+        </section>
+      </div>
+    </section>
+
+    <!-- ================= Tab 3: sim-to-real ================= -->
+    <section class="panel" role="tabpanel" id="panel-gap" aria-labelledby="tab-gap" hidden>
+      <div class="lab">
+        <div class="viz">
+          <figure class="fig">
+            <figcaption class="fig-head"><span class="fig-title">Sideways step: <i>x</i>(<i>t</i>) (m), one 8 s episode</span>
+              <span class="legend"><span class="lg"><span class="key" style="--k: var(--s1)"></span>live run (current reality)</span><span class="lg"><span class="key thin" style="--k: var(--s3)"></span>random world, good</span><span class="lg"><span class="key thin" style="--k: var(--s4)"></span>random world, failed (× = crash)</span><span class="lg"><span class="sw band"></span>±10 % band</span></span>
+            </figcaption>
+            <div class="cbox xep hov"><canvas id="gap-x" role="img" aria-label="Horizontal position during the episode: the live run, the plus or minus 10 percent band around the 2 metre target from 4 seconds on, and, after Randomise 20 worlds, one faint line per random world. Hover a faint line to see its world's parameters."></canvas></div>
+          </figure>
+          <div class="plot-row">
+            <figure class="fig">
+              <figcaption class="fig-head"><span class="fig-title">Side view</span><span class="fig-note" id="gap-scene-note">target at <i>x</i> = 2 m, <i>z</i> = 1.5 m</span></figcaption>
+              <div class="cbox"><canvas id="gap-scene" role="img" aria-label="Side view of the planar drone with rotor thrust arrows, a dashed ghost at the desired tilt and the target marker."></canvas></div>
+            </figure>
+            <figure class="fig">
+              <figcaption class="fig-head"><span class="fig-title">Tilt <i>θ</i> (deg)</span>
+                <span class="legend"><span class="lg"><span class="key" style="--k: var(--s1)"></span><i>θ</i></span><span class="lg"><span class="key dash" style="--k: var(--ink-2)"></span>±30° limit</span><span class="lg"><span class="sw band"></span>|<i>θ</i>| &lt; 15°</span></span>
+              </figcaption>
+              <div class="cbox hov"><canvas id="gap-th" role="img" aria-label="Tilt angle during the live episode, with the 30 degree tilt limit and the 15 degree level band used to judge a good run."></canvas></div>
+            </figure>
+          </div>
+          <dl class="readouts">
+            <div class="ro"><dt>Live run</dt><dd id="gap-ro-res">Running</dd></div>
+            <div class="ro"><dt>Enters ±10 % at</dt><dd id="gap-ro-settle">–</dd></div>
+            <div class="ro"><dt>Overshoot</dt><dd id="gap-ro-over">–</dd></div>
+            <div class="ro"><dt>Max |<i>θ</i>| after 4 s</dt><dd id="gap-ro-th">–</dd></div>
+          </dl>
+          <div class="statusrow">
+            <span class="state" id="gap-st-run" data-s="idle">Episode running</span>
+            <span class="state" id="gap-st-batch" data-s="idle">No random worlds yet</span>
+          </div>
+          <p class="model"><i class="ddot">x</i> = −(<i>u</i><sub>1</sub>/<i>m</i>) sin <i>θ</i> + <i>F</i><sub>gust</sub>/<i>m</i>, <i class="ddot">z</i> = (<i>u</i><sub>1</sub>/<i>m</i>) cos <i>θ</i> − <i>g</i>, <i class="ddot tall">θ</i> = <i>u</i><sub>2</sub>/<i>I</i>, with <i>u</i><sub>1</sub> = <i>F</i><sub>1</sub> + <i>F</i><sub>2</sub>, <i>u</i><sub>2</sub> = (<i>F</i><sub>2</sub> − <i>F</i><sub>1</sub>)<i>L</i>; nominal <i>m</i> = 1 kg, <i>L</i> = 0.25 m, <i>I</i> = 0.01 kg·m², 0 ≤ <i>F<sub>i</sub></i> ≤ <i>m g</i>. Reality: each rotor lags its command, <i>τ</i><sub>m</sub><i class="dot">F</i> = <i>F</i><sub>cmd</sub> − <i>F</i>; the controller sees measurements one sensing/compute delay late; sensor noise 1× = σ of 2 cm, 5 cm/s, 0.5°, 2°/s; true mass and inertia = nominal × (1 + mass error) while the controller assumes 1 kg; gust = random sideways force (correlation time 1 s). Controller at 1 kHz: <i>a<sub>x</sub></i> = <i>ω</i><sub>o</sub>²(<i>x</i><sub>target</sub> − <i>x</i>) − 2<i>ω</i><sub>o</sub><i class="dot">x</i>, <i>θ</i><sub>des</sub> = atan2(−<i>a<sub>x</sub></i>, <i>g</i> + <i>a<sub>z</sub></i>) clipped to ±30°, <i>u</i><sub>1</sub> = <i>m</i>(<i>g</i> + <i>a<sub>z</sub></i>)/cos <i>θ</i>, <i>u</i><sub>2</sub> = <i>I</i>(<i>ω</i><sub>i</sub>²(<i>θ</i><sub>des</sub> − <i>θ</i>) − 2<i>ζ</i><sub>i</sub><i>ω</i><sub>i</sub><i class="dot tall">θ</i>); altitude loop <i>a<sub>z</sub></i> from <i>ω<sub>z</sub></i> = 3 rad/s, <i>ζ</i> = 1. Each episode starts hovering at <i>x</i> = 0, <i>z</i> = 1.5 m with the target at <i>x</i> = 2 m. <b>Good run</b>: from 4 s to 8 s, <i>x</i> stays within 1.8–2.2 m, |<i>θ</i>| stays below 15°, and no crash (crash = touching the ground or |<i>θ</i>| &gt; 90°).</p>
+        </div>
+
+        <aside class="controls" aria-label="Sim-to-real controls">
+          <div class="group">
+            <h2>Controller gains</h2>
+            <div class="row">
+              <button type="button" class="chip" id="gap-pre-aggr" aria-pressed="true">Aggressive (tuned on the ideal sim)</button>
+              <button type="button" class="chip" id="gap-pre-rob" aria-pressed="false">Robust (tuned with domain randomisation)</button>
+            </div>
+            <div class="slider">
+              <label for="gap-wo">Outer (position) <i>ω</i><sub>o</sub></label>
+              <output id="gap-wo-out" for="gap-wo"><span class="v">3.5</span> <span class="u">rad/s</span></output>
+              <input type="range" id="gap-wo" min="0.5" max="5" step="0.1" value="3.5">
+            </div>
+            <div class="slider">
+              <label for="gap-wi">Inner (attitude) <i>ω</i><sub>i</sub></label>
+              <output id="gap-wi-out" for="gap-wi"><span class="v">35.0</span> <span class="u">rad/s</span></output>
+              <input type="range" id="gap-wi" min="2" max="50" step="0.5" value="35">
+            </div>
+            <div class="slider">
+              <label for="gap-zi">Attitude damping <i>ζ</i><sub>i</sub></label>
+              <output id="gap-zi-out" for="gap-zi"><span class="v">0.70</span></output>
+              <input type="range" id="gap-zi" min="0.3" max="1.5" step="0.05" value="0.7">
+            </div>
+            <div class="ratio" aria-live="polite">
+              <span><i>ω</i><sub>i</sub>/<i>ω</i><sub>o</sub> = <b id="gap-ratio">10.0×</b></span>
+              <span class="state" id="gap-ratio-state" data-s="ok">Well separated</span>
+            </div>
+          </div>
+          <div class="group">
+            <h2>Reality</h2>
+            <div class="row">
+              <button type="button" class="chip" id="gap-pre-ideal" aria-pressed="true">Ideal simulator</button>
+              <button type="button" class="chip" id="gap-pre-real" aria-pressed="false">Realistic drone</button>
+            </div>
+            <div class="slider">
+              <label for="gap-tau">Motor time constant <i>τ</i><sub>m</sub></label>
+              <output id="gap-tau-out" for="gap-tau"><span class="v">0</span> <span class="u">ms</span></output>
+              <input type="range" id="gap-tau" min="0" max="100" step="1" value="0">
+            </div>
+            <div class="slider">
+              <label for="gap-delay">Sensing/compute delay</label>
+              <output id="gap-delay-out" for="gap-delay"><span class="v">0</span> <span class="u">ms</span></output>
+              <input type="range" id="gap-delay" min="0" max="60" step="1" value="0">
+            </div>
+            <div class="slider">
+              <label for="gap-noise">Sensor noise</label>
+              <output id="gap-noise-out" for="gap-noise"><span class="v">0.0</span> <span class="u">×</span></output>
+              <input type="range" id="gap-noise" min="0" max="3" step="0.1" value="0">
+            </div>
+            <div class="slider">
+              <label for="gap-mass">Mass error</label>
+              <output id="gap-mass-out" for="gap-mass"><span class="v">0</span> <span class="u">%</span></output>
+              <input type="range" id="gap-mass" min="-30" max="30" step="1" value="0">
+            </div>
+            <div class="slider">
+              <label for="gap-gust">Gust σ</label>
+              <output id="gap-gust-out" for="gap-gust"><span class="v">0.00</span> <span class="u">N</span></output>
+              <input type="range" id="gap-gust" min="0" max="2" step="0.05" value="0">
+            </div>
+          </div>
+          <div class="group">
+            <h2>Domain randomisation</h2>
+            <button type="button" class="btn primary wide" id="gap-rand" aria-keyshortcuts="W">Randomise 20 worlds</button>
+            <div class="batch" aria-live="polite">
+              <span class="batch-big" id="gap-batch-count">–</span>
+              <span class="note" id="gap-batch-note">good runs out of 20, for the current gains</span>
+            </div>
+            <p class="note">Each world draws its reality uniformly from:</p>
+            <ul class="ranges">
+              <li>motor time constant 10–50 ms</li>
+              <li>sensing/compute delay 0–25 ms</li>
+              <li>sensor noise 0–1.5×</li>
+              <li>mass error −20 % … +30 %</li>
+              <li>gust σ 0–0.3 N</li>
+            </ul>
+            <p class="note">Changing the gains re-flies the same 20 worlds; press the button again for new ones.</p>
+          </div>
+          <div class="group">
+            <h2>Episode</h2>
+            <button type="button" class="switch" id="gap-repeat" aria-pressed="true"><span class="sw-track" aria-hidden="true"></span><span class="sw-label">Auto-repeat<small>start a new episode after each one ends</small></span><span class="sw-state" aria-hidden="true">On</span></button>
+            <div class="row"><button type="button" class="btn" id="gap-restart" aria-keyshortcuts="R">Restart episode</button></div>
+          </div>
+          <p class="keys">Keys: <kbd>Space</kbd> pause · <kbd>R</kbd> restart episode · <kbd>W</kbd> randomise worlds</p>
+        </aside>
+
+        <section class="try" aria-labelledby="gap-try-h">
+          <h2 id="gap-try-h">Try this</h2>
+          <ol>
+            <li>The <b>Aggressive</b> gains look excellent in the <b>Ideal simulator</b>. Press <b>Realistic drone</b>: what happens? Back in Ideal, add the effects one at a time at their realistic values (25 ms motor lag, 10 ms delay, 1× noise, +10 % mass, 0.3 N gust). Does any single one break the controller? Now combine just the lag and the delay.</li>
+            <li>Press <b>Randomise 20 worlds</b>. How many of the 20 runs are good with the aggressive gains? Switch to <b>Robust</b>: the same 20 worlds are re-flown. How many are good now, and what did the robust gains give up in the ideal simulator?</li>
+            <li>Robust gains, Realistic drone: push the motor time constant to 80 ms, outside the randomisation range. Still good? Now raise the delay from 10 ms to 30 ms as well. What happens, and what does this tell you about choosing randomisation ranges?</li>
+            <li>Ideal simulator, gust σ = 1.5 N: which preset holds the ±10 % band better, and why? (Disturbance offset ≈ <i>F</i>/(<i>m ω</i><sub>o</sub>²).) Robustness is a trade-off, not a free lunch.</li>
+          </ol>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>Tabs 2 and 3 run fixed-step physics at 1 kHz (semi-implicit Euler); tab 1 computes its trajectories directly. Hover a plot for values.</p>
+    <p>Companion to the lecture slides · every simulation runs in your browser</p>
+  </footer>
+  <div id="errlog" hidden></div>
+  <div id="selftest" hidden></div>
+</div>
+
+<script>
+(function () {
+  function log(msg) {
+    try { var el = document.getElementById('errlog'); if (el) el.textContent += String(msg) + '\n'; } catch (e) { /* ignore */ }
+  }
+  window.__simLog = log;
+  window.onerror = function (msg, src, line, col) { log(msg + ' (line ' + line + ':' + col + ')'); };
+  window.addEventListener('unhandledrejection', function (e) {
+    log('Unhandled rejection: ' + (e && e.reason && e.reason.message ? e.reason.message : e.reason));
+  });
+})();
+</script>
+<script>
+(function () {
+'use strict';
+
+/* ======================================================================
+   Simulation Lab: vanilla JS + canvas, no libraries.
+   Tabs 2-3: fixed 1 kHz physics step accumulated from requestAnimationFrame time.
+   Tab 1: trajectories computed directly whenever a control changes.
+   ====================================================================== */
+const $ = (id) => document.getElementById(id);
+const G = 9.81;
+const DT = 0.001;            // physics step for tabs 2-3, s (1 kHz)
+const MAX_FRAME = 0.25;      // cap on real time simulated per frame, s (avoids a spiral of death)
+const FONT = 'Arial, "Helvetica Neue", Helvetica, sans-serif';
+const MINUS = '−';
+const clamp = (v, lo, hi) => (v < lo ? lo : v > hi ? hi : v);
+const deg = (r) => r * 180 / Math.PI;
+const rad = (d) => d * Math.PI / 180;
+function fmt(v, n) {
+  if (!isFinite(v)) return '–';
+  const s = (Math.abs(v) < 0.5 * Math.pow(10, -n) ? 0 : v).toFixed(n);
+  return s.charAt(0) === '-' ? MINUS + s.slice(1) : s;
+}
+const SUP = { '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '-': '⁻' };
+const supText = (n) => String(n).split('').map((ch) => SUP[ch] || ch).join('');
+/* Large or small ratios in readable form: 51.4, 0.987, 2.8 × 10^14 (html: true gives <sup>) */
+function fmtRatio(v, html) {
+  if (!isFinite(v)) return '∞';
+  const a = Math.abs(v);
+  if (a >= 1e5 || (a > 0 && a < 1e-3)) {
+    const e = Math.floor(Math.log10(a));
+    const mnt = v / Math.pow(10, e);
+    return fmt(mnt, 1) + ' × 10' + (html ? '<sup>' + fmt(e, 0) + '</sup>' : supText(e));
+  }
+  if (a >= 1000) return Math.round(v).toLocaleString('en-GB');
+  if (a >= 100) return fmt(v, 0);
+  if (a >= 10) return fmt(v, 1);
+  if (Math.abs(a - 1) < 0.01) return fmt(v, 4);
+  return fmt(v, 3);
+}
+function randn() { // standard normal, Box-Muller (live runs)
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+/* Seeded generator for reproducible worlds (mulberry32) and a cached Box-Muller normal stream.
+   The Python check script implements the same two functions, so it can re-fly the page's worlds. */
+function mulberry32(seed) {
+  let a = seed >>> 0;
+  return function () {
+    a = (a + 0x6D2B79F5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function normalStream(rand) {
+  let spare = null;
+  return function () {
+    if (spare !== null) { const s = spare; spare = null; return s; }
+    let u = rand();
+    while (u <= 1e-300) u = rand();
+    const v = rand();
+    const r = Math.sqrt(-2 * Math.log(u)), a = 2 * Math.PI * v;
+    spare = r * Math.sin(a);
+    return r * Math.cos(a);
+  };
+}
+const reduceMQ = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+let reduceMotion = !!(reduceMQ && reduceMQ.matches);
+if (reduceMQ && reduceMQ.addEventListener) reduceMQ.addEventListener('change', (e) => { reduceMotion = e.matches; markDirty(); });
+
+let dirty = true;
+const markDirty = () => { dirty = true; };
+let paused = false;
+
+/* ---------- colours come from the CSS tokens; re-read on every theme change ---------- */
+const TOKENS = ['bg', 'panel', 'ink', 'ink-2', 'muted', 'grid', 'axis', 'track', 'accent', 'accent-ink', 'accent-wash',
+  's1', 's2', 's3', 's4', 'ok', 'ok-wash', 'warn', 'bad', 'bad-wash', 'sky', 'ground', 'ground-fill',
+  'body', 'arm', 'dome', 'disc', 'disc-edge', 'thrust', 'force', 'truth', 'path', 'band'];
+const C = {};
+function readColors() {
+  const cs = getComputedStyle(document.documentElement);
+  for (const t of TOKENS) C[t] = (cs.getPropertyValue('--' + t) || '').trim() || '#888888';
+  markDirty();
+}
+function rgbOf(hex) {
+  let h = String(hex).replace('#', '').trim();
+  if (h.length === 3) h = h.split('').map((x) => x + x).join('');
+  const n = parseInt(h.slice(0, 6), 16) || 0;
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+function withAlpha(hex, a) { return 'rgba(' + rgbOf(hex).join(',') + ',' + a + ')'; }
+
+/* ---------- canvas helper: crisp at any device pixel ratio, sized by its box ---------- */
+function makeCanvas(id) {
+  const canvas = $(id);
+  const box = canvas.parentElement;
+  const st = { canvas, ctx: canvas.getContext('2d'), w: 0, h: 0, dpr: 1, hover: null };
+  st.resize = () => {
+    const w = box.clientWidth, h = box.clientHeight;
+    const dpr = Math.min(window.devicePixelRatio || 1, 3);
+    if (w === st.w && h === st.h && dpr === st.dpr) return;
+    st.w = w; st.h = h; st.dpr = dpr;
+    canvas.width = Math.max(1, Math.round(w * dpr));
+    canvas.height = Math.max(1, Math.round(h * dpr));
+    markDirty();
+  };
+  st.begin = () => {
+    st.resize();
+    const c = st.ctx;
+    c.setTransform(st.dpr, 0, 0, st.dpr, 0, 0);
+    c.clearRect(0, 0, st.w, st.h);
+    c.setLineDash([]);
+    c.globalAlpha = 1;
+    return c;
+  };
+  if (window.ResizeObserver) new ResizeObserver(st.resize).observe(box);
+  window.addEventListener('resize', st.resize);
+  st.resize();
+  return st;
+}
+function attachHover(st) {
+  const cv = st.canvas;
+  const set = (e) => { const r = cv.getBoundingClientRect(); st.hover = { x: e.clientX - r.left, y: e.clientY - r.top }; markDirty(); };
+  cv.addEventListener('pointermove', set);
+  cv.addEventListener('pointerdown', set);
+  cv.addEventListener('pointerleave', () => { st.hover = null; markDirty(); });
+}
+
+/* ---------- ring buffer of logged samples ---------- */
+class Ring {
+  constructor(keys, cap) {
+    this.cap = cap; this.keys = keys; this.n = 0; this.head = 0;
+    this.t = new Float64Array(cap); this.d = {};
+    for (const k of keys) this.d[k] = new Float64Array(cap);
+  }
+  push(t, vals) {
+    const i = this.head;
+    this.t[i] = t;
+    for (const k of this.keys) this.d[k][i] = vals[k];
+    this.head = (i + 1) % this.cap;
+    if (this.n < this.cap) this.n++;
+  }
+  clear() { this.n = 0; this.head = 0; }
+  idx(j) { return (this.head - this.n + j + this.cap) % this.cap; }   // j-th oldest sample
+}
+/* running mean of the last `cap` values (for RMS over a window) */
+class RunMean {
+  constructor(cap) { this.cap = cap; this.buf = new Float64Array(cap); this.n = 0; this.i = 0; this.sum = 0; this.pushes = 0; }
+  push(v) {
+    if (this.n === this.cap) this.sum -= this.buf[this.i]; else this.n++;
+    this.buf[this.i] = v; this.sum += v; this.i = (this.i + 1) % this.cap;
+    if (++this.pushes % 2000 === 0) { let s = 0; for (let k = 0; k < this.n; k++) s += this.buf[(this.i - 1 - k + 2 * this.cap) % this.cap]; this.sum = s; }
+  }
+  clear() { this.n = 0; this.i = 0; this.sum = 0; }
+  mean() { return this.n ? Math.max(0, this.sum) / this.n : NaN; }
+}
+
+/* ---------- small drawing helpers ---------- */
+function roundRect(c, x, y, w, h, r) {
+  c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r);
+  c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath();
+}
+function rrPath(c, cx, cy, w, h, r) {   // rounded rectangle centred at (cx, cy), added to the current path
+  const x = cx - w / 2, y = cy - h / 2;
+  r = Math.min(r, w / 2, h / 2);
+  c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r);
+  c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath();
+}
+function polyPath(c, pts) {
+  c.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 1; i < pts.length; i++) c.lineTo(pts[i][0], pts[i][1]);
+  c.closePath();
+}
+function arrow(c, x0, y0, x1, y1, color, width) {
+  const dx = x1 - x0, dy = y1 - y0, L = Math.hypot(dx, dy);
+  if (L < 2) return;
+  const ux = dx / L, uy = dy / L, nx = -uy, ny = ux;
+  const hl = Math.min(width * 2.6, L * 0.6), hw = width * 1.6, sw = width / 2;
+  const bx = x1 - ux * hl, by = y1 - uy * hl;
+  c.fillStyle = color;
+  c.beginPath();
+  c.moveTo(x0 + nx * sw, y0 + ny * sw); c.lineTo(bx + nx * sw, by + ny * sw); c.lineTo(bx + nx * hw, by + ny * hw);
+  c.lineTo(x1, y1);
+  c.lineTo(bx - nx * hw, by - ny * hw); c.lineTo(bx - nx * sw, by - ny * sw); c.lineTo(x0 - nx * sw, y0 - ny * sw);
+  c.closePath(); c.fill();
+}
+function label(c, text, x, y, o) {     // text with a soft knock-out behind it, vertically centred on y
+  o = o || {};
+  const size = o.size || 14;
+  c.font = (o.bold ? 'bold ' : '') + size + 'px ' + FONT;
+  c.textAlign = o.align || 'left';
+  c.textBaseline = 'middle';
+  const w = c.measureText(text).width;
+  const x0 = o.align === 'right' ? x - w : o.align === 'center' ? x - w / 2 : x;
+  if (o.bg !== false) { c.fillStyle = withAlpha(C.bg, 0.85); c.fillRect(x0 - 4, y - size * 0.72, w + 8, size * 1.44); }
+  c.fillStyle = o.color || C.ink;
+  c.fillText(text, x, y + 0.5);
+  return w;
+}
+function badge(c, text, x, y, align, size, kind) {
+  c.font = 'bold ' + size + 'px ' + FONT;
+  const w = c.measureText(text).width + 16, h = size + 10;
+  const x0 = align === 'right' ? x - w : align === 'center' ? x - w / 2 : x;
+  const col = kind === 'ok' ? C.ok : kind === 'warn' ? C.warn : C.bad;
+  c.fillStyle = kind === 'ok' ? C['ok-wash'] : C['bad-wash']; c.strokeStyle = col; c.lineWidth = 1.5;
+  roundRect(c, x0, y - h / 2, w, h, h / 2); c.fill(); c.stroke();
+  c.fillStyle = col; c.textAlign = 'center'; c.textBaseline = 'middle';
+  c.fillText(text, x0 + w / 2, y + 0.5);
+}
+function drawPaused(c, x, y, align) {
+  if (paused) label(c, 'Paused · Space to resume', x, y, { align: align, size: 13, bold: true, color: C['ink-2'] });
+}
+
+/* Side view of the planar quad in the style of the course figures (dark body, red dome, grey arms,
+   translucent rotor discs). Geometry is in units of the half-span; (x, y) is the body centre on screen,
+   th the tilt (positive counter-clockwise), k the pixels per unit. */
+function drawSideQuad(c, x, y, th, k, o) {
+  o = o || {};
+  const ghost = !!o.ghost;
+  c.save();
+  c.translate(x, y); c.scale(k, -k); c.rotate(th);
+  const paint = (fill) => {
+    if (ghost) { c.setLineDash([5 / k, 4 / k]); c.lineWidth = 1.8 / k; c.strokeStyle = o.color || C.accent; c.stroke(); c.setLineDash([]); }
+    else { c.fillStyle = fill; c.fill(); }
+  };
+  if (!ghost) {
+    c.beginPath();
+    polyPath(c, [[-0.2, -0.1], [-0.15, -0.1], [-0.27, -0.32], [-0.33, -0.32]]);
+    polyPath(c, [[0.2, -0.1], [0.15, -0.1], [0.27, -0.32], [0.33, -0.32]]);
+    paint(C.arm);
+  }
+  c.beginPath(); c.rect(-1, -0.03, 2, 0.08); paint(C.arm);
+  if (!ghost) { c.beginPath(); rrPath(c, -0.9, 0.12, 0.12, 0.22, 0.03); rrPath(c, 0.9, 0.12, 0.12, 0.22, 0.03); paint(C.body); }
+  c.beginPath(); rrPath(c, 0, -0.01, 0.56, 0.24, 0.06); paint(C.body);
+  c.beginPath(); c.ellipse(0, 0.105, 0.15, 0.17, 0, 0, Math.PI); c.closePath(); paint(C.dome);
+  c.beginPath(); rrPath(c, -0.9, 0.25, 0.84, 0.075, 0.035); rrPath(c, 0.9, 0.25, 0.84, 0.075, 0.035);
+  if (ghost) paint();
+  else { c.fillStyle = withAlpha(C.disc, 0.6); c.fill(); c.lineWidth = 1 / k; c.strokeStyle = C['disc-edge']; c.stroke(); }
+  c.restore();
+}
+
+/* ---------- axes and plots ---------- */
+function niceStep(range, n) {
+  const raw = range / Math.max(1, n);
+  const p = Math.pow(10, Math.floor(Math.log10(raw)));
+  const f = raw / p;
+  return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * p;
+}
+function decimalsFor(step) {
+  for (let d = 0; d < 4; d++) { const s = step * Math.pow(10, d); if (Math.abs(s - Math.round(s)) < 1e-6) return d; }
+  return 3;
+}
+function linTicks(y0, y1, n) {
+  const step = niceStep(y1 - y0, n), dec = decimalsFor(step), out = [];
+  for (let v = Math.ceil(y0 / step - 1e-9) * step; v <= y1 + 1e-9; v += step) out.push({ v, label: fmt(v, dec), axis: Math.abs(v) < 1e-9 });
+  return out;
+}
+function decadeLabel(k) {
+  if (k >= 0 && k <= 2) return String(Math.pow(10, k));
+  if (k === -1) return '0.1';
+  if (k === -2) return '0.01';
+  return '10' + supText(k);
+}
+function logTicks(y0, y1, n) {
+  const l0 = Math.log10(y0), l1 = Math.log10(y1), out = [];
+  if (l1 - l0 >= 1.2) {
+    const k0 = Math.ceil(l0 - 1e-9), k1 = Math.floor(l1 + 1e-9);
+    const stride = Math.max(1, Math.ceil((k1 - k0 + 1) / n));
+    for (let k = k0; k <= k1; k++) {
+      if ((k - k0) % stride !== 0 && k !== 0) continue;
+      out.push({ v: Math.pow(10, k), label: decadeLabel(k), axis: k === 0 });
+    }
+    // few decades: add 2x and 5x ticks so the scale stays readable
+    if (l1 - l0 <= 3.2 && n >= 2 * (k1 - k0 + 1)) {
+      for (let k = Math.floor(l0) - 1; k <= Math.ceil(l1); k++) {
+        [2, 5].forEach((f) => {
+          const v = f * Math.pow(10, k);
+          if (v >= y0 && v <= y1) out.push({ v, label: v >= 0.01 && v < 1e3 ? String(+v.toPrecision(3)) : f + '×' + decadeLabel(k), axis: false });
+        });
+      }
+    }
+    return out;
+  }
+  const step = niceStep(y1 - y0, n), dec = Math.max(decimalsFor(step), 0);
+  for (let v = Math.ceil(y0 / step - 1e-9) * step; v <= y1 + 1e-9; v += step) {
+    if (v <= 0) continue;
+    out.push({ v, label: fmt(v, dec), axis: Math.abs(v - 1) < 1e-9 });
+  }
+  return out;
+}
+/* Draw a plot frame with grid and tick labels; returns the mapping functions, or null if too small.
+   o: { x0, x1, y0, y1, log, xStep, xLabel, m } */
+function frame(st, o) {
+  const c = st.begin(), W = st.w, H = st.h;
+  if (W < 90 || H < 80) return null;
+  const m = Object.assign({ l: 52, r: 14, t: 12, b: 30 }, o.m || {});
+  const pw = W - m.l - m.r, ph = H - m.t - m.b;
+  const lg = !!o.log;
+  const ty = (v) => (lg ? Math.log10(Math.max(v, 1e-300)) : v);
+  const Y0 = ty(o.y0), Y1 = ty(o.y1);
+  const X = (x) => m.l + (x - o.x0) / (o.x1 - o.x0) * pw;
+  const Y = (v) => clamp(m.t + (1 - (ty(v) - Y0) / (Y1 - Y0)) * ph, -4000, H + 4000);
+  c.lineWidth = 1; c.font = '14px ' + FONT;
+  const ticks = lg ? logTicks(o.y0, o.y1, Math.max(2, Math.floor(ph / 34))) : linTicks(o.y0, o.y1, Math.max(2, Math.floor(ph / 40)));
+  c.textAlign = 'right'; c.textBaseline = 'middle';
+  for (const tk of ticks) {
+    const y = Math.round(Y(tk.v)) + 0.5;
+    c.strokeStyle = tk.axis ? C.axis : C.grid;
+    c.beginPath(); c.moveTo(m.l, y); c.lineTo(m.l + pw, y); c.stroke();
+    c.fillStyle = C.muted; c.fillText(tk.label, m.l - 8, y);
+  }
+  const xs = o.xStep || niceStep(o.x1 - o.x0, Math.max(2, Math.floor(pw / 80)));
+  const xdec = decimalsFor(xs);
+  c.textAlign = 'center'; c.textBaseline = 'top';
+  for (let x = Math.ceil(o.x0 / xs - 1e-9) * xs; x <= o.x1 + 1e-9; x += xs) {
+    const px = Math.round(X(x)) + 0.5;
+    c.strokeStyle = C.grid; c.beginPath(); c.moveTo(px, m.t); c.lineTo(px, m.t + ph); c.stroke();
+    c.fillStyle = C.muted; c.fillText(Math.abs(x) < 1e-9 ? '0' : fmt(x, xdec), px, m.t + ph + 7);
+  }
+  if (o.xLabel) { c.textAlign = 'right'; c.fillText(o.xLabel, m.l - 12, m.t + ph + 7); }
+  c.strokeStyle = C.axis; c.beginPath(); c.moveTo(m.l, m.t + ph + 0.5); c.lineTo(m.l + pw, m.t + ph + 0.5); c.stroke();
+  return { c, W, H, m, pw, ph, X, Y, x0: o.x0, x1: o.x1, y0: o.y0, y1: o.y1, invX: (px) => o.x0 + (px - m.l) / pw * (o.x1 - o.x0) };
+}
+function clipTo(fr) { const c = fr.c; c.save(); c.beginPath(); c.rect(fr.m.l, fr.m.t - 2, fr.pw, fr.ph + 4); c.clip(); }
+/* polyline of (xs[i], ys[i]) for i < n, decimated to about maxPts points; non-finite values break the line */
+function plotLine(fr, xs, ys, n, o) {
+  const c = fr.c;
+  clipTo(fr);
+  c.strokeStyle = o.color; c.lineWidth = o.width || 2.25; c.setLineDash(o.dash ? [7, 5] : []);
+  c.globalAlpha = o.alpha != null ? o.alpha : 1;
+  c.lineJoin = 'round'; c.lineCap = 'round';
+  const stride = Math.max(1, Math.floor(n / (o.maxPts || 3000)));
+  c.beginPath();
+  let started = false;
+  for (let i = 0; i < n; i += stride) {
+    const y = ys[i];
+    if (!isFinite(y)) { started = false; continue; }
+    const px = fr.X(xs[i]), py = fr.Y(y);
+    if (started) c.lineTo(px, py); else { c.moveTo(px, py); started = true; }
+    if (i + stride >= n && i !== n - 1 && isFinite(ys[n - 1])) c.lineTo(fr.X(xs[n - 1]), fr.Y(ys[n - 1]));
+  }
+  c.stroke();
+  c.restore();
+  c.setLineDash([]); c.globalAlpha = 1;
+}
+function refLine(fr, y, text, o) {
+  o = o || {};
+  if (y < Math.min(fr.y0, fr.y1) || y > Math.max(fr.y0, fr.y1)) return;
+  const c = fr.c, py = Math.round(fr.Y(y)) + 0.5;
+  c.save(); c.setLineDash([6, 5]); c.strokeStyle = o.color || C['ink-2']; c.lineWidth = 1.25;
+  c.beginPath(); c.moveTo(fr.m.l, py); c.lineTo(fr.m.l + fr.pw, py); c.stroke(); c.restore();
+  if (text) label(c, text, fr.m.l + fr.pw - 6, py + (o.below ? 11 : -11), { align: 'right', size: 13, color: C['ink-2'] });
+}
+function band(fr, x0, x1, y0, y1, text) {
+  const c = fr.c;
+  const ax = fr.X(x0), bx = fr.X(x1), ay = fr.Y(y1), by = fr.Y(y0);
+  c.fillStyle = C.band; c.fillRect(ax, ay, bx - ax, by - ay);
+  c.save(); c.setLineDash([4, 4]); c.strokeStyle = C['ink-2']; c.lineWidth = 1;
+  c.beginPath(); c.moveTo(ax, Math.round(ay) + 0.5); c.lineTo(bx, Math.round(ay) + 0.5); c.moveTo(ax, Math.round(by) + 0.5); c.lineTo(bx, Math.round(by) + 0.5); c.stroke(); c.restore();
+  if (text) label(c, text, bx - 6, by + 11, { align: 'right', size: 12, color: C['ink-2'], bg: false });
+}
+function vLine(fr, x, text) {   // dashed vertical marker, label near the bottom (clear of the top-left labels)
+  const c = fr.c, px = Math.round(fr.X(x)) + 0.5;
+  c.save(); c.setLineDash([3, 4]); c.strokeStyle = C['ink-2']; c.lineWidth = 1.25;
+  c.beginPath(); c.moveTo(px, fr.m.t); c.lineTo(px, fr.m.t + fr.ph); c.stroke(); c.restore();
+  if (text) label(c, text, px + 5, fr.m.t + fr.ph - 12, { size: 12, color: C['ink-2'] });
+}
+function dotAt(c, x, y, r, fill) {
+  c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fillStyle = fill; c.fill();
+  c.lineWidth = 2; c.strokeStyle = C.bg; c.stroke();
+}
+function drawTooltip(c, x, m, pw, head, rows) {
+  c.font = 'bold 14px ' + FONT;
+  let wv = 0;
+  for (const r of rows) wv = Math.max(wv, c.measureText(r.value).width);
+  c.font = '13px ' + FONT;
+  let wl = 0;
+  for (const r of rows) wl = Math.max(wl, c.measureText(r.label).width);
+  const wh = c.measureText(head).width;
+  const pad = 9, keyW = 18, lineH = 19;
+  const w = Math.max(wh, keyW + 6 + wv + 8 + wl) + pad * 2;
+  const h = pad * 2 + lineH * rows.length + 14;
+  let bx = x + 12;
+  if (bx + w > m.l + pw) bx = x - 12 - w;
+  bx = Math.max(m.l + 2, bx);
+  const by = m.t + 4;
+  c.fillStyle = withAlpha(C.bg, 0.95); c.strokeStyle = C.axis; c.lineWidth = 1;
+  roundRect(c, bx + 0.5, by + 0.5, w, h, 6); c.fill(); c.stroke();
+  c.textAlign = 'left'; c.textBaseline = 'middle';
+  c.fillStyle = C.muted; c.font = '13px ' + FONT;
+  c.fillText(head, bx + pad, by + pad + 6);
+  rows.forEach((r, k) => {
+    const yy = by + pad + 6 + 18 + lineH * k;
+    if (r.color) {
+      c.strokeStyle = r.color; c.lineWidth = 3; c.setLineDash(r.dash ? [4, 3] : []);
+      c.beginPath(); c.moveTo(bx + pad, yy); c.lineTo(bx + pad + keyW, yy); c.stroke(); c.setLineDash([]);
+    }
+    c.fillStyle = C.ink; c.font = 'bold 14px ' + FONT; c.fillText(r.value, bx + pad + keyW + 6, yy);
+    c.fillStyle = C['ink-2']; c.font = '13px ' + FONT; c.fillText(r.label, bx + pad + keyW + 6 + wv + 8, yy);
+  });
+}
+/* scrolling strip chart (last cfg.window s) with a hover crosshair
+   cfg: { unit, dec, window, series: [{ key, color, dash, width, label, dec }], range(lo, hi) -> [y0, y1], note() } */
+function drawStrip(st, ring, tNow, cfg) {
+  const WIN = cfg.window || 12;
+  const t1 = Math.max(tNow, WIN), t0 = t1 - WIN;
+  let lo = Infinity, hi = -Infinity;
+  const vis = {};
+  for (const s of cfg.series) vis[s.key] = [Infinity, -Infinity];
+  for (let j = 0; j < ring.n; j++) {
+    const i = ring.idx(j);
+    if (ring.t[i] < t0) continue;
+    for (const s of cfg.series) { const v = ring.d[s.key][i]; if (v < vis[s.key][0]) vis[s.key][0] = v; if (v > vis[s.key][1]) vis[s.key][1] = v; if (v < lo) lo = v; if (v > hi) hi = v; }
+  }
+  const yr = cfg.range(lo, hi, vis);
+  const fr = frame(st, { x0: t0, x1: t1, y0: yr[0], y1: yr[1], xStep: WIN > 12 ? 4 : 2, xLabel: 't (s)' });
+  if (!fr) return;
+  const c = fr.c;
+  clipTo(fr);
+  c.lineJoin = 'round'; c.lineCap = 'round';
+  for (const s of cfg.series) {
+    if (s.hidden && s.hidden()) continue;
+    c.strokeStyle = C[s.color]; c.lineWidth = s.width || 2.25; c.setLineDash(s.dash ? [7, 5] : []);
+    c.beginPath();
+    let started = false;
+    for (let j = 0; j < ring.n; j++) {
+      const i = ring.idx(j), tt = ring.t[i];
+      if (tt < t0 - 0.05) continue;
+      const x = fr.X(tt), y = fr.Y(ring.d[s.key][i]);
+      if (started) c.lineTo(x, y); else { c.moveTo(x, y); started = true; }
+    }
+    c.stroke();
+  }
+  c.restore();
+  c.setLineDash([]);
+  if (cfg.note) { const nt = cfg.note(yr); if (nt) label(c, nt, fr.m.l + fr.pw - 6, fr.m.t + 12, { align: 'right', size: 13, color: C['ink-2'] }); }
+  if (st.hover && ring.n > 1 && st.hover.x >= fr.m.l && st.hover.x <= fr.m.l + fr.pw) {
+    const th = fr.invX(st.hover.x);
+    let a = 0, b = ring.n - 1;
+    while (b - a > 1) { const mid = (a + b) >> 1; if (ring.t[ring.idx(mid)] < th) a = mid; else b = mid; }
+    const ia = ring.idx(a), ib = ring.idx(b);
+    const i = Math.abs(ring.t[ia] - th) <= Math.abs(ring.t[ib] - th) ? ia : ib;
+    const tt = ring.t[i];
+    if (tt >= t0 - 0.05 && Math.abs(tt - th) < 0.5) {
+      const x = Math.round(fr.X(tt)) + 0.5;
+      c.strokeStyle = C['ink-2']; c.lineWidth = 1;
+      c.beginPath(); c.moveTo(x, fr.m.t); c.lineTo(x, fr.m.t + fr.ph); c.stroke();
+      const rows = [];
+      for (const s of cfg.series) {
+        if (s.hidden && s.hidden()) continue;
+        const y = fr.Y(ring.d[s.key][i]);
+        if (y >= fr.m.t && y <= fr.m.t + fr.ph) dotAt(c, x, y, 4, C[s.color]);
+        rows.push({ color: C[s.color], dash: !!s.dash, label: s.label, value: fmt(ring.d[s.key][i], s.dec != null ? s.dec : cfg.dec) + ' ' + cfg.unit });
+      }
+      drawTooltip(c, x, fr.m, fr.pw, 't = ' + fmt(tt, 2) + ' s', rows);
+    }
+  }
+}
+
+/* ---------- control bindings (every control has a stable id in the markup) ---------- */
+function bindSlider(id, fmtFn, onChange) {
+  const el = $(id), out = $(id + '-out'), v = out ? out.querySelector('.v') : null;
+  const lo = parseFloat(el.min), hi = parseFloat(el.max);
+  const update = (silent) => {
+    const val = parseFloat(el.value);
+    if (v) v.textContent = fmtFn(val);
+    el.style.setProperty('--p', ((val - lo) / (hi - lo) * 100).toFixed(2) + '%');
+    if (!silent) onChange(val);
+    markDirty();
+  };
+  el.addEventListener('input', () => update(false));
+  update(false);
+  return { el, get: () => parseFloat(el.value), set: (val, silent) => { el.value = String(val); update(!!silent); } };
+}
+/* slider over a list of nice values (log-like scale); the input holds the index */
+function bindStops(id, stops, fmtFn, unitText, onChange) {
+  const el = $(id), out = $(id + '-out'), v = out ? out.querySelector('.v') : null;
+  const update = (silent) => {
+    const i = clamp(Math.round(parseFloat(el.value)), 0, stops.length - 1), val = stops[i];
+    if (v) v.textContent = fmtFn(val);
+    el.setAttribute('aria-valuetext', fmtFn(val) + ' ' + unitText);
+    el.style.setProperty('--p', (i / (stops.length - 1) * 100).toFixed(2) + '%');
+    if (!silent) onChange(val);
+    markDirty();
+  };
+  el.addEventListener('input', () => update(false));
+  update(false);
+  const nearest = (val) => { let b = 0; stops.forEach((s, i) => { if (Math.abs(Math.log(s / val)) < Math.abs(Math.log(stops[b] / val))) b = i; }); return b; };
+  return { el, get: () => stops[clamp(Math.round(parseFloat(el.value)), 0, stops.length - 1)], set: (val, silent) => { el.value = String(nearest(val)); update(!!silent); } };
+}
+function bindSwitch(id, onChange) {
+  const el = $(id), stateEl = el.querySelector('.sw-state');
+  const get = () => el.getAttribute('aria-pressed') === 'true';
+  const set = (on, silent) => {
+    el.setAttribute('aria-pressed', on ? 'true' : 'false');
+    if (stateEl) stateEl.textContent = on ? 'On' : 'Off';
+    if (!silent) onChange(on);
+    markDirty();
+  };
+  el.addEventListener('click', () => set(!get()));
+  set(get());
+  return { el, get, set };
+}
+function bindToggle(id, onChange) {   // legend chip with aria-pressed
+  const el = $(id);
+  const get = () => el.getAttribute('aria-pressed') === 'true';
+  el.addEventListener('click', () => { el.setAttribute('aria-pressed', get() ? 'false' : 'true'); onChange(get()); markDirty(); });
+  return { el, get };
+}
+function bindRadio(id, onChange) {
+  const g = $(id), items = Array.prototype.slice.call(g.querySelectorAll('[role="radio"]'));
+  const select = (btn, focus, silent) => {
+    items.forEach((b) => { const on = b === btn; b.setAttribute('aria-checked', on ? 'true' : 'false'); b.tabIndex = on ? 0 : -1; });
+    if (focus) btn.focus();
+    if (!silent) onChange(btn.dataset.v);
+    markDirty();
+  };
+  items.forEach((b, i) => {
+    b.addEventListener('click', () => select(b, false));
+    b.addEventListener('keydown', (e) => {
+      let j = null;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') j = (i + 1) % items.length;
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') j = (i - 1 + items.length) % items.length;
+      else if (e.key === 'Home') j = 0;
+      else if (e.key === 'End') j = items.length - 1;
+      if (j !== null) { e.preventDefault(); select(items[j], true); }
+    });
+  });
+  select(items.find((b) => b.getAttribute('aria-checked') === 'true') || items[0], false);
+  return { set: (val, silent) => { const b = items.find((x) => x.dataset.v === String(val)); if (b) select(b, false, silent); } };
+}
+function setState(id, s, text) {
+  const el = $(id);
+  if (el.dataset.s !== s) el.dataset.s = s;
+  if (el.textContent !== text) el.textContent = text;
+}
+function setText(id, text) { const el = $(id); if (el.textContent !== text) el.textContent = text; }
+function setHTML(id, html) { const el = $(id); if (el.__h !== html) { el.innerHTML = html; el.__h = html; } }
+
+/* ======================================================================
+   Tab 1: integrator and step size.
+   Oscillator x'' = -w^2 x (w = 2 pi), trajectories computed directly for n = N T / dt steps.
+   Attitude loop th'' = u2/I, PD at 250 Hz with zero-order hold, integrated at the physics step dt.
+   ====================================================================== */
+const OM = 2 * Math.PI;
+const DT_STOPS = [0.5, 0.6, 0.8, 1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 70, 80, 90, 100]; // ms
+const CP_STOPS = [1, 2, 5, 10, 20, 50, 100, 150, 200, 250, 300, 400, 500, 750, 1000, 1500, 2000];                                    // us
+const ATT = { wa: 25, za: 0.5, I: 0.01, Ts: 0.004, ref: rad(20), T: 4, show: 1.2 };
+ATT.Kp = ATT.wa * ATT.wa; ATT.Kd = 2 * ATT.za * ATT.wa;
+const INT_NAME = { ee: 'Explicit Euler', se: 'Semi-implicit Euler', rk: 'RK4' };
+const phy = {
+  integ: 'ee', dt: 0.010, N: 10, osc: null, att: null, ref: null, verdict: null,
+  anim: 0, cp: 300, cr: 25, headless: false
+};
+const phyUI = {};
+let phyPhase, phyEnergy, phyAtt;
+
+function oscRun(integ, h, n) {
+  const x = new Float64Array(n + 1), v = new Float64Array(n + 1), e = new Float64Array(n + 1);
+  const w2 = OM * OM;
+  x[0] = 1; v[0] = 0;
+  const E0 = 0.5 * w2;
+  e[0] = 1;
+  for (let k = 0; k < n; k++) {
+    const xk = x[k], vk = v[k];
+    if (integ === 'ee') {             // both updates from the old state
+      x[k + 1] = xk + h * vk;
+      v[k + 1] = vk - h * w2 * xk;
+    } else if (integ === 'se') {      // velocity first, then position with the new velocity
+      const vn = vk - h * w2 * xk;
+      v[k + 1] = vn;
+      x[k + 1] = xk + h * vn;
+    } else {                          // classic RK4 on y = (x, v), f(y) = (v, -w^2 x)
+      const k1x = vk, k1v = -w2 * xk;
+      const k2x = vk + 0.5 * h * k1v, k2v = -w2 * (xk + 0.5 * h * k1x);
+      const k3x = vk + 0.5 * h * k2v, k3v = -w2 * (xk + 0.5 * h * k2x);
+      const k4x = vk + h * k3v, k4v = -w2 * (xk + h * k3x);
+      x[k + 1] = xk + h / 6 * (k1x + 2 * k2x + 2 * k3x + k4x);
+      v[k + 1] = vk + h / 6 * (k1v + 2 * k2v + 2 * k3v + k4v);
+    }
+    e[k + 1] = (0.5 * v[k + 1] * v[k + 1] + 0.5 * w2 * x[k + 1] * x[k + 1]) / E0;
+  }
+  return { x, v, e, n, h };
+}
+/* predicted energy ratio after k steps (explicit Euler and RK4 have exact per-step factors) */
+function stepFactor(integ, h) {
+  const z = OM * h;
+  if (integ === 'ee') return 1 + z * z;
+  if (integ === 'rk') return 1 - Math.pow(z, 6) / 72 + Math.pow(z, 8) / 576;
+  return NaN;
+}
+/* Attitude loop: controller at 250 Hz runs at the first physics step at or after each 4 ms tick
+   (so once per step when dt > 4 ms) and holds the torque until the next update. */
+function attRun(integ, h, T) {
+  const n = Math.round(T / h);
+  const t = new Float64Array(n + 2), th = new Float64Array(n + 2);
+  let x = 0, w = 0, a = 0, nxt = 0, len = n + 1;
+  for (let k = 0; k <= n; k++) {
+    const tk = k * h;
+    t[k] = tk; th[k] = x;
+    if (k === n) break;
+    if (tk >= nxt - 1e-9) {
+      a = ATT.Kp * (ATT.ref - x) - ATT.Kd * w;          // u2/I
+      while (nxt <= tk + 1e-9) nxt += ATT.Ts;
+    }
+    if (integ === 'ee') { const xn = x + h * w; w = w + h * a; x = xn; }
+    else if (integ === 'se') { w = w + h * a; x = x + h * w; }
+    else {                                              // RK4 with the torque held over the step
+      const k1x = w, k1w = a, k2x = w + 0.5 * h * k1w, k2w = a, k3x = w + 0.5 * h * k2w, k3w = a, k4x = w + h * k3w, k4w = a;
+      x = x + h / 6 * (k1x + 2 * k2x + 2 * k3x + k4x);
+      w = w + h / 6 * (k1w + 2 * k2w + 2 * k3w + k4w);
+    }
+    if (!isFinite(x) || Math.abs(x) > 1e6) { t[k + 1] = (k + 1) * h; th[k + 1] = isFinite(x) ? x : Math.sign(x || 1) * 1e6; len = k + 2; break; }
+  }
+  return { t, th, n: len, h };
+}
+function attVerdict(r) {
+  const last = r.th[r.n - 1];
+  if (Math.abs(last) >= 1e6 || !isFinite(last)) return { s: 'bad', text: 'Simulation unstable: diverged', kind: 'diverged' };
+  let p1 = 0, p2 = 0;
+  for (let i = 0; i < r.n; i++) {
+    const e = Math.abs(r.th[i] - ATT.ref), tt = r.t[i];
+    if (tt >= 2 && tt < 3) p1 = Math.max(p1, e);
+    else if (tt >= 3 && tt <= 4 + 1e-9) p2 = Math.max(p2, e);
+  }
+  const tol = rad(0.1);
+  if (p2 > tol && p2 > 1.02 * p1) return { s: 'bad', text: 'Simulation unstable: oscillation grows', kind: 'unstable' };
+  if (p2 > tol) return p2 >= 0.9 * p1 ? { s: 'warn', text: 'Marginal: oscillation does not decay', kind: 'marginal' }
+                                       : { s: 'warn', text: 'Stable but poorly damped', kind: 'poor' };
+  return { s: 'ok', text: 'Stable', kind: 'stable' };
+}
+
+const EQ = {
+  ee: '<div class="eqhead">Explicit (forward) Euler: both updates use the old state</div>' +
+      '<div class="eqline"><i>x</i><sub><i>n</i>+1</sub> = <i>x<sub>n</sub></i> + Δ<i>t</i> <i>v<sub>n</sub></i>, &nbsp; <i>v</i><sub><i>n</i>+1</sub> = <i>v<sub>n</sub></i> − Δ<i>t</i> <i>ω</i>² <i>x<sub>n</sub></i></div>' +
+      '<div class="eqnote">Each step scales the energy by exactly <strong>(1 + <i>ω</i>²Δ<i>t</i>²)</strong>: it always grows, however small Δ<i>t</i> is. The orbit spirals outwards.</div>',
+  se: '<div class="eqhead">Semi-implicit (symplectic) Euler: position uses the new velocity</div>' +
+      '<div class="eqline"><i>v</i><sub><i>n</i>+1</sub> = <i>v<sub>n</sub></i> − Δ<i>t</i> <i>ω</i>² <i>x<sub>n</sub></i>, &nbsp; <i>x</i><sub><i>n</i>+1</sub> = <i>x<sub>n</sub></i> + Δ<i>t</i> <i>v</i><sub><i>n</i>+1</sub></div>' +
+      '<div class="eqnote">Same cost as explicit Euler, but it exactly conserves a nearby “shadow” energy <i>Ẽ</i> = <i>E</i> − ½<i>ω</i>²Δ<i>t</i> <i>x v</i>, so <i>E</i> only wobbles between <i>Ẽ</i>/(1 ± <i>ω</i>Δ<i>t</i>/2) and never drifts (stable while <i>ω</i>Δ<i>t</i> &lt; 2).</div>',
+  rk: '<div class="eqhead">Classic Runge–Kutta (RK4): four slope evaluations per step, error ∝ Δ<i>t</i>⁴</div>' +
+      '<div class="eqline"><i>k</i><sub>1</sub> = <i>f</i>(<i>y<sub>n</sub></i>), <i>k</i><sub>2</sub> = <i>f</i>(<i>y<sub>n</sub></i> + ½Δ<i>t k</i><sub>1</sub>), <i>k</i><sub>3</sub> = <i>f</i>(<i>y<sub>n</sub></i> + ½Δ<i>t k</i><sub>2</sub>), <i>k</i><sub>4</sub> = <i>f</i>(<i>y<sub>n</sub></i> + Δ<i>t k</i><sub>3</sub>)</div>' +
+      '<div class="eqline"><i>y</i><sub><i>n</i>+1</sub> = <i>y<sub>n</sub></i> + (Δ<i>t</i>/6)(<i>k</i><sub>1</sub> + 2<i>k</i><sub>2</sub> + 2<i>k</i><sub>3</sub> + <i>k</i><sub>4</sub>), &nbsp; <i>y</i> = (<i>x</i>, <i>v</i>), <i>f</i>(<i>y</i>) = (<i>v</i>, −<i>ω</i>²<i>x</i>)</div>' +
+      '<div class="eqnote">Very accurate, but four times the work per step. Energy decays slowly, by (1 − (<i>ω</i>Δ<i>t</i>)⁶/72 + (<i>ω</i>Δ<i>t</i>)⁸/576) per step.</div>'
+};
+
+function phyRecompute() {
+  const h = phy.dt, n = Math.max(1, Math.round(phy.N / h));
+  phy.osc = oscRun(phy.integ, h, n);
+  phy.att = attRun(phy.integ, h, ATT.T);
+  phy.verdict = attVerdict(phy.att);
+  if (!phy.ref) phy.ref = attRun('rk', 0.0005, ATT.show + 0.01);
+  // equations and live numbers
+  const f = stepFactor(phy.integ, h), sim = phy.osc.e[n];
+  let live = '<div class="eqlive"><i>ω</i>Δ<i>t</i> = ' + fmt(OM * h, OM * h < 0.1 ? 4 : 3) + ' · ' + fmtRatio(1 / h) + ' steps per period · <i>n</i> = ' + n.toLocaleString('en-GB') + ' steps in ' + phy.N + ' period' + (phy.N > 1 ? 's' : '') + '.';
+  if (phy.integ === 'ee') live += ' Predicted (1 + <i>ω</i>²Δ<i>t</i>²)<sup><i>n</i></sup> = ' + fmt(f, 6) + '<sup>' + n + '</sup> = <strong>×' + fmtRatio(Math.pow(f, n), true) + '</strong>; simulated <strong>×' + fmtRatio(sim, true) + '</strong>.';
+  else if (phy.integ === 'rk') live += ' Predicted ×' + fmtRatio(Math.pow(f, n), true) + ', simulated ×' + fmtRatio(sim, true) + '.';
+  else {
+    let lo = Infinity, hi = -Infinity;
+    for (let i = 0; i <= n; i++) { const v = phy.osc.e[i]; if (v < lo) lo = v; if (v > hi) hi = v; }
+    live += ' <i>E</i>/<i>E</i><sub>0</sub> stays within ' + fmt(lo, 4) + '–' + fmt(hi, 4) + ' (bounds ' + fmt(1 / (1 + OM * h / 2), 4) + '–' + fmt(1 / (1 - OM * h / 2), 4) + ').';
+  }
+  live += '</div>';
+  setHTML('phy-eq', EQ[phy.integ] + live);
+  setText('phy-ro-spp', fmtRatio(1 / h));
+  setText('phy-ro-nlab', String(phy.N));
+  setHTML('phy-ro-sim', '×' + fmtRatio(sim, true));
+  if (phy.integ === 'ee') {
+    setHTML('phy-ro-step', fmt(f, f < 1.0001 ? 7 : 5) + ' <small>= 1 + <i>ω</i>²Δ<i>t</i>²</small>');
+    setHTML('phy-ro-pred', '×' + fmtRatio(Math.pow(f, n), true));
+  } else if (phy.integ === 'rk') {
+    setHTML('phy-ro-step', (1 - f < 1e-9 ? '1 − ' + fmtRatio(1 - f) : fmt(f, 7)));
+    setHTML('phy-ro-pred', '×' + fmtRatio(Math.pow(f, n), true));
+  } else {
+    setHTML('phy-ro-step', 'wobbles <small>(<i>Ẽ</i> conserved)</small>');
+    setHTML('phy-ro-pred', 'bounded <small>' + fmt(1 / (1 + OM * h / 2), 3) + '–' + fmt(1 / (1 - OM * h / 2), 3) + '</small>');
+  }
+  setState('phy-att-state', phy.verdict.s, phy.verdict.text);
+  const rate = h <= ATT.Ts + 1e-12 ? 250 : 1 / h;
+  if (h <= ATT.Ts + 1e-12) setState('phy-att-rate', 'idle', 'Controller at 250 Hz');
+  else setState('phy-att-rate', 'warn', 'Controller limited to 1/Δt = ' + fmt(rate, rate < 20 ? 1 : 0) + ' Hz by the physics step');
+  markDirty();
+}
+
+function drawPhase(st) {
+  const c = st.begin(), W = st.w, H = st.h;
+  if (W < 90 || H < 90 || !phy.osc) return;
+  const m = { l: 40, r: 12, t: 12, b: 34 };
+  const size = Math.min(W - m.l - m.r, H - m.t - m.b);
+  const cx = m.l + (W - m.l - m.r) / 2, cy = m.t + (H - m.t - m.b) / 2;
+  const R = 2, k = size / (2 * R);
+  const X = (x) => cx + x * k, Y = (v) => cy - v * k;
+  // grid, axes and labels
+  c.lineWidth = 1; c.font = '13px ' + FONT;
+  for (let g = -2; g <= 2; g++) {
+    c.strokeStyle = g === 0 ? C.axis : C.grid;
+    c.beginPath(); c.moveTo(X(g) + 0.5, Y(-R)); c.lineTo(X(g) + 0.5, Y(R)); c.stroke();
+    c.beginPath(); c.moveTo(X(-R), Y(g) + 0.5); c.lineTo(X(R), Y(g) + 0.5); c.stroke();
+    c.fillStyle = C.muted; c.textAlign = 'center'; c.textBaseline = 'top'; c.fillText(fmt(g, 0), X(g), Y(-R) + 6);
+    c.textAlign = 'right'; c.textBaseline = 'middle'; c.fillText(fmt(g, 0), X(-R) - 6, Y(g));
+  }
+  c.fillStyle = C.muted; c.textAlign = 'right'; c.textBaseline = 'top'; c.fillText('x (m)', X(R), Y(-R) + 20);
+  c.save(); c.translate(X(-R) - 26, Y(0)); c.rotate(-Math.PI / 2); c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('v/ω (m)', 0, 0); c.restore();
+  // exact orbit (unit circle)
+  c.save(); c.setLineDash([6, 5]); c.strokeStyle = C['ink-2']; c.lineWidth = 1.5;
+  c.beginPath(); c.arc(cx, cy, k, 0, Math.PI * 2); c.stroke(); c.restore();
+  // simulated trajectory, stopped where it leaves the view
+  const o = phy.osc, n = o.n, lim = 2.4 * R;
+  const stride = Math.max(1, Math.floor(n / 4000));
+  let exitK = -1;
+  c.save(); c.beginPath(); c.rect(X(-R), Y(R), 2 * R * k, 2 * R * k); c.clip();
+  c.strokeStyle = C.s1; c.lineWidth = 2; c.lineJoin = 'round';
+  c.beginPath(); c.moveTo(X(o.x[0]), Y(o.v[0] / OM));
+  for (let i = stride; i <= n; i += stride) {
+    const xx = o.x[i], vv = o.v[i] / OM;
+    c.lineTo(X(xx), Y(vv));
+    if (Math.abs(xx) > lim || Math.abs(vv) > lim) { exitK = i; break; }
+  }
+  if (exitK < 0 && n % stride) c.lineTo(X(o.x[n]), Y(o.v[n] / OM));
+  c.stroke();
+  // one dot per step when the steps are coarse
+  const spp = 1 / o.h;
+  if (spp <= 40) {
+    c.fillStyle = C.s1;
+    const last = exitK < 0 ? n : exitK;
+    for (let i = 0; i <= last; i++) { c.beginPath(); c.arc(X(o.x[i]), Y(o.v[i] / OM), 2.6, 0, Math.PI * 2); c.fill(); }
+  }
+  c.restore();
+  // first exit from the plot (for the label)
+  let leave = -1;
+  for (let i = 0; i <= n; i += Math.max(1, Math.floor(stride / 2))) { if (Math.abs(o.x[i]) > R || Math.abs(o.v[i] / OM) > R) { leave = i; break; } }
+  // animated state: exact and simulated
+  const tA = Math.min(phy.anim, phy.N);
+  const ki = Math.min(n, Math.round(tA / o.h));
+  const ex = Math.cos(OM * ki * o.h), ev = -Math.sin(OM * ki * o.h);
+  c.lineWidth = 2; c.strokeStyle = C.ink; c.fillStyle = C.bg;
+  c.beginPath(); c.arc(X(ex), Y(ev), 6, 0, Math.PI * 2); c.fill(); c.stroke();
+  const sx = o.x[ki], sv = o.v[ki] / OM;
+  const offPlot = !(Math.abs(sx) <= R && Math.abs(sv) <= R);
+  if (!offPlot) dotAt(c, X(sx), Y(sv), 6.5, C.s1);
+  // annotations
+  if (leave >= 0) label(c, 'leaves the plot at t = ' + fmt(leave * o.h, 2) + ' s', X(R) - 6, Y(R) + 12, { align: 'right', size: 13, bold: true, color: C['ink-2'] });
+  if (offPlot) { const rr = Math.hypot(sx, sv); label(c, '● simulated state now ' + (rr < 100 ? fmt(rr, 1) : fmtRatio(rr)) + ' m from the origin', X(R) - 6, Y(R) + 32, { align: 'right', size: 13, color: C.s1 }); }
+  label(c, '○ exact  ● simulated', X(-R) + 6, Y(-R) - 12, { size: 12, color: C['ink-2'] });
+  drawPaused(c, X(R) - 6, Y(-R) - 32, 'right');
+}
+
+function drawEnergy(st) {
+  if (!phy.osc) return;
+  const o = phy.osc, n = o.n, f = stepFactor(phy.integ, o.h);
+  let lo = Infinity, hi = -Infinity;
+  for (let i = 0; i <= n; i++) { const v = o.e[i]; if (v < lo) lo = v; if (v > hi) hi = v; }
+  let y0 = Math.min(lo, 1) / 1.25, y1 = Math.max(hi, 1) * 1.25;
+  if (y1 / y0 < 1.6) { y0 = 1 / 1.25; y1 = 1.25; }
+  const fr = frame(st, { x0: 0, x1: phy.N, y0, y1, log: true, xLabel: 't (s)', xStep: phy.N > 10 ? 2 : 1, m: { l: 58 } });
+  if (!fr) return;
+  const c = fr.c;
+  refLine(fr, 1, '', {});
+  const ts = new Float64Array(n + 1);
+  for (let i = 0; i <= n; i++) ts[i] = i * o.h;
+  plotLine(fr, ts, o.e, n + 1, { color: C.s1, width: 3.5, maxPts: 2500 });
+  // predicted on top, dashed: exact per-step factor (explicit Euler, RK4) or the shadow-energy bounds (semi-implicit)
+  if (isFinite(f)) {
+    const pr = new Float64Array(n + 1);
+    for (let i = 0; i <= n; i++) pr[i] = Math.pow(f, i);
+    plotLine(fr, ts, pr, n + 1, { color: C.s2, width: 2, dash: true });
+  } else {
+    const z = OM * o.h;
+    refLine(fr, 1 / (1 - z / 2), 'bound 1/(1 − ωΔt/2)', { color: C.s2 });
+    refLine(fr, 1 / (1 + z / 2), 'bound 1/(1 + ωΔt/2)', { color: C.s2, below: true });
+  }
+  // playhead
+  const tA = Math.min(phy.anim, phy.N);
+  const px = Math.round(fr.X(tA)) + 0.5;
+  c.strokeStyle = withAlpha(C.ink, 0.35); c.lineWidth = 1; c.beginPath(); c.moveTo(px, fr.m.t); c.lineTo(px, fr.m.t + fr.ph); c.stroke();
+  const ki = Math.min(n, Math.round(tA / o.h));
+  dotAt(c, fr.X(ki * o.h), fr.Y(o.e[ki]), 5, C.s1);
+  label(c, 'E/E₀ = ' + fmtRatio(o.e[n]) + ' after ' + phy.N + ' periods', fr.m.l + 8, fr.m.t + 12, { size: 13, bold: true });
+  // hover
+  if (st.hover && st.hover.x >= fr.m.l && st.hover.x <= fr.m.l + fr.pw) {
+    const tt = clamp(fr.invX(st.hover.x), 0, phy.N), i = Math.min(n, Math.round(tt / o.h));
+    const x = Math.round(fr.X(i * o.h)) + 0.5;
+    c.strokeStyle = C['ink-2']; c.lineWidth = 1; c.beginPath(); c.moveTo(x, fr.m.t); c.lineTo(x, fr.m.t + fr.ph); c.stroke();
+    const rows = [{ color: C.s1, label: 'simulated', value: '×' + fmtRatio(o.e[i]) }];
+    if (isFinite(f)) rows.push({ color: C.s2, dash: true, label: 'predicted', value: '×' + fmtRatio(Math.pow(f, i)) });
+    drawTooltip(c, x, fr.m, fr.pw, 't = ' + fmt(i * o.h, 3) + ' s · step ' + i, rows);
+  }
+}
+
+function drawAtt(st) {
+  if (!phy.att || !phy.ref) return;
+  const fr = frame(st, { x0: 0, x1: ATT.show, y0: -10, y1: 45, xStep: 0.2, xLabel: 't (s)' });
+  if (!fr) return;
+  const c = fr.c, r = phy.att, ref = phy.ref;
+  refLine(fr, 20, 'target 20°', {});
+  const toDeg = (arr, n) => { const out = new Float64Array(n); for (let i = 0; i < n; i++) out[i] = deg(arr[i]); return out; };
+  const nRef = ref.n;
+  plotLine(fr, ref.t, toDeg(ref.th, nRef), nRef, { color: C['ink-2'], width: 1.75, dash: true });
+  let nShow = r.n;
+  for (let i = 0; i < r.n; i++) if (r.t[i] > ATT.show + 1e-9) { nShow = i + 1; break; }
+  const thd = toDeg(r.th, nShow);
+  plotLine(fr, r.t, thd, nShow, { color: C.s1, width: 2.5 });
+  if (r.h >= 0.008) {
+    clipTo(fr); c.fillStyle = C.s1;
+    for (let i = 0; i < nShow; i++) { c.beginPath(); c.arc(fr.X(r.t[i]), fr.Y(thd[i]), 3, 0, Math.PI * 2); c.fill(); }
+    c.restore();
+  }
+  let off = false;
+  for (let i = 0; i < nShow; i++) if (thd[i] > 45 || thd[i] < -10) { off = true; break; }
+  if (off) label(c, 'off scale: diverging', fr.m.l + fr.pw - 6, fr.m.t + fr.ph - 14, { align: 'right', size: 13, bold: true, color: C.bad });
+  if (phy.verdict && phy.verdict.s === 'bad') badge(c, phy.verdict.kind === 'diverged' ? 'SIMULATION UNSTABLE · diverged' : 'SIMULATION UNSTABLE', fr.m.l + 10, fr.m.t + 16, 'left', 13);
+  if (st.hover && st.hover.x >= fr.m.l && st.hover.x <= fr.m.l + fr.pw) {
+    const tt = clamp(fr.invX(st.hover.x), 0, ATT.show);
+    const i = clamp(Math.round(tt / r.h), 0, nShow - 1), j = clamp(Math.round(tt / ref.h), 0, nRef - 1);
+    const x = Math.round(fr.X(r.t[i])) + 0.5;
+    c.strokeStyle = C['ink-2']; c.lineWidth = 1; c.beginPath(); c.moveTo(x, fr.m.t); c.lineTo(x, fr.m.t + fr.ph); c.stroke();
+    drawTooltip(c, x, fr.m, fr.pw, 't = ' + fmt(r.t[i], 3) + ' s', [
+      { color: C.s1, label: INT_NAME[phy.integ] + ', Δt = ' + fmtMs(phy.dt), value: fmt(thd[i], 1) + '°' },
+      { color: C['ink-2'], dash: true, label: 'true 250 Hz loop', value: fmt(deg(ref.th[j]), 1) + '°' }
+    ]);
+  }
+}
+const fmtMs = (s) => { const ms = s * 1000; return (ms < 1 ? fmt(ms, 1) : ms < 10 && Math.abs(ms - Math.round(ms)) > 1e-9 ? fmt(ms, 1) : fmt(ms, 0)) + ' ms'; };
+
+function rtfUpdate() {
+  const phys = 1000 * phy.cp * 1e-6;                 // wall-clock s per simulated s, physics
+  const rend = phy.headless ? 0 : 30 * phy.cr * 1e-3; // rendering
+  const wall = phys + rend;
+  const rtf = wall > 0 ? 1 / wall : Infinity;
+  setText('phy-rtf', (rtf >= 100 ? fmt(rtf, 0) : rtf >= 10 ? fmt(rtf, 1) : fmt(rtf, 2)) + '×');
+  if (rtf >= 1.0005) setState('phy-rtf-state', 'ok', 'Faster than real time');
+  else if (rtf > 0.9995) setState('phy-rtf-state', 'idle', 'Exactly real time');
+  else setState('phy-rtf-state', 'warn', 'Slower than real time');
+  const full = Math.max(1.25, wall * 1.1);
+  $('phy-rtf-bp').style.width = (phys / full * 100).toFixed(2) + '%';
+  $('phy-rtf-br').style.left = (phys / full * 100).toFixed(2) + '%';
+  $('phy-rtf-br').style.width = (rend / full * 100).toFixed(2) + '%';
+  $('phy-rtf-mark').style.left = (1 / full * 100).toFixed(2) + '%';
+  setText('phy-rtf-max', fmt(full, full < 10 ? 2 : 1) + ' s of wall-clock time per simulated second');
+  const parts = 'Each simulated second costs ' + fmt(phys, 3) + ' s of physics (1000 × ' + phy.cp + ' µs)' +
+    (phy.headless ? ' and no rendering' : ' + ' + fmt(rend, 2) + ' s of rendering (30 × ' + phy.cr + ' ms)') + ', so RTF = 1/' + fmt(wall, 3) + '.';
+  const tail = rtf < 1 ? ' Below 1, a lockstep PX4 SITL simply runs slower than real time; without lockstep the flight stack would miss its deadlines.'
+    : ' Simulators that pace themselves to real time (Gazebo by default) idle the rest; unthrottled headless runs can use it all.';
+  setText('phy-rtf-text', parts + tail);
+}
+
+function setupPhysics() {
+  phyUI.integ = bindRadio('phy-int', (v) => { phy.integ = v; phyRecompute(); });
+  phyUI.dt = bindStops('phy-dt', DT_STOPS, (ms) => fmt(ms, ms < 1 ? 1 : ms % 1 ? 1 : 0), 'milliseconds', (ms) => { phy.dt = ms / 1000; phyRecompute(); });
+  phyUI.n = bindSlider('phy-n', (v) => fmt(v, 0), (v) => { phy.N = v; if (phy.anim > v) phy.anim = 0; phyRecompute(); });
+  [['phy-dt-1', 1], ['phy-dt-4', 4], ['phy-dt-10', 10], ['phy-dt-50', 50]].forEach((p) => $(p[0]).addEventListener('click', () => phyUI.dt.set(p[1])));
+  phyUI.cp = bindStops('phy-cp', CP_STOPS, (v) => fmt(v, 0), 'microseconds', (v) => { phy.cp = v; rtfUpdate(); });
+  phyUI.cr = bindSlider('phy-cr', (v) => fmt(v, 0), (v) => { phy.cr = v; rtfUpdate(); });
+  phyUI.headless = bindSwitch('phy-headless', (on) => { phy.headless = on; rtfUpdate(); });
+  phyPhase = makeCanvas('phy-phase');
+  phyEnergy = makeCanvas('phy-energy');
+  phyAtt = makeCanvas('phy-att');
+  attachHover(phyEnergy); attachHover(phyAtt);
+  phyRecompute();
+  rtfUpdate();
+}
+function phyTick(real) {
+  if (reduceMotion) { if (phy.anim !== phy.N) { phy.anim = phy.N; markDirty(); } return; }
+  if (paused) return;
+  phy.anim += real;
+  if (phy.anim > phy.N + 0.8) phy.anim = 0;
+  markDirty();
+}
+
+/* ======================================================================
+   Tab 2: sensors and ground truth. Truth is a figure-eight; sensors are generated from it at 1 kHz.
+   Accelerometer a_m = a + b + n_a (b = turn-on bias + slow drift), GPS p_GPS = p + n_p delivered L late.
+   Estimators: GPS-only (hold last fix), dead reckoning, linear Kalman filter (p, v, b per axis).
+   ====================================================================== */
+const SEN = { A: 20, B: 10, W: 0.2, bdir: [0.8, -0.6], brw: 0.003, tauB: 200, HN: 640, WIN: 20 };
+SEN.phiB = Math.exp(-DT / SEN.tauB);
+SEN.qB = SEN.brw * Math.sqrt(SEN.tauB / 2) * Math.sqrt(1 - SEN.phiB * SEN.phiB);   // Gauss-Markov drift, stationary sigma 0.03 m/s^2
+const R_STOPS = [0.1, 0.15, 0.2, 0.3, 0.5, 0.7, 1, 1.5, 2, 3, 5, 7, 10, 15, 20];
+function senTruth(t, o) {
+  const s1 = Math.sin(SEN.W * t), c1 = Math.cos(SEN.W * t), s2 = Math.sin(2 * SEN.W * t), c2 = Math.cos(2 * SEN.W * t);
+  o.px = SEN.A * s1; o.py = SEN.B * s2;
+  o.vx = SEN.A * SEN.W * c1; o.vy = 2 * SEN.B * SEN.W * c2;
+  o.ax = -SEN.A * SEN.W * SEN.W * s1; o.ay = -4 * SEN.B * SEN.W * SEN.W * s2;
+  return o;
+}
+function createSensors(nrm) {
+  const s = {
+    rate: 5, sig: 2, lat: 0.2, bias: 0.05, noise: 0.1, rSig: 2, comp: true,
+    t: 0, k: 0, bd: [0, 0], pend: [], dropout: 0,
+    gps: { x: 0, y: 0, t: 0, has: false },
+    dr: { px: 0, py: 0, vx: 0, vy: 0 },
+    X: new Float64Array(6),        // [px, vx, bx, py, vy, by]
+    P: new Float64Array(6),        // shared covariance [00, 01, 02, 11, 12, 22]
+    hist: new Float64Array(SEN.HN * 14),
+    Q: { q00: 0, q01: 0, q11: 0, q22: 0 },
+    rms: { gps: new RunMean(1000), dr: new RunMean(1000), kf: new RunMean(1000) },
+    ring: new Ring(['eg', 'ed', 'ek'], 1100),
+    trail: { truth: [], dr: [], kf: [] }, fixes: [],
+    T0: {}, T1: {}, nrm: nrm || randn
+  };
+  s.setQ = () => {
+    const h = DT, s2 = Math.pow(Math.max(s.noise, 0.02), 2);
+    s.Q.q00 = s2 * Math.pow(h, 4) / 4; s.Q.q01 = s2 * Math.pow(h, 3) / 2; s.Q.q11 = s2 * h * h; s.Q.q22 = SEN.brw * SEN.brw * h;
+  };
+  s.trueBias = () => [s.bias * SEN.bdir[0] + s.bd[0], s.bias * SEN.bdir[1] + s.bd[1]];
+  s.resetEstimator = () => {
+    const T = senTruth(s.t, s.T0);
+    s.X.set([T.px, T.vx, 0, T.py, T.vy, 0]);
+    s.P.set([0.04, 0, 0, 0.01, 0, 0.01]);   // started at the true state: sigma 0.2 m, 0.1 m/s; bias unknown, sigma 0.1 m/s^2
+    s.dr.px = T.px; s.dr.py = T.py; s.dr.vx = T.vx; s.dr.vy = T.vy;
+    for (const k in s.rms) s.rms[k].clear();
+    s.ring.clear(); s.trail.dr.length = 0; s.trail.kf.length = 0;
+    s.lastReset = s.t;
+  };
+  s.reset = () => {
+    s.t = 0; s.k = 0; s.bd[0] = s.bd[1] = 0; s.pend.length = 0; s.dropout = 0;
+    const T = senTruth(0, s.T0);
+    s.gps.x = T.px; s.gps.y = T.py; s.gps.t = 0; s.gps.has = false;
+    s.trail.truth.length = 0; s.fixes.length = 0;
+    s.setQ(); s.resetEstimator();
+  };
+  function predict(amx, amy) {
+    const X = s.X, P = s.P, h = DT, c = -h * h / 2, d = -h;
+    let u = amx - X[2]; X[0] += X[1] * h + 0.5 * h * h * u; X[1] += h * u;
+    u = amy - X[5]; X[3] += X[4] * h + 0.5 * h * h * u; X[4] += h * u;
+    const p00 = P[0], p01 = P[1], p02 = P[2], p11 = P[3], p12 = P[4], p22 = P[5];
+    const a0 = p00 + h * p01 + c * p02, a1 = p01 + h * p11 + c * p12, a2 = p02 + h * p12 + c * p22;
+    P[0] = a0 + h * a1 + c * a2 + s.Q.q00;
+    P[1] = a1 + d * a2 + s.Q.q01;
+    P[2] = a2;
+    P[3] = p11 + 2 * d * p12 + d * d * p22 + s.Q.q11;
+    P[4] = p12 + d * p22;
+    P[5] = p22 + s.Q.q22;
+  }
+  function update(zx, zy) {
+    const X = s.X, P = s.P, R = Math.pow(Math.max(s.rSig, 0.05), 2);
+    const S = P[0] + R, k0 = P[0] / S, k1 = P[1] / S, k2 = P[2] / S;
+    let inn = zx - X[0]; X[0] += k0 * inn; X[1] += k1 * inn; X[2] += k2 * inn;
+    inn = zy - X[3]; X[3] += k0 * inn; X[4] += k1 * inn; X[5] += k2 * inn;
+    const p00 = P[0], p01 = P[1], p02 = P[2];
+    P[0] = p00 - k0 * p00; P[1] = p01 - k0 * p01; P[2] = p02 - k0 * p02;
+    P[3] -= k1 * p01; P[4] -= k1 * p02; P[5] -= k2 * p02;
+  }
+  const save = (k, amx, amy) => { const o = (k % SEN.HN) * 14; s.hist.set(s.X, o); s.hist.set(s.P, o + 6); s.hist[o + 12] = amx; s.hist[o + 13] = amy; };
+  const saveState = (k) => { const o = (k % SEN.HN) * 14; s.hist.set(s.X, o); s.hist.set(s.P, o + 6); };
+  const restore = (k) => { const o = (k % SEN.HN) * 14; for (let i = 0; i < 6; i++) { s.X[i] = s.hist[o + i]; s.P[i] = s.hist[o + 6 + i]; } };
+  s.step = () => {
+    const k = s.k, T = senTruth(k * DT, s.T0), nrm = s.nrm;
+    s.bd[0] = s.bd[0] * SEN.phiB + SEN.qB * nrm();
+    s.bd[1] = s.bd[1] * SEN.phiB + SEN.qB * nrm();
+    const b = s.trueBias();
+    // GPS fix: sampled now (unless in dropout), delivered L later
+    const period = Math.max(1, Math.round(1000 / s.rate));
+    if (s.dropout > 0) s.dropout = Math.max(0, s.dropout - DT);
+    else if (k % period === 0) s.pend.push({ due: k + Math.round(s.lat / DT), mk: k, zx: T.px + s.sig * nrm(), zy: T.py + s.sig * nrm() });
+    // accelerometer
+    const amx = T.ax + b[0] + s.noise * nrm(), amy = T.ay + b[1] + s.noise * nrm();
+    save(k, amx, amy);
+    predict(amx, amy);
+    s.dr.vx += amx * DT; s.dr.vy += amy * DT;
+    s.dr.px += s.dr.vx * DT; s.dr.py += s.dr.vy * DT;
+    // deliveries: the filter state now represents time (k + 1) DT
+    while (s.pend.length && s.pend[0].due <= k) {
+      const f = s.pend.shift();
+      s.gps.x = f.zx; s.gps.y = f.zy; s.gps.t = (k + 1) * DT; s.gps.has = true;
+      s.fixes.push({ x: f.zx, y: f.zy, t: (k + 1) * DT });
+      const back = k - f.mk;
+      if (s.comp && back > 0 && back < SEN.HN - 2) {
+        restore(f.mk);                 // state before step mk's predict = estimate at the fix's timestamp
+        update(f.zx, f.zy);
+        for (let j = f.mk; j <= k; j++) {
+          saveState(j);
+          const o = (j % SEN.HN) * 14;
+          predict(s.hist[o + 12], s.hist[o + 13]);
+        }
+      } else {
+        update(f.zx, f.zy);
+      }
+    }
+    s.k++; s.t = s.k * DT;
+    if (s.k % 20 === 0) {
+      const Tn = senTruth(s.t, s.T1);
+      const eg = Math.hypot(s.gps.x - Tn.px, s.gps.y - Tn.py);
+      const ed = Math.hypot(s.dr.px - Tn.px, s.dr.py - Tn.py);
+      const ek = Math.hypot(s.X[0] - Tn.px, s.X[3] - Tn.py);
+      s.rms.gps.push(eg * eg); s.rms.dr.push(ed * ed); s.rms.kf.push(ek * ek);
+      s.ring.push(s.t, { eg, ed, ek });
+    }
+    if (s.k % 50 === 0) {
+      const Tn = senTruth(s.t, s.T1);
+      const tr = s.trail;
+      tr.truth.push(Tn.px, Tn.py); if (tr.truth.length > 400) tr.truth.splice(0, 2);
+      tr.dr.push(s.dr.px, s.dr.py); if (tr.dr.length > 400) tr.dr.splice(0, 2);
+      tr.kf.push(s.X[0], s.X[3]); if (tr.kf.length > 400) tr.kf.splice(0, 2);
+      while (s.fixes.length && s.fixes[0].t < s.t - 8) s.fixes.shift();
+    }
+  };
+  s.reset();
+  return s;
+}
+const sen = createSensors();
+const senUI = {};
+const senShow = { truth: true, gps: true, dr: true, kf: true };
+let senMap, senErr;
+const senCfgErr = {
+  unit: 'm', dec: 2, window: SEN.WIN,
+  series: [
+    { key: 'ed', color: 's3', dash: true, width: 2, label: 'dead reckoning', hidden: () => !senShow.dr },
+    { key: 'eg', color: 's2', width: 2, label: 'GPS only', hidden: () => !senShow.gps },
+    { key: 'ek', color: 's1', width: 2.5, label: 'fused', hidden: () => !senShow.kf }
+  ],
+  range: (lo, hi, vis) => {
+    const top = Math.max(isFinite(vis.eg[1]) && senShow.gps ? vis.eg[1] : 0, isFinite(vis.ek[1]) && senShow.kf ? vis.ek[1] : 0);
+    return [0, clamp(Math.ceil(top * 1.25 + 0.5), 3, 30)];
+  },
+  note: (yr) => {
+    if (!senShow.dr) return '';
+    const v = sen.ring.n ? sen.ring.d.ed[sen.ring.idx(sen.ring.n - 1)] : 0;
+    return v > yr[1] ? 'dead reckoning off scale: ' + fmt(v, v < 100 ? 1 : 0) + ' m' : '';
+  }
+};
+
+function drawTopQuad(c, x, y, psi, s) {   // small top-view quad, nose along psi (screen angle)
+  c.save(); c.translate(x, y); c.rotate(psi);
+  c.strokeStyle = C.arm; c.lineWidth = Math.max(2.5, s * 0.18); c.lineCap = 'round';
+  c.beginPath(); c.moveTo(-s, -s); c.lineTo(s, s); c.moveTo(-s, s); c.lineTo(s, -s); c.stroke();
+  for (const p of [[-s, -s], [s, s], [-s, s], [s, -s]]) {
+    c.beginPath(); c.arc(p[0], p[1], s * 0.62, 0, Math.PI * 2); c.fillStyle = withAlpha(C.disc, 0.75); c.fill();
+    c.lineWidth = 1; c.strokeStyle = C['disc-edge']; c.stroke();
+  }
+  c.fillStyle = C.body; c.beginPath(); rrPath(c, 0, 0, s * 1.1, s * 0.8, s * 0.2); c.fill();
+  c.fillStyle = C.dome; c.beginPath(); polyPath(c, [[s * 0.95, 0], [s * 0.35, -s * 0.32], [s * 0.35, s * 0.32]]); c.fill();
+  c.restore();
+}
+function drawMap(st, s) {
+  const c = st.begin(), W = st.w, H = st.h;
+  if (W < 100 || H < 80) return;
+  c.fillStyle = C.sky; c.fillRect(0, 0, W, H);
+  const xr = 24, yr = 13.5, ml = 34, mb = 24;
+  const k = Math.min((W - ml - 10) / (2 * xr), (H - mb - 10) / (2 * yr));
+  const cx = ml + (W - ml - 10) / 2, cy = 8 + (H - mb - 10) / 2;
+  const SX = (x) => cx + x * k, SY = (y) => cy - y * k;
+  const vx0 = (0 - cx) / k, vx1 = (W - cx) / k, vy0 = (cy - H) / k, vy1 = cy / k;
+  // 5 m grid with labels every 10 m
+  c.lineWidth = 1; c.font = '12px ' + FONT;
+  for (let gx = Math.ceil(vx0 / 5) * 5; gx <= vx1; gx += 5) {
+    c.strokeStyle = gx === 0 ? C.axis : C.grid; const X = Math.round(SX(gx)) + 0.5;
+    c.beginPath(); c.moveTo(X, 0); c.lineTo(X, H); c.stroke();
+    if (gx % 10 === 0 && X > ml && X < W - 52) { c.fillStyle = C.muted; c.textAlign = 'center'; c.textBaseline = 'bottom'; c.fillText(fmt(gx, 0), X, H - 5); }
+  }
+  for (let gy = Math.ceil(vy0 / 5) * 5; gy <= vy1; gy += 5) {
+    c.strokeStyle = gy === 0 ? C.axis : C.grid; const Y = Math.round(SY(gy)) + 0.5;
+    c.beginPath(); c.moveTo(0, Y); c.lineTo(W, Y); c.stroke();
+    if (gy % 10 === 0 && Y > 10 && Y < H - mb) { c.fillStyle = C.muted; c.textAlign = 'left'; c.textBaseline = 'middle'; c.fillText(fmt(gy, 0), 6, Y); }
+  }
+  c.fillStyle = C.muted; c.textAlign = 'right'; c.textBaseline = 'bottom'; c.fillText('x (m)', W - 8, H - 5);
+  c.textAlign = 'left'; c.textBaseline = 'top'; c.fillText('y (m)', 6, 6);
+  // 10 m scale bar
+  const sbx = W - 16 - 10 * k, sby = 22;
+  c.strokeStyle = C['ink-2']; c.lineWidth = 2; c.beginPath(); c.moveTo(sbx, sby); c.lineTo(sbx + 10 * k, sby); c.moveTo(sbx, sby - 4); c.lineTo(sbx, sby + 4); c.moveTo(sbx + 10 * k, sby - 4); c.lineTo(sbx + 10 * k, sby + 4); c.stroke();
+  label(c, '10 m', sbx + 5 * k, sby + 12, { align: 'center', size: 12, color: C['ink-2'], bg: false });
+  // planned path
+  c.save(); c.setLineDash([5, 6]); c.strokeStyle = C.path; c.lineWidth = 2; c.beginPath();
+  for (let i = 0; i <= 240; i++) { const tt = i / 240 * 2 * Math.PI / SEN.W, T = senTruth(tt, {}); if (i) c.lineTo(SX(T.px), SY(T.py)); else c.moveTo(SX(T.px), SY(T.py)); }
+  c.stroke(); c.restore();
+  const T = senTruth(s.t, {});
+  const trail = (arr, color, width, dash, endX, endY) => {
+    if (arr.length < 2) return;
+    c.save(); c.strokeStyle = color; c.lineWidth = width; c.lineJoin = 'round'; c.lineCap = 'round'; c.setLineDash(dash ? [7, 5] : []);
+    c.beginPath(); c.moveTo(SX(arr[0]), SY(arr[1]));
+    for (let i = 2; i < arr.length; i += 2) c.lineTo(SX(arr[i]), SY(arr[i + 1]));
+    c.lineTo(SX(endX), SY(endY)); c.stroke(); c.restore();
+  };
+  const offView = [];
+  const inView = (x, y) => SX(x) > -4 && SX(x) < W + 4 && SY(y) > -4 && SY(y) < H + 4;
+  if (senShow.truth) trail(s.trail.truth, C.truth, 3, false, T.px, T.py);
+  if (senShow.dr) {
+    trail(s.trail.dr, C.s3, 2.5, true, s.dr.px, s.dr.py);
+    if (inView(s.dr.px, s.dr.py)) { c.fillStyle = C.s3; c.strokeStyle = C.bg; c.lineWidth = 2; c.beginPath(); c.rect(SX(s.dr.px) - 5.5, SY(s.dr.py) - 5.5, 11, 11); c.fill(); c.stroke(); }
+    else offView.push({ x: s.dr.px, y: s.dr.py, color: C.s3, text: 'dead reckoning ' + fmt(Math.hypot(s.dr.px - T.px, s.dr.py - T.py), 0) + ' m away' });
+  }
+  if (senShow.gps) {
+    for (const f of s.fixes) {
+      const age = s.t - f.t;
+      c.globalAlpha = clamp(1 - age / 8, 0.15, 1);
+      c.fillStyle = C.s2; c.beginPath(); c.arc(SX(f.x), SY(f.y), 4.5, 0, Math.PI * 2); c.fill();
+    }
+    c.globalAlpha = 1;
+    if (s.gps.has) {   // latest fix = the GPS-only estimate
+      c.strokeStyle = C.s2; c.lineWidth = 2.5; c.beginPath(); c.arc(SX(s.gps.x), SY(s.gps.y), 9, 0, Math.PI * 2); c.stroke();
+    }
+  }
+  if (senShow.kf) {
+    trail(s.trail.kf, C.s1, 2.5, false, s.X[0], s.X[3]);
+    if (inView(s.X[0], s.X[3])) dotAt(c, SX(s.X[0]), SY(s.X[3]), 6, C.s1);
+    else offView.push({ x: s.X[0], y: s.X[3], color: C.s1, text: 'fused ' + fmt(Math.hypot(s.X[0] - T.px, s.X[3] - T.py), 0) + ' m away' });
+  }
+  if (senShow.truth) drawTopQuad(c, SX(T.px), SY(T.py), Math.atan2(-T.vy, T.vx), clamp(k * 0.55, 7, 12));
+  // off-view markers on the edge
+  offView.forEach((o, i) => {
+    const dx = SX(o.x) - W / 2, dy = SY(o.y) - H / 2, sc = Math.min((W / 2 - 26) / Math.max(Math.abs(dx), 1e-6), (H / 2 - 26) / Math.max(Math.abs(dy), 1e-6));
+    const ex = W / 2 + dx * sc, ey = H / 2 + dy * sc, L = Math.hypot(dx, dy);
+    arrow(c, ex - dx / L * 22, ey - dy / L * 22, ex, ey, o.color, 5);
+    label(c, o.text, clamp(ex - dx / L * 30, 60, W - 60), clamp(ey - dy / L * 30 + i * 18, 14, H - 14), { align: 'center', size: 13, bold: true, color: o.color });
+  });
+  if (s.dropout > 0) badge(c, 'GPS DROPOUT · ' + fmt(s.dropout, 1) + ' s left', ml + 14, 22, 'left', 13);
+  drawPaused(c, W - 12, H - 40, 'right');
+}
+
+function senStatus() {
+  const s = sen;
+  if (s.dropout > 0) setState('sen-st-gps', 'bad', 'GPS dropout · ' + fmt(s.dropout, 1) + ' s left');
+  else setState('sen-st-gps', 'ok', 'GPS ' + s.rate + ' Hz · ' + (s.lat > 0 ? fmt(s.lat * 1000, 0) + ' ms late' : 'no latency'));
+  if (s.lat <= 0) setState('sen-st-comp', 'idle', 'No latency to compensate');
+  else if (s.comp) setState('sen-st-comp', 'ok', 'Latency compensated');
+  else setState('sen-st-comp', 'warn', 'Latency ignored: fixes fused as if current');
+}
+function senReadouts() {
+  const s = sen, enough = s.rms.kf.n >= 50;   // at least 1 s of samples
+  const r = (m) => (enough ? fmtRmsM(Math.sqrt(m.mean())) : '–');
+  setText('sen-ro-gps', r(s.rms.gps)); setText('sen-ro-dr', r(s.rms.dr)); setText('sen-ro-kf', r(s.rms.kf));
+  const bt = s.trueBias(), be = Math.hypot(s.X[2], s.X[5]);
+  setHTML('sen-ro-bias', fmt(be, 3) + ' <small>true ' + fmt(Math.hypot(bt[0], bt[1]), 3) + ' m/s²</small>');
+  senStatus();
+}
+const fmtRmsM = (v) => (v < 10 ? fmt(v, 2) : v < 100 ? fmt(v, 1) : fmt(v, 0)) + ' m';
+function senKnobNote() {
+  const r = sen.rSig, t = sen.sig;
+  let txt;
+  if (t <= 0) txt = 'The true GPS noise is zero: any σ above zero is cautious.';
+  else if (Math.abs(Math.log(r / t)) < 0.2) txt = 'Close to the true GPS noise (' + fmt(t, 1) + ' m).';
+  else if (r < t) txt = 'Smaller than the true ' + fmt(t, 1) + ' m: the filter trusts GPS too much.';
+  else txt = 'Larger than the true ' + fmt(t, 1) + ' m: the filter trusts the IMU more.';
+  setText('sen-r-note', txt);
+}
+function senDropout() { sen.dropout = 5; markDirty(); }
+function setupSensors() {
+  senUI.rate = bindSlider('sen-rate', (v) => fmt(v, 0), (v) => { sen.rate = v; });
+  senUI.sig = bindSlider('sen-sig', (v) => fmt(v, 1), (v) => { sen.sig = v; senKnobNote(); });
+  senUI.lat = bindSlider('sen-lat', (v) => fmt(v, 0), (v) => { sen.lat = v / 1000; });
+  senUI.bias = bindSlider('sen-bias', (v) => fmt(v, 3), (v) => { sen.bias = v; });
+  senUI.noise = bindSlider('sen-noise', (v) => fmt(v, 2), (v) => { sen.noise = v; sen.setQ(); });
+  senUI.r = bindStops('sen-r', R_STOPS, (v) => fmt(v, v < 1 ? 2 : v < 10 ? 1 : 0), 'metres', (v) => { sen.rSig = v; senKnobNote(); });
+  senUI.comp = bindSwitch('sen-comp', (on) => { sen.comp = on; senStatus(); });
+  ['truth', 'gps', 'dr', 'kf'].forEach((k) => bindToggle('sen-show-' + k, (on) => { senShow[k] = on; }));
+  $('sen-reset').addEventListener('click', () => { sen.resetEstimator(); markDirty(); });
+  $('sen-dropout').addEventListener('click', senDropout);
+  senMap = makeCanvas('sen-map');
+  senErr = makeCanvas('sen-err');
+  attachHover(senErr);
+  senKnobNote();
+}
+
+/* ======================================================================
+   Tab 3: sim-to-real. Planar quad x'' = -(u1/m) sin th + F_gust/m, z'' = (u1/m) cos th - g, th'' = u2/I
+   with motor lag, sensing/compute delay, sensor noise, mass error and gusts; cascaded PD controller.
+   One step function serves the live episode and the 20-world batch (seeded), so both behave identically.
+   ====================================================================== */
+const GAP = {
+  m: 1.0, L: 0.25, I: 0.01, tilt: rad(30), wz: 3.0, xs: 2.0, zs: 1.5, T: 8.0, tCheck: 4.0, band: 0.2, level: rad(15),
+  sp: 0.02, sv: 0.05, sth: rad(0.5), sw: rad(2.0), tauG: 1.0, BUF: 128
+};
+GAP.fmax = GAP.m * G;
+GAP.ag = Math.exp(-DT / GAP.tauG); GAP.bg = Math.sqrt(1 - Math.exp(-2 * DT / GAP.tauG));
+const GAINS = { aggr: { wo: 3.5, wi: 35, zi: 0.7 }, rob: { wo: 2.2, wi: 11, zi: 1.0 } };
+const WORLDS = { ideal: { tau: 0, delay: 0, noise: 0, mass: 0, gust: 0 }, real: { tau: 0.025, delay: 0.010, noise: 1.0, mass: 0.10, gust: 0.3 } };
+const RANGES = { tau: [0.010, 0.050], delay: [0, 0.025], noise: [0, 1.5], mass: [-0.2, 0.3], gust: [0, 0.3] };
+const BATCH_SEED0 = 2026;
+function gapNew(log) {
+  const s = {
+    k: 0, t: 0, x: 0, z: GAP.zs, th: 0, vx: 0, vz: 0, w: 0, F1: GAP.m * G / 2, F2: GAP.m * G / 2, gf: 0, thd: 0,
+    crashed: false, crashT: NaN, maxdev: 0, maxth: 0, buf: new Float64Array(GAP.BUF * 6),
+    log: log ? { x: new Float64Array(802), th: new Float64Array(802), n: 0 } : null
+  };
+  for (let i = 0; i < GAP.BUF; i++) { s.buf[i * 6] = 0; s.buf[i * 6 + 1] = GAP.zs; }
+  if (s.log) { s.log.x[0] = 0; s.log.th[0] = 0; s.log.n = 1; }
+  return s;
+}
+/* One 1 kHz step. Always draws 7 normals (6 sensor channels + gust) so seeded streams stay aligned. */
+function gapStep(s, P, W, nrm) {
+  const n1 = nrm(), n2 = nrm(), n3 = nrm(), n4 = nrm(), n5 = nrm(), n6 = nrm(), n7 = nrm();
+  const nz = W.noise, k = s.k, b = s.buf;
+  let j = (k % GAP.BUF) * 6;
+  b[j] = s.x + GAP.sp * nz * n1; b[j + 1] = s.z + GAP.sp * nz * n2; b[j + 2] = s.th + GAP.sth * nz * n3;
+  b[j + 3] = s.vx + GAP.sv * nz * n4; b[j + 4] = s.vz + GAP.sv * nz * n5; b[j + 5] = s.w + GAP.sw * nz * n6;
+  const ds = Math.floor(W.delay / DT + 0.5);
+  j = (((k - ds) % GAP.BUF) + GAP.BUF) % GAP.BUF * 6;
+  const xm = b[j], zm = b[j + 1], thm = b[j + 2], vxm = b[j + 3], vzm = b[j + 4], wm = b[j + 5];
+  // cascaded controller (nominal mass and inertia)
+  const ax = P.wo * P.wo * (GAP.xs - xm) - 2 * P.wo * vxm;
+  const az = clamp(GAP.wz * GAP.wz * (GAP.zs - zm) - 2 * GAP.wz * vzm, -0.7 * G, 0.9 * G);
+  const thd = clamp(Math.atan2(-ax, G + az), -GAP.tilt, GAP.tilt);
+  const u1c = GAP.m * (G + az) / Math.max(Math.cos(thm), 0.5);
+  const u2c = GAP.I * (P.wi * P.wi * (thd - thm) - 2 * P.zi * P.wi * wm);
+  const F1c = clamp(u1c / 2 - u2c / (2 * GAP.L), 0, GAP.fmax), F2c = clamp(u1c / 2 + u2c / (2 * GAP.L), 0, GAP.fmax);
+  // motors: first-order lag (exact discretisation)
+  const al = W.tau > 1e-6 ? 1 - Math.exp(-DT / W.tau) : 1;
+  s.F1 += (F1c - s.F1) * al; s.F2 += (F2c - s.F2) * al;
+  s.gf = s.gf * GAP.ag + W.gust * GAP.bg * n7;
+  s.thd = thd;
+  if (!s.crashed) {
+    const m = GAP.m * (1 + W.mass), I = GAP.I * (1 + W.mass);
+    const u1 = s.F1 + s.F2, u2 = (s.F2 - s.F1) * GAP.L;
+    s.vx += (-(u1 / m) * Math.sin(s.th) + s.gf / m) * DT;
+    s.vz += ((u1 / m) * Math.cos(s.th) - G) * DT;
+    s.w += (u2 / I) * DT;
+    s.x += s.vx * DT; s.z += s.vz * DT; s.th += s.w * DT;
+    if (s.z <= 0 || Math.abs(s.th) > Math.PI / 2) { s.crashed = true; s.crashT = (k + 1) * DT; s.z = Math.max(s.z, 0); s.vx = s.vz = s.w = 0; }
+  }
+  s.k = k + 1; s.t = s.k * DT;
+  if (s.t >= GAP.tCheck - 1e-9) { s.maxdev = Math.max(s.maxdev, Math.abs(s.x - GAP.xs)); s.maxth = Math.max(s.maxth, Math.abs(s.th)); }
+  if (s.log && s.k % 10 === 0 && s.log.n < 802) { s.log.x[s.log.n] = s.x; s.log.th[s.log.n] = s.th; s.log.n++; }
+}
+const gapGood = (s) => !s.crashed && s.maxdev <= GAP.band && s.maxth <= GAP.level;
+function gapEpisode(P, W, nrm) {
+  const s = gapNew(true);
+  const n = Math.round(GAP.T / DT);
+  for (let i = 0; i < n; i++) gapStep(s, P, W, nrm);
+  return s;
+}
+function drawWorlds(seed) {
+  const r = mulberry32(seed), out = [];
+  const U = (a) => a[0] + (a[1] - a[0]) * r();
+  for (let i = 0; i < 20; i++) {
+    const w = { tau: U(RANGES.tau), delay: U(RANGES.delay), noise: U(RANGES.noise), mass: U(RANGES.mass), gust: U(RANGES.gust) };
+    w.seed = Math.floor(r() * 4294967296) >>> 0;
+    out.push(w);
+  }
+  return out;
+}
+function runBatch(worlds, P) {
+  return worlds.map((w) => {
+    const s = gapEpisode(P, w, normalStream(mulberry32(w.seed)));
+    // a crashed run's line stops at the crash (the × marks it)
+    const n = s.crashed ? Math.min(s.log.n, Math.floor(s.crashT / 0.01) + 1) : s.log.n;
+    return { w, x: s.log.x, n, crashed: s.crashed, crashT: s.crashT, good: gapGood(s), maxdev: s.maxdev, maxth: s.maxth };
+  });
+}
+
+const gap = {
+  P: Object.assign({}, GAINS.aggr), W: Object.assign({}, WORLDS.ideal),
+  s: null, repeat: true, hold: 0, done: false, batch: null, seed: BATCH_SEED0, seedUsed: false, hoverRun: -1, nrm: randn
+};
+const gapUI = {};
+let gapX, gapScene, gapTh;
+function gapRestart() { gap.s = gapNew(true); gap.hold = 0; gap.done = false; markDirty(); }
+function gapTick(real) {
+  // auto-repeat after an episode ends (8 s) or 1.5 s after a crash
+  if (paused) return;
+  const s = gap.s;
+  if (gap.done) {
+    if (gap.repeat) { gap.hold += real; if (gap.hold > 2.0) gapRestart(); }
+  } else if (s.crashed && s.t - s.crashT > 1.5) {
+    gap.done = true; gap.hold = 0;
+  }
+}
+const gapSim = {
+  get t() { return gap.s.t; },
+  step: () => {
+    const s = gap.s;
+    if (gap.done) return;
+    gapStep(s, gap.P, gap.W, gap.nrm);
+    if (s.t >= GAP.T - 1e-9) { gap.done = true; gap.hold = 0; }
+  }
+};
+function gapBatchRun(newSeed) {
+  if (newSeed) {
+    if (!gap.seedUsed) { gap.seed = BATCH_SEED0; gap.seedUsed = true; }
+    else gap.seed = (Math.floor(Math.random() * 4294967296)) >>> 0;
+    gap.worlds = drawWorlds(gap.seed);
+  }
+  if (!gap.worlds) return;
+  gap.batch = runBatch(gap.worlds, gap.P);
+  const good = gap.batch.filter((b) => b.good).length, crashed = gap.batch.filter((b) => b.crashed).length;
+  setText('gap-batch-count', good + ' / 20');
+  setText('gap-batch-note', 'good runs for the current gains' + (crashed ? ' · ' + crashed + ' crashed' : ''));
+  setState('gap-st-batch', good === 20 ? 'ok' : good >= 15 ? 'warn' : 'bad', '20 random worlds: ' + good + ' good, ' + (20 - good) + ' failed');
+  markDirty();
+}
+let batchTimer = null;
+function gapGainsChanged() {
+  updateGapRatio();
+  const p = gap.P, mt = (g) => Math.abs(g.wo - p.wo) < 1e-9 && Math.abs(g.wi - p.wi) < 1e-9 && Math.abs(g.zi - p.zi) < 1e-9;
+  $('gap-pre-aggr').setAttribute('aria-pressed', mt(GAINS.aggr) ? 'true' : 'false');
+  $('gap-pre-rob').setAttribute('aria-pressed', mt(GAINS.rob) ? 'true' : 'false');
+  if (gap.worlds) { clearTimeout(batchTimer); batchTimer = setTimeout(() => gapBatchRun(false), 120); }
+}
+function gapWorldChanged() {
+  const w = gap.W, mt = (g) => ['tau', 'delay', 'noise', 'mass', 'gust'].every((k) => Math.abs(g[k] - w[k]) < 1e-9);
+  $('gap-pre-ideal').setAttribute('aria-pressed', mt(WORLDS.ideal) ? 'true' : 'false');
+  $('gap-pre-real').setAttribute('aria-pressed', mt(WORLDS.real) ? 'true' : 'false');
+}
+function updateGapRatio() {
+  const r = gap.P.wi / gap.P.wo;
+  setText('gap-ratio', fmt(r, 1) + '×');
+  if (r >= 5) setState('gap-ratio-state', 'ok', 'Well separated');
+  else if (r > 2) setState('gap-ratio-state', 'warn', 'Too close: expect overshoot');
+  else setState('gap-ratio-state', 'bad', 'Unstable: needs more than 2×');
+}
+function applyGains(g) {
+  gapUI.wo.set(g.wo, true); gapUI.wi.set(g.wi, true); gapUI.zi.set(g.zi, true);
+  Object.assign(gap.P, g);
+  gapGainsChanged(); gapRestart();
+}
+function applyWorld(w) {
+  gapUI.tau.set(Math.round(w.tau * 1000), true); gapUI.delay.set(Math.round(w.delay * 1000), true);
+  gapUI.noise.set(w.noise, true); gapUI.mass.set(Math.round(w.mass * 100), true); gapUI.gust.set(w.gust, true);
+  Object.assign(gap.W, w);
+  gapWorldChanged(); gapRestart();
+}
+
+function liveN() {   // number of logged samples to draw for the live run (up to a crash)
+  const s = gap.s, L = s.log;
+  return s.crashed ? Math.min(L.n, Math.floor(s.crashT / 0.01) + 1) : L.n;
+}
+function gapLiveMetrics() {
+  const s = gap.s, L = s.log;
+  let over = 0, enter = NaN;
+  for (let i = 0; i < L.n; i++) {
+    over = Math.max(over, L.x[i] - GAP.xs);
+    if (isNaN(enter) && Math.abs(L.x[i] - GAP.xs) <= GAP.band) enter = i * 0.01;
+  }
+  return { over: Math.max(0, over) / GAP.xs * 100, enter };
+}
+function gapReadouts() {
+  const s = gap.s, m = gapLiveMetrics();
+  setText('gap-ro-settle', isNaN(m.enter) ? '–' : fmt(m.enter, 2) + ' s');
+  setText('gap-ro-over', fmt(m.over, 0) + ' %');
+  setText('gap-ro-th', s.t >= GAP.tCheck ? fmt(deg(s.maxth), 0) + '°' : '–');
+  let res, st, txt;
+  if (s.crashed) { res = 'Crashed'; st = 'bad'; txt = 'Crashed at ' + fmt(s.crashT, 2) + ' s'; }
+  else if (s.t < GAP.tCheck) { res = 'Running'; st = 'idle'; txt = 'Episode running · ' + fmt(s.t, 1) + ' s'; }
+  else {
+    const okx = s.maxdev <= GAP.band, okl = s.maxth <= GAP.level;
+    if (gap.done) {
+      res = okx && okl ? 'Good run' : !okx ? 'Failed: left the band' : 'Failed: not level';
+      st = okx && okl ? 'ok' : 'bad';
+      txt = okx && okl ? 'Good run: in the band and level from 4 s' : !okx ? 'Failed: left the ±10 % band after 4 s' : 'Failed: tilt above 15° after 4 s';
+    } else {
+      res = okx && okl ? 'In band so far' : 'Failing';
+      st = okx && okl ? 'ok' : 'bad';
+      txt = okx && okl ? 'In the band and level so far · ' + fmt(s.t, 1) + ' s' : (!okx ? 'Outside the ±10 % band' : 'Shaking: tilt above 15°') + ' · ' + fmt(s.t, 1) + ' s';
+    }
+  }
+  setText('gap-ro-res', res);
+  setState('gap-st-run', st, txt);
+}
+
+function drawGapX(st) {
+  const fr = frame(st, { x0: 0, x1: GAP.T, y0: -0.6, y1: 3.4, xStep: 1, xLabel: 't (s)' });
+  if (!fr) return;
+  const c = fr.c;
+  band(fr, GAP.tCheck, GAP.T, GAP.xs - GAP.band, GAP.xs + GAP.band, '±10 % band');
+  vLine(fr, GAP.tCheck, 'judged from 4 s');
+  refLine(fr, GAP.xs, 'target 2 m', {});
+  const ts = new Float64Array(802);
+  for (let i = 0; i < 802; i++) ts[i] = i * 0.01;
+  // random worlds (faint), the hovered one highlighted
+  let hi = -1;
+  if (gap.batch && st.hover && st.hover.x >= fr.m.l && st.hover.x <= fr.m.l + fr.pw) {
+    const i = clamp(Math.round(fr.invX(st.hover.x) / 0.01), 0, 800);
+    let best = 18;
+    gap.batch.forEach((b, r) => { const ii = Math.min(i, b.n - 1); const d = Math.abs(fr.Y(b.x[ii]) - st.hover.y); if (d < best) { best = d; hi = r; } });
+  }
+  if (gap.batch) {
+    gap.batch.forEach((b, r) => {
+      if (r === hi) return;
+      plotLine(fr, ts, b.x, b.n, { color: b.good ? C.s3 : C.s4, width: 1.5, alpha: 0.55 });
+    });
+    gap.batch.forEach((b) => {
+      if (!b.crashed) return;
+      const i = clamp(Math.round(b.crashT / 0.01), 0, b.n - 1), px = fr.X(ts[i]), py = clamp(fr.Y(b.x[i]), fr.m.t + 4, fr.m.t + fr.ph - 4);
+      c.strokeStyle = C.s4; c.lineWidth = 2.5; c.beginPath(); c.moveTo(px - 5, py - 5); c.lineTo(px + 5, py + 5); c.moveTo(px - 5, py + 5); c.lineTo(px + 5, py - 5); c.stroke();
+    });
+    if (hi >= 0) plotLine(fr, ts, gap.batch[hi].x, gap.batch[hi].n, { color: gap.batch[hi].good ? C.s3 : C.s4, width: 3.5 });
+  }
+  // live run (stops at a crash)
+  const L = gap.s.log, nL = liveN();
+  plotLine(fr, ts, L.x, nL, { color: C.s1, width: 3 });
+  if (nL > 0) {
+    const i = nL - 1, px = fr.X(ts[i]), py = fr.Y(L.x[i]);
+    if (gap.s.crashed) { const yy = clamp(py, fr.m.t + 6, fr.m.t + fr.ph - 6); c.strokeStyle = C.s1; c.lineWidth = 3; c.beginPath(); c.moveTo(px - 6, yy - 6); c.lineTo(px + 6, yy + 6); c.moveTo(px - 6, yy + 6); c.lineTo(px + 6, yy - 6); c.stroke(); }
+    else if (py >= fr.m.t && py <= fr.m.t + fr.ph) dotAt(c, px, py, 5, C.s1);
+  }
+  if (gap.batch) {
+    const good = gap.batch.filter((b) => b.good).length;
+    label(c, good + ' / 20 random worlds good', fr.m.l + 10, fr.m.t + 14, { size: 14, bold: true, color: good === 20 ? C.ok : C.bad });
+  }
+  // tooltip for the highlighted world
+  if (hi >= 0) {
+    const b = gap.batch[hi], w = b.w, x = Math.round(st.hover.x) + 0.5;
+    const res = b.good ? 'good' : b.crashed ? 'crashed at ' + fmt(b.crashT, 2) + ' s' : b.maxdev > GAP.band ? 'left the band (' + fmt(b.maxdev, 2) + ' m off)' : 'not level (' + fmt(deg(b.maxth), 0) + '°)';
+    drawTooltip(c, x, fr.m, fr.pw, 'World ' + (hi + 1) + ': ' + res, [
+      { label: 'motor time constant', value: fmt(w.tau * 1000, 0) + ' ms' },
+      { label: 'sensing/compute delay', value: fmt(w.delay * 1000, 0) + ' ms' },
+      { label: 'mass error', value: (w.mass >= 0 ? '+' : '') + fmt(w.mass * 100, 0) + ' %' },
+      { label: 'sensor noise', value: fmt(w.noise, 1) + '×' },
+      { label: 'gust σ', value: fmt(w.gust, 2) + ' N' }
+    ]);
+  } else if (st.hover && st.hover.x >= fr.m.l && st.hover.x <= fr.m.l + fr.pw && nL > 1) {
+    const i = clamp(Math.round(fr.invX(st.hover.x) / 0.01), 0, nL - 1), x = Math.round(fr.X(ts[i])) + 0.5;
+    c.strokeStyle = C['ink-2']; c.lineWidth = 1; c.beginPath(); c.moveTo(x, fr.m.t); c.lineTo(x, fr.m.t + fr.ph); c.stroke();
+    drawTooltip(c, x, fr.m, fr.pw, 't = ' + fmt(ts[i], 2) + ' s', [{ color: C.s1, label: 'live run', value: fmt(L.x[i], 2) + ' m' }]);
+  }
+  drawPaused(c, fr.m.l + fr.pw - 6, fr.m.t + fr.ph - 14, 'right');
+}
+function drawGapTh(st) {
+  const fr = frame(st, { x0: 0, x1: GAP.T, y0: -50, y1: 50, xStep: 2, xLabel: 't (s)' });
+  if (!fr) return;
+  const c = fr.c;
+  band(fr, GAP.tCheck, GAP.T, -15, 15, '');
+  refLine(fr, 30, '', {}); refLine(fr, -30, '', {});
+  const L = gap.s.log, nL = liveN(), ts = new Float64Array(nL), th = new Float64Array(nL);
+  for (let i = 0; i < nL; i++) { ts[i] = i * 0.01; th[i] = deg(L.th[i]); }
+  plotLine(fr, ts, th, nL, { color: C.s1, width: 2.25 });
+  if (gap.s.crashed) label(c, 'crashed at ' + fmt(gap.s.crashT, 2) + ' s', fr.m.l + fr.pw - 6, fr.m.t + 12, { align: 'right', size: 13, bold: true, color: C.bad });
+  if (st.hover && st.hover.x >= fr.m.l && st.hover.x <= fr.m.l + fr.pw && nL > 1) {
+    const i = clamp(Math.round(fr.invX(st.hover.x) / 0.01), 0, nL - 1), x = Math.round(fr.X(ts[i])) + 0.5;
+    c.strokeStyle = C['ink-2']; c.lineWidth = 1; c.beginPath(); c.moveTo(x, fr.m.t); c.lineTo(x, fr.m.t + fr.ph); c.stroke();
+    drawTooltip(c, x, fr.m, fr.pw, 't = ' + fmt(ts[i], 2) + ' s', [{ color: C.s1, label: 'tilt', value: fmt(th[i], 1) + '°' }]);
+  }
+}
+function drawGapScene(st) {
+  const c = st.begin(), W = st.w, H = st.h, s = gap.s;
+  if (W < 80 || H < 70) return;
+  c.fillStyle = C.sky; c.fillRect(0, 0, W, H);
+  const xMin = -1.3, xMax = 3.3, zMin = -0.3, zMax = 2.9;
+  const ppm = Math.min(W / (xMax - xMin), H / (zMax - zMin));
+  const ox = W / 2 - (xMin + xMax) / 2 * ppm, oy = H - (0 - zMin) * ppm;
+  const SX = (x) => ox + x * ppm, SY = (z) => oy - z * ppm;
+  c.lineWidth = 1; c.strokeStyle = C.grid;
+  for (let x = Math.ceil((0 - ox) / ppm); x <= (W - ox) / ppm; x++) { const X = Math.round(SX(x)) + 0.5; c.beginPath(); c.moveTo(X, 0); c.lineTo(X, oy); c.stroke(); }
+  for (let z = 1; z < oy / ppm; z++) { const Yz = Math.round(SY(z)) + 0.5; c.beginPath(); c.moveTo(0, Yz); c.lineTo(W, Yz); c.stroke(); }
+  c.fillStyle = C['ground-fill']; c.fillRect(0, oy, W, H - oy);
+  c.strokeStyle = C.ground; c.lineWidth = 2; c.beginPath(); c.moveTo(0, oy + 1); c.lineTo(W, oy + 1); c.stroke();
+  c.font = '12px ' + FONT; c.fillStyle = C.muted; c.textBaseline = 'middle'; c.textAlign = 'center';
+  for (let x = Math.ceil((0 - ox) / ppm); x <= (W - ox) / ppm; x++) if (SX(x) > 18 && SX(x) < W - 18) c.fillText(fmt(x, 0) + ' m', SX(x), oy + (H - oy) / 2 + 1);
+  // ±10 % band and target
+  c.fillStyle = C.band; c.fillRect(SX(GAP.xs - GAP.band), 0, 2 * GAP.band * ppm, oy);
+  const tx = SX(GAP.xs), ty = SY(GAP.zs);
+  c.strokeStyle = C.ink; c.lineWidth = 2;
+  c.beginPath(); c.arc(tx, ty, 9, 0, Math.PI * 2); c.stroke();
+  c.beginPath(); c.moveTo(tx - 15, ty); c.lineTo(tx - 5, ty); c.moveTo(tx + 5, ty); c.lineTo(tx + 15, ty); c.moveTo(tx, ty - 15); c.lineTo(tx, ty - 5); c.moveTo(tx, ty + 5); c.lineTo(tx, ty + 15); c.stroke();
+  // gust arrow
+  if (Math.abs(s.gf) > 0.05) {
+    const len = clamp(Math.abs(s.gf) * 40, 10, 90), x0 = 16 + (s.gf > 0 ? 0 : len);
+    arrow(c, x0, 20, x0 + Math.sign(s.gf) * len, 20, C.force, 4);
+    label(c, 'gust ' + fmt(Math.abs(s.gf), 1) + ' N', 16 + len + 8, 20, { size: 12, bold: true });
+  }
+  // vehicle (drawn about 1.5x real size)
+  const k = 0.38 * ppm;
+  let px = SX(s.x), py = SY(s.z);
+  const out = px < -k || px > W + k || py < -k;
+  px = clamp(px, k * 0.6, W - k * 0.6); py = clamp(py, k * 0.6, oy - (s.crashed ? 0.25 * k : 0));
+  const th = s.crashed ? clamp(s.th, -Math.PI / 2, Math.PI / 2) : s.th;
+  if (!s.crashed) drawSideQuad(c, px, py, s.thd, k, { ghost: true, color: C.accent });
+  drawSideQuad(c, px, py, th, k);
+  if (!s.crashed) {
+    const ux = -Math.sin(s.th), uz = Math.cos(s.th), fl = 0.9 * ppm / (GAP.m * G);
+    [[-0.9, s.F1], [0.9, s.F2]].forEach((r) => {
+      const wx = r[0] * Math.cos(s.th) - 0.29 * Math.sin(s.th), wz = r[0] * Math.sin(s.th) + 0.29 * Math.cos(s.th);
+      const sx0 = px + wx * k, sy0 = py - wz * k, Lr = r[1] * fl;
+      arrow(c, sx0, sy0, sx0 + ux * Lr, sy0 - uz * Lr, C.thrust, 4);
+    });
+  }
+  if (s.crashed) badge(c, 'CRASHED at ' + fmt(s.crashT, 2) + ' s', W / 2, 22, 'center', 13);
+  else if (out) label(c, 'Out of view', W / 2, 22, { align: 'center', size: 13, bold: true, color: C.bad });
+  drawPaused(c, W - 10, 44, 'right');
+}
+function setupGap() {
+  // callbacks use the value passed in: they also run once while each slider is being bound
+  gapUI.wo = bindSlider('gap-wo', (v) => fmt(v, 1), (v) => { gap.P.wo = v; gapGainsChanged(); });
+  gapUI.wi = bindSlider('gap-wi', (v) => fmt(v, 1), (v) => { gap.P.wi = v; gapGainsChanged(); });
+  gapUI.zi = bindSlider('gap-zi', (v) => fmt(v, 2), (v) => { gap.P.zi = v; gapGainsChanged(); });
+  gapUI.tau = bindSlider('gap-tau', (v) => fmt(v, 0), (v) => { gap.W.tau = v / 1000; gapWorldChanged(); });
+  gapUI.delay = bindSlider('gap-delay', (v) => fmt(v, 0), (v) => { gap.W.delay = v / 1000; gapWorldChanged(); });
+  gapUI.noise = bindSlider('gap-noise', (v) => fmt(v, 1), (v) => { gap.W.noise = v; gapWorldChanged(); });
+  gapUI.mass = bindSlider('gap-mass', (v) => (v > 0 ? '+' : '') + fmt(v, 0), (v) => { gap.W.mass = v / 100; gapWorldChanged(); });
+  gapUI.gust = bindSlider('gap-gust', (v) => fmt(v, 2), (v) => { gap.W.gust = v; gapWorldChanged(); });
+  gapUI.repeat = bindSwitch('gap-repeat', (on) => { gap.repeat = on; });
+  $('gap-pre-aggr').addEventListener('click', () => applyGains(GAINS.aggr));
+  $('gap-pre-rob').addEventListener('click', () => applyGains(GAINS.rob));
+  $('gap-pre-ideal').addEventListener('click', () => applyWorld(WORLDS.ideal));
+  $('gap-pre-real').addEventListener('click', () => applyWorld(WORLDS.real));
+  $('gap-rand').addEventListener('click', () => gapBatchRun(true));
+  $('gap-restart').addEventListener('click', gapRestart);
+  gapX = makeCanvas('gap-x'); gapScene = makeCanvas('gap-scene'); gapTh = makeCanvas('gap-th');
+  attachHover(gapX); attachHover(gapTh);
+  gapRestart();
+  updateGapRatio();
+}
+
+/* ======================================================================
+   App shell: tabs and deep links, keyboard, theme, fixed-step loop
+   ====================================================================== */
+const TABS = ['physics', 'sensors', 'gap'];
+let active = 'physics';
+const simOf = (t) => (t === 'sensors' ? sen : t === 'gap' ? gapSim : null);
+
+function updateSimbar() {
+  const pb = $('sim-pause');
+  pb.textContent = paused ? 'Resume' : 'Pause';
+  pb.classList.toggle('primary', paused);
+  const clk = $('sim-clock');
+  if (active === 'physics') clk.textContent = 't = ' + fmt(Math.min(phy.anim, phy.N), 1) + ' s';
+  else if (active === 'sensors') clk.textContent = 't = ' + fmt(sen.t, 1) + ' s';
+  else clk.textContent = 'episode t = ' + fmt(gap.s.t, 1) + ' s';
+}
+function togglePause() { paused = !paused; updateSimbar(); markDirty(); }
+function selectTab(id, opts) {
+  opts = opts || {};
+  if (TABS.indexOf(id) < 0) id = 'physics';
+  active = id;
+  TABS.forEach((t) => {
+    const on = t === id, tab = $('tab-' + t);
+    tab.setAttribute('aria-selected', on ? 'true' : 'false');
+    tab.tabIndex = on ? 0 : -1;
+    $('panel-' + t).hidden = !on;
+  });
+  if (opts.focus) $('tab-' + id).focus();
+  try { localStorage.setItem('simlab-last-tab', id); } catch (e) { /* storage unavailable */ }
+  if (opts.hash !== false) {
+    try { if (location.hash !== '#' + id) history.replaceState(null, '', '#' + id); } catch (e) { /* not allowed here */ }
+  }
+  [phyPhase, phyEnergy, phyAtt, senMap, senErr, gapX, gapScene, gapTh].forEach((st) => { if (st) st.resize(); });
+  updateSimbar(); updateReadouts(); markDirty();
+}
+function setupTabs() {
+  TABS.forEach((t, i) => {
+    const el = $('tab-' + t);
+    el.addEventListener('click', () => selectTab(t));
+    el.addEventListener('keydown', (e) => {
+      let j = null;
+      if (e.key === 'ArrowRight') j = (i + 1) % TABS.length;
+      else if (e.key === 'ArrowLeft') j = (i - 1 + TABS.length) % TABS.length;
+      else if (e.key === 'Home') j = 0;
+      else if (e.key === 'End') j = TABS.length - 1;
+      if (j !== null) { e.preventDefault(); selectTab(TABS[j], { focus: true }); }
+    });
+  });
+  window.addEventListener('hashchange', () => {
+    const h = (location.hash || '').replace('#', '');
+    if (TABS.indexOf(h) >= 0 && h !== active) selectTab(h, { hash: false });
+  });
+}
+function resetActive() {
+  if (active === 'physics') phy.anim = 0;
+  else if (active === 'sensors') sen.resetEstimator();
+  else gapRestart();
+  markDirty();
+}
+function typingTarget(t) {
+  const tag = t && t.tagName ? t.tagName.toLowerCase() : '';
+  return tag === 'textarea' || tag === 'select' || (tag === 'input' && t.type !== 'range') || !!(t && t.isContentEditable);
+}
+function setupKeys() {
+  // Space pauses everywhere (Enter still activates a focused button); R, D, W act on the visible tab.
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey || e.metaKey || e.altKey || typingTarget(e.target)) return;
+    if (e.key === ' ' || e.code === 'Space') { e.preventDefault(); if (!e.repeat) togglePause(); return; }
+    const k = (e.key || '').toLowerCase();
+    if (k === 'r') resetActive();
+    else if (k === 'd' && active === 'sensors') senDropout();
+    else if (k === 'w' && active === 'gap') gapBatchRun(true);
+  });
+  document.addEventListener('keyup', (e) => {
+    if ((e.key === ' ' || e.code === 'Space') && !typingTarget(e.target)) e.preventDefault();
+  });
+  $('sim-pause').addEventListener('click', togglePause);
+}
+function setupTheme() {
+  const root = document.documentElement;
+  const modes = [root.getAttribute('data-theme'), 'light', 'dark'].filter((v, i, a) => a.indexOf(v) === i);
+  let idx = 0;
+  const btn = $('theme-toggle');
+  const name = (m) => 'Theme: ' + (m === 'light' ? 'light' : m === 'dark' ? 'dark' : 'auto');
+  btn.textContent = name(modes[0]);
+  btn.addEventListener('click', () => {
+    idx = (idx + 1) % modes.length;
+    const m = modes[idx];
+    if (m) root.setAttribute('data-theme', m); else root.removeAttribute('data-theme');
+    btn.textContent = name(m);
+    readColors();
+  });
+  const mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  if (mq) {
+    if (mq.addEventListener) mq.addEventListener('change', readColors);
+    else if (mq.addListener) mq.addListener(readColors);
+  }
+  if (window.MutationObserver) new MutationObserver(readColors).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+}
+
+function render() {
+  if (active === 'physics') {
+    drawPhase(phyPhase); drawEnergy(phyEnergy); drawAtt(phyAtt);
+  } else if (active === 'sensors') {
+    drawMap(senMap, sen); drawStrip(senErr, sen.ring, sen.t, senCfgErr);
+  } else {
+    drawGapX(gapX); drawGapScene(gapScene); drawGapTh(gapTh);
+  }
+}
+function updateReadouts() {
+  if (active === 'sensors') senReadouts();
+  else if (active === 'gap') gapReadouts();
+  updateSimbar();
+}
+let lastTs = null, acc = 0, lastRO = 0, lastTickWall = 0, rafPending = false;
+const MAX_STEPS = Math.ceil(MAX_FRAME / DT);
+function loop() { rafPending = false; tick(performance.now()); schedule(); }   // one clock for both drivers
+function schedule() { if (!rafPending) { rafPending = true; requestAnimationFrame(loop); } }
+// Watchdog: if requestAnimationFrame stalls while the page is visible (throttled embeds, headless capture),
+// drive the same tick from a timer. At a normal display rate it never fires.
+setInterval(() => {
+  if (document.visibilityState !== 'hidden' && performance.now() - lastTickWall > 150) tick(performance.now());
+}, 100);
+function tick(ts) {
+  lastTickWall = performance.now();
+  if (lastTs === null) lastTs = ts;
+  const real = clamp((ts - lastTs) / 1000, 0, MAX_FRAME);
+  lastTs = ts;
+  const sim = simOf(active);
+  if (sim && !paused) {
+    acc += real;
+    let n = 0;
+    while (acc >= DT && n < MAX_STEPS) { sim.step(DT); acc -= DT; n++; }
+    if (n >= MAX_STEPS) acc = 0;
+    if (n) dirty = true;
+  } else {
+    acc = 0;
+  }
+  if (active === 'physics') phyTick(real);
+  else if (active === 'gap') gapTick(real);
+  if (dirty) { dirty = false; render(); }
+  if (ts - lastRO > 100) { lastRO = ts; updateReadouts(); }
+}
+
+/* Startup self-test of the maths, run in short chunks so the page never stalls for long.
+   Failures go to #errlog, a summary to #selftest. */
+function selfTest() {
+  const errs = [], info = [];
+  let busy = 0, ws = null, ga = 0, gr = 0;
+  const parts = [
+    () => {
+      // explicit Euler: energy grows by exactly (1 + w^2 dt^2) per step
+      [0.0005, 0.01, 0.1].forEach((h) => {
+        const r = oscRun('ee', h, 1);
+        if (Math.abs(r.e[1] / (1 + OM * OM * h * h) - 1) > 1e-12) errs.push('Euler energy factor at ' + h);
+      });
+      const ee = oscRun('ee', 0.01, 1000);
+      if (Math.abs(ee.e[1000] / Math.pow(1 + OM * OM * 1e-4, 1000) - 1) > 1e-9) errs.push('Euler growth over 1000 steps');
+      // symplectic Euler: bounded by 1/(1 +- w dt/2) over 200 periods at 50 ms
+      const se = oscRun('se', 0.05, 4000);
+      let lo = Infinity, hi = -Infinity;
+      for (let i = 0; i <= 4000; i++) { lo = Math.min(lo, se.e[i]); hi = Math.max(hi, se.e[i]); }
+      if (hi > 1 / (1 - OM * 0.025) + 1e-9 || lo < 1 / (1 + OM * 0.025) - 1e-9) errs.push('symplectic Euler bound');
+      // RK4: tiny energy error at 1 ms
+      const rk = oscRun('rk', 0.001, 10000);
+      if (Math.abs(rk.e[10000] - 1) > 1e-9) errs.push('RK4 energy error');
+      // attitude loop verdicts
+      if (attVerdict(attRun('ee', 0.010, 4)).s !== 'ok') errs.push('attitude ee 10 ms should be stable');
+      if (attVerdict(attRun('ee', 0.060, 4)).s !== 'bad') errs.push('attitude ee 60 ms should be unstable');
+      if (attVerdict(attRun('se', 0.045, 4)).s !== 'ok') errs.push('attitude se 45 ms should be stable');
+      if (attVerdict(attRun('rk', 0.060, 4)).s !== 'ok') errs.push('attitude rk 60 ms should be stable');
+      if (attVerdict(attRun('rk', 0.100, 4)).s !== 'bad') errs.push('attitude rk 100 ms should be unstable');
+    },
+    () => {
+      // sensors: fused beats GPS-only over a seeded 60 s run with the default settings
+      const ts = createSensors(normalStream(mulberry32(7)));
+      for (let i = 0; i < 60000; i++) ts.step();
+      const rg = Math.sqrt(ts.rms.gps.mean()), rf = Math.sqrt(ts.rms.kf.mean()), rd = Math.sqrt(ts.rms.dr.mean());
+      info.push('sensors60s gps=' + fmt(rg, 3) + ' dr=' + fmt(rd, 1) + ' kf=' + fmt(rf, 3));
+      if (!(rf < 0.6 * rg)) errs.push('fused RMS ' + fmt(rf, 2) + ' not below GPS-only ' + fmt(rg, 2));
+    },
+    () => {
+      // sim-to-real: presets in the ideal and realistic worlds
+      const ideal = (g) => gapEpisode(g, WORLDS.ideal, () => 0);
+      const ai = ideal(GAINS.aggr), ri = ideal(GAINS.rob);
+      if (!gapGood(ai) || !gapGood(ri)) errs.push('presets should be good in the ideal simulator');
+      const enter = (s) => { let t = NaN; for (let i = s.log.n - 1; i >= 0; i--) { if (Math.abs(s.log.x[i] - GAP.xs) > GAP.band) { t = (i + 1) * 0.01; break; } } return t; };
+      const ea = enter(ai), er = enter(ri);
+      info.push('settle10 aggr=' + fmt(ea, 2) + ' rob=' + fmt(er, 2));
+      if (!(ea < er)) errs.push('aggressive should settle faster in the ideal simulator');
+      const ar = gapEpisode(GAINS.aggr, WORLDS.real, normalStream(mulberry32(11)));
+      const rr = gapEpisode(GAINS.rob, WORLDS.real, normalStream(mulberry32(11)));
+      info.push('realistic aggr=' + (ar.crashed ? 'crash@' + fmt(ar.crashT, 2) : gapGood(ar) ? 'good' : 'fail') + ' rob=' + (gapGood(rr) ? 'good' : 'fail'));
+      if (gapGood(ar)) errs.push('aggressive should fail in the realistic world');
+      if (!gapGood(rr)) errs.push('robust should be good in the realistic world');
+    },
+    () => { ws = drawWorlds(BATCH_SEED0); ga = runBatch(ws, GAINS.aggr).filter((b) => b.good).length; },   // default batch, aggressive
+    () => {
+      gr = runBatch(ws, GAINS.rob).filter((b) => b.good).length;                                            // same worlds, robust
+      info.push('batch seed ' + BATCH_SEED0 + ' aggr=' + ga + '/20 rob=' + gr + '/20');
+      if (!(gr >= 19 && ga <= 12)) errs.push('batch: aggressive ' + ga + '/20, robust ' + gr + '/20');
+    }
+  ];
+  const finish = () => {
+    info.push('busy ' + Math.round(busy) + ' ms in ' + parts.length + ' chunks');
+    // layout check: horizontal overflow of the visible tab at the current width (reported, not an error)
+    try { info.push('overflowX=' + Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth) + 'px@' + document.documentElement.clientWidth); } catch (e) { /* ignore */ }
+    const box = $('selftest');
+    if (box) box.textContent = (errs.length ? 'FAIL ' : 'PASS ') + info.join('; ');
+    if (errs.length && window.__simLog) window.__simLog('Self-test failed: ' + errs.join('; '));
+  };
+  let i = 0;
+  const next = () => {
+    const t0 = performance.now();
+    try { parts[i](); } catch (e) { errs.push('exception in part ' + (i + 1) + ': ' + (e && e.message ? e.message : e)); }
+    busy += performance.now() - t0;
+    if (++i < parts.length) setTimeout(next, 30); else finish();
+  };
+  next();
+}
+
+function init() {
+  readColors();
+  setupTheme();
+  setupPhysics();
+  setupSensors();
+  setupGap();
+  setupTabs();
+  setupKeys();
+  const fromHash = (location.hash || '').replace('#', '');
+  let first = fromHash;
+  if (TABS.indexOf(first) < 0) {
+    try { first = localStorage.getItem('simlab-last-tab') || 'physics'; } catch (e) { first = 'physics'; }
+  }
+  selectTab(first, { hash: false });
+  // testing hook: ?worlds runs the 20-world batch at start (the button does the same)
+  try { if (/[?&]worlds\b/.test(location.search)) gapBatchRun(true); } catch (e) { /* ignore */ }
+  try { if (/[?&]real\b/.test(location.search)) applyWorld(WORLDS.real); } catch (e) { /* ignore */ }
+  try { if (/[?&]robust\b/.test(location.search)) applyGains(GAINS.rob); } catch (e) { /* ignore */ }
+  schedule();
+  setTimeout(selfTest, 60);
+}
+init();
+})();
+</script>
+</body>
+</html>
