@@ -2,27 +2,24 @@
 layout: page
 permalink: /teaching/
 title: Teaching
-description: Courses we teach, with interactive labs to explore.
+description: Courses we teach on, with interactive labs to explore.
 nav: true
 nav_order: 3
 ---
 
-Teaching by the Aerial Robotics Group at the University of Bristol.
+Members of the Aerial Robotics Group teach on the following unit at the University of Bristol.
 
 ## Aerial Robotics (AENGM0073)
 
 _University of Bristol · MSc and final-year undergraduate_
 
-The unit teaches fundamental skills in flight dynamics, control and avionics within the context of aerial robotics systems and applications.
-Alongside the legal requirements for drone (UAV) operations, students are introduced to software simulation tools for flight planning
-and algorithm development, including flight dynamics models, sensor models and control systems.
-This is complemented by disruptive technologies such as autonomous navigation and bio-inspiration.
-By the end of the unit, students should be able to produce an outline plan for a typical UAV operation in UK airspace,
-explain the basis of feedback control for UAVs and its role in flight dynamics and guidance,
-apply a typical route planning algorithm in a representative software simulation,
-and carry out a design trade-off study for a new aerial robotics platform.
+Aerial Robotics is a team-taught unit on the fundamentals of flight dynamics, control and avionics in the context of aerial robotics systems and applications.
+Alongside the legal requirements for drone (UAV) operations, students use software simulation tools for flight planning and algorithm development,
+including flight dynamics, sensor and control models, and are introduced to disruptive technologies such as autonomous navigation and bio-inspiration.
+By the end of the unit, students can plan a typical UAV operation in UK airspace, explain feedback control for UAVs and its role in flight dynamics
+and guidance, apply a route-planning algorithm in simulation, and carry out a design trade-off study for a new aerial robotics platform.
 
-Topics include:
+Topics across the unit include:
 
 - Introduction to aerial robotics systems and applications
 - Legal requirements, risk assessment and ethics of drone operations
