@@ -32,10 +32,10 @@ Topics across the unit include:
 
 ### Interactive labs
 
-- **[Simulation Lab](/teaching/simulation-lab/)**: a companion to the aerial robotics simulators and PX4 lecture,
+- **[Simulation Lab](/teaching/simulation-lab/){:target="_blank" rel="noopener"}**: a companion to the aerial robotics simulators and PX4 lecture,
   exploring the integrator and physics step size, sensor models against ground truth (GPS, IMU bias and Kalman fusion),
   and the sim-to-real gap with domain randomisation.
-- **[Multirotor Control Lab](/teaching/multirotor-lab/)**: a companion to the multirotor modelling and control lecture,
+- **[Multirotor Control Lab](/teaching/multirotor-lab/){:target="_blank" rel="noopener"}**: a companion to the multirotor modelling and control lecture,
   covering altitude PID control with thrust limits and disturbances, cascaded position and tilt control of a planar drone,
   and how control allocation maps thrust and torque commands to a quadrotor's four motors, including saturation.
 
