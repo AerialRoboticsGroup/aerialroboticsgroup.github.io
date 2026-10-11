@@ -37,6 +37,7 @@ Topics across the unit include:
   and the sim-to-real gap with domain randomisation.
 - **[Multirotor Control Lab](/teaching/multirotor-lab/){:target="_blank" rel="noopener"}**: a companion to the multirotor modelling and control lecture,
   covering altitude PID control with thrust limits and disturbances, cascaded position and tilt control of a planar drone,
-  and how control allocation maps thrust and torque commands to a quadrotor's four motors, including saturation.
+  and how control allocation maps thrust and torque commands to a quadrotor's four motors, including saturation
+  and the role of the thrust and drag coefficients.
 
 Both labs run entirely in the browser with nothing to install, and work best in Chrome, Edge or Firefox on a laptop.
