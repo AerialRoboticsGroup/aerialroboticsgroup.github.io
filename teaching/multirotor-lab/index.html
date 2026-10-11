@@ -102,7 +102,7 @@ body {
 [hidden] { display: none !important; }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 button { font: inherit; color: inherit; }
-sub { font-size: 0.72em; line-height: 0; }
+sub, sup { font-size: 0.72em; line-height: 0; }
 
 .page {
   max-width: 1760px;
@@ -310,6 +310,10 @@ input[type="range"]:focus-visible { outline: 3px solid var(--accent); outline-of
 .ratio { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font-size: 0.98rem; }
 .ratio b { font-variant-numeric: tabular-nums; font-size: 1.1rem; }
 .keys { margin: 0; font-size: 0.82rem; color: var(--ink-2); }
+.note { margin: 0; font-size: 0.86rem; color: var(--ink); }
+.note strong { font-variant-numeric: tabular-nums; }
+.group h2 .tagline { text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--ink-2); }
+.seg.form { max-width: 420px; margin-bottom: 8px; }
 kbd {
   font-family: var(--font-mono); font-size: 0.8rem; padding: 1px 6px; border-radius: 5px;
   border: 1px solid var(--axis); border-bottom-width: 2px; background: var(--panel); color: var(--ink);
@@ -515,13 +519,13 @@ kbd {
           <div class="plot-row">
             <figure class="fig">
               <figcaption class="fig-head"><span class="fig-title">Position (m)</span>
-                <span class="legend"><span class="lg t1"><span class="key" style="--k: var(--s1)"></span><i>x</i></span><span class="lg t1"><span class="key dash" style="--k: var(--s1)"></span><i>x</i> target</span><span class="lg t2"><span class="key" style="--k: var(--s2)"></span><i>z</i></span><span class="lg t2"><span class="key dash" style="--k: var(--s2)"></span><i>z</i> target</span></span>
+                <span class="legend"><span class="lg t1"><span class="key" style="--k: var(--s1)"></span><i>x</i></span><span class="lg t1"><span class="key dash" style="--k: var(--s1)"></span><span><i>x</i> target</span></span><span class="lg t2"><span class="key" style="--k: var(--s2)"></span><i>z</i></span><span class="lg t2"><span class="key dash" style="--k: var(--s2)"></span><span><i>z</i> target</span></span></span>
               </figcaption>
               <div class="cbox plot"><canvas id="cas-plot-pos" role="img" aria-label="Horizontal and vertical position with their targets over the last 12 seconds"></canvas></div>
             </figure>
             <figure class="fig">
               <figcaption class="fig-head"><span class="fig-title">Tilt (deg)</span>
-                <span class="legend"><span class="lg t3"><span class="key" style="--k: var(--s3)"></span><i>θ</i></span><span class="lg t3"><span class="key dash" style="--k: var(--s3)"></span><i>θ</i><sub>des</sub></span><span class="lg"><span class="key dash" style="--k: var(--ink-2)"></span>tilt limit</span></span>
+                <span class="legend"><span class="lg t3"><span class="key" style="--k: var(--s3)"></span><i>θ</i></span><span class="lg t3"><span class="key dash" style="--k: var(--s3)"></span><span><i>θ</i><sub>des</sub></span></span><span class="lg"><span class="key dash" style="--k: var(--ink-2)"></span>tilt limit</span></span>
               </figcaption>
               <div class="cbox plot"><canvas id="cas-plot-th" role="img" aria-label="Tilt angle and desired tilt over the last 12 seconds, with the tilt limit"></canvas></div>
             </figure>
@@ -598,25 +602,29 @@ kbd {
           <div class="mix-grid">
             <figure class="fig">
               <figcaption class="fig-head"><span class="fig-title">Top view, quad-X (PX4 numbering)</span><span class="fig-note">forward is up the screen</span></figcaption>
-              <div class="cbox quad"><canvas id="mix-quad" role="img" aria-label="Top view of the quadrotor. Each rotor shows its thrust as a bar and a number, its spin direction, and a SAT badge when the motor sits at a limit."></canvas></div>
-              <span class="legend"><span class="lg t1"><span class="sw" style="--k: var(--slower)"></span>slower than <i>T</i>/4</span><span class="lg"><span class="sw" style="--k: var(--rotor-neutral)"></span>at <i>T</i>/4</span><span class="lg t4"><span class="sw" style="--k: var(--faster)"></span>faster</span><span class="lg">bars: 0 to 8 N per motor</span></span>
+              <div class="cbox quad"><canvas id="mix-quad" role="img" aria-label="Top view of the quadrotor. Each rotor shows its thrust as a bar and a number, its speed in rpm, its spin direction, and a SAT badge when the motor sits at a limit."></canvas></div>
+              <span class="legend"><span class="lg t1"><span class="sw" style="--k: var(--slower)"></span><span>slower than <i>T</i>/4</span></span><span class="lg"><span class="sw" style="--k: var(--rotor-neutral)"></span><span>at <i>T</i>/4</span></span><span class="lg t4"><span class="sw" style="--k: var(--faster)"></span>faster</span><span class="lg" id="mix-bar-note"><span>bars: 0 to <i>f</i><sub>max</sub> = 8.0 N per motor</span></span></span>
             </figure>
             <div class="mix-side">
               <div>
-                <p class="eq-cap">Achieved [<i>T</i>; <i>τ<sub>x</sub></i>; <i>τ<sub>y</sub></i>; <i>τ<sub>z</sub></i>] (N, N·m) = <i>B</i> × motor thrusts (N), with <i>d</i> = <i>l</i>/√2 = 0.177 m and <i>κ</i> = 0.016 m</p>
+                <div class="seg form" role="radiogroup" aria-label="Write the allocation in" id="mix-form">
+                  <button type="button" role="radio" id="mix-form-f" data-v="f" aria-checked="true">In motor thrusts <i>f</i></button>
+                  <button type="button" role="radio" id="mix-form-w" data-v="w" aria-checked="false" tabindex="-1">In rotor speeds <i>ω</i>²</button>
+                </div>
+                <p class="eq-cap" id="mix-eqcap">Achieved [<i>T</i>; <i>τ<sub>x</sub></i>; <i>τ<sub>y</sub></i>; <i>τ<sub>z</sub></i>] (N, N·m) = <i>B</i> × motor thrusts (N), with <i>d</i> = <i>l</i>/√2 = 0.177 m and <i>κ</i> = <i>k</i><sub>m</sub>/<i>k</i><sub>f</sub> = 0.016 m</p>
                 <div class="scroll-x">
                   <div class="mateq" role="group" aria-label="Allocation equation with live numbers">
                     <div class="vlabels" aria-hidden="true"><span>T</span><span>τ<sub>x</sub></span><span>τ<sub>y</sub></span><span>τ<sub>z</sub></span></div>
                     <div class="br vec"><span id="mx-w0">14.71</span><span id="mx-w1">0.00</span><span id="mx-w2">0.00</span><span id="mx-w3">0.000</span></div>
                     <span class="op">=</span>
                     <div class="br mat">
-                      <span>1</span><span>1</span><span>1</span><span>1</span>
-                      <span>−0.177</span><span>0.177</span><span>0.177</span><span>−0.177</span>
-                      <span>0.177</span><span>−0.177</span><span>0.177</span><span>−0.177</span>
-                      <span>0.016</span><span>0.016</span><span>−0.016</span><span>−0.016</span>
+                      <span id="mx-b00">1</span><span id="mx-b01">1</span><span id="mx-b02">1</span><span id="mx-b03">1</span>
+                      <span id="mx-b10">−0.177</span><span id="mx-b11">0.177</span><span id="mx-b12">0.177</span><span id="mx-b13">−0.177</span>
+                      <span id="mx-b20">0.177</span><span id="mx-b21">−0.177</span><span id="mx-b22">0.177</span><span id="mx-b23">−0.177</span>
+                      <span id="mx-b30">0.016</span><span id="mx-b31">0.016</span><span id="mx-b32">−0.016</span><span id="mx-b33">−0.016</span>
                     </div>
                     <div class="br vec"><span id="mx-f0">3.68</span><span id="mx-f1">3.68</span><span id="mx-f2">3.68</span><span id="mx-f3">3.68</span></div>
-                    <div class="vlabels" aria-hidden="true"><span>f<sub>1</sub></span><span>f<sub>2</sub></span><span>f<sub>3</sub></span><span>f<sub>4</sub></span></div>
+                    <div class="vlabels" aria-hidden="true" id="mx-vl"><span>f<sub>1</sub></span><span>f<sub>2</sub></span><span>f<sub>3</sub></span><span>f<sub>4</sub></span></div>
                   </div>
                 </div>
               </div>
@@ -633,9 +641,13 @@ kbd {
                 </table>
               </div>
               <p class="hint" id="mix-summary">All four motors are inside 0 to 8 N, so the command is met exactly.</p>
+              <div class="statusrow">
+                <span class="state" id="mix-st-hover" data-s="ok">Hover uses 46 % of each motor</span>
+                <span class="state" id="mix-st-yaw" data-s="idle">Yaw authority at hover ±0.277 N·m</span>
+              </div>
             </div>
           </div>
-          <p class="model"><b>Geometry:</b> PX4 quad-X in the FRD body frame (<i>x</i> forward, <i>y</i> right, <i>z</i> down; thrust along −<i>z</i><sub>B</sub>): M1 front-right CCW, M2 rear-left CCW, M3 front-left CW, M4 rear-right CW. <i>l</i> = 0.25 m, <i>f</i><sub>max</sub> = 8 N per motor, <i>m</i> = 1.5 kg (hover 14.7 N). <b>Inverse:</b> <i>f</i><sub>1</sub> = <i>T</i>/4 − <i>τ<sub>x</sub></i>/4<i>d</i> + <i>τ<sub>y</sub></i>/4<i>d</i> + <i>τ<sub>z</sub></i>/4<i>κ</i>, and similarly for the others.</p>
+          <p class="model"><b>Geometry:</b> PX4 quad-X in the FRD body frame (<i>x</i> forward, <i>y</i> right, <i>z</i> down; thrust along −<i>z</i><sub>B</sub>): M1 front-right CCW, M2 rear-left CCW, M3 front-left CW, M4 rear-right CW. <i>l</i> = 0.25 m, <i>m</i> = 1.5 kg (hover 14.7 N). <b>Rotors:</b> thrust <i>f<sub>i</sub></i> = <i>k</i><sub>f</sub> <i>ω<sub>i</sub></i>² and reaction torque <i>k</i><sub>m</sub> <i>ω<sub>i</sub></i>² = <i>κ</i> <i>f<sub>i</sub></i>, with <i>κ</i> = <i>k</i><sub>m</sub>/<i>k</i><sub>f</sub>; the motors spin up to <i>ω</i><sub>max</sub> = 800 rad/s, so <i>f</i><sub>max</sub> = <i>k</i><sub>f</sub> <i>ω</i><sub>max</sub>² (8 N at the default <i>k</i><sub>f</sub>). <b>Inverse:</b> <i>f</i><sub>1</sub> = <i>T</i>/4 − <i>τ<sub>x</sub></i>/4<i>d</i> + <i>τ<sub>y</sub></i>/4<i>d</i> + <i>τ<sub>z</sub></i>/4<i>κ</i>, and similarly for the others.</p>
         </div>
 
         <aside class="controls" aria-label="Control allocation controls">
@@ -663,6 +675,22 @@ kbd {
             </div>
           </div>
           <div class="group">
+            <h2>Rotor coefficients <span class="tagline">· <i>f</i> = <i>k</i><sub>f</sub> <i>ω</i>², torque = <i>k</i><sub>m</sub> <i>ω</i>²</span></h2>
+            <div class="slider">
+              <label for="mix-kf">Thrust coefficient <i>k</i><sub>f</sub></label>
+              <output id="mix-kf-out" for="mix-kf"><span class="v">1.25</span> <span class="u">×10<sup>−5</sup> N·s²</span></output>
+              <input type="range" id="mix-kf" min="0.5" max="2.5" step="0.05" value="1.25">
+            </div>
+            <p class="note" id="mix-kf-note"></p>
+            <div class="slider">
+              <label for="mix-km">Drag (torque) coefficient <i>k</i><sub>m</sub></label>
+              <output id="mix-km-out" for="mix-km"><span class="v">2.0</span> <span class="u">×10<sup>−7</sup> N·m·s²</span></output>
+              <input type="range" id="mix-km" min="0.5" max="5" step="0.1" value="2">
+            </div>
+            <p class="note" id="mix-km-note"></p>
+            <p class="keys">Motors spin up to <i>ω</i><sub>max</sub> = 800 rad/s (7,640 rpm); <i>m</i> = 1.5 kg.</p>
+          </div>
+          <div class="group">
             <h2>Saturation strategy</h2>
             <div class="seg tall" role="radiogroup" aria-label="Saturation strategy" id="mix-strat">
               <button type="button" role="radio" id="mix-strat-naive" data-v="naive" aria-checked="true">Naive clipping</button>
@@ -676,7 +704,8 @@ kbd {
               <button type="button" class="chip" id="mix-pre-hover">Hover</button>
               <button type="button" class="chip" id="mix-pre-roll">Roll right</button>
               <button type="button" class="chip" id="mix-pre-yaw">Yaw right</button>
-              <button type="button" class="chip" id="mix-pre-aggr">Aggressive roll + yaw (saturates)</button>
+              <button type="button" class="chip" id="mix-pre-aggr">Aggressive roll + yaw</button>
+              <button type="button" class="chip" id="mix-pre-coef">Default rotors</button>
             </div>
           </div>
           <p class="keys">Keys: <kbd>R</kbd> back to hover · <kbd>Space</kbd> pause the rotors</p>
@@ -689,6 +718,9 @@ kbd {
             <li>Press <b>Yaw right</b>. Why do the diagonal pairs change together? At hover, how much <i>τ<sub>z</sub></i> saturates a motor? (Check: 4<i>κ</i>(<i>f</i><sub>max</sub> − <i>m g</i>/4) ≈ 0.28 N·m.)</li>
             <li>Press <b>Aggressive roll + yaw</b>. Which axes does naive clipping get wrong? Switch strategy: what does the prioritised mixer give up instead?</li>
             <li>Set <i>τ<sub>x</sub></i> to 1 N·m and raise <i>T</i> towards 32 N. Why does roll authority run out near full throttle, and how does each strategy respond?</li>
+            <li>Lower <i>k</i><sub>f</sub> (smaller or flatter propellers) until the hover badge turns red. What is the thrust-to-weight ratio when hover first becomes impossible, and why does the <b>Aggressive</b> preset lose roll well before that point?</li>
+            <li>Halve <i>k</i><sub>m</sub>, then double it. How does the yaw torque that saturates a motor change, and why is yaw authority so much weaker than roll on a quadrotor? Why does PX4 only need the ratio <i>κ</i> = <i>k</i><sub>m</sub>/<i>k</i><sub>f</sub> (its CA_ROTOR_KM parameter)?</li>
+            <li>Switch the matrix to <b>rotor speeds</b>. Where do <i>k</i><sub>f</sub> and <i>k</i><sub>m</sub> enter, and why do the lecture slides write the allocation in thrusts instead?</li>
           </ol>
         </section>
       </div>
@@ -1541,8 +1573,15 @@ function setupCascade() {
    Tab 3: control allocation, PX4 quad-X in the FRD body frame (thrust along -z_B)
    T = f1+f2+f3+f4, tx = d(-f1+f2+f3-f4), ty = d(f1-f2+f3-f4), tz = kappa(f1+f2-f3-f4)
    ====================================================================== */
-const MX = { l: 0.25, kappa: 0.016, fmax: 8, m: 1.5, hoverT: 14.7 };
+/* Rotor model: f = kf w^2 and reaction torque km w^2, so kappa = km/kf (PX4's CA_ROTOR_KM) and
+   f_max = kf w_max^2. Defaults give f_max = 8 N and kappa = 0.016 m. The sliders change kf and km. */
+const MX = { l: 0.25, wmax: 800, kf: 1.25e-5, km: 2.0e-7, m: 1.5, hoverT: 14.7, fmax: 8, kappa: 0.016 };
 MX.d = MX.l / Math.SQRT2;
+function mixCoef() {
+  MX.fmax = MX.kf * MX.wmax * MX.wmax;
+  MX.kappa = MX.km / MX.kf;
+}
+mixCoef();
 function mixInverse(w) {
   const T = w[0], tx = w[1], ty = w[2], tz = w[3], d = MX.d, k = MX.kappa;
   return [T / 4 - tx / (4 * d) + ty / (4 * d) + tz / (4 * k),
@@ -1588,7 +1627,7 @@ const MOTORS = [                                  // forward sign, right sign, s
   { f: -1, r: +1, ccw: false, name: 'M4' }        // rear-right
 ];
 const AX_DEC = [2, 2, 2, 3], AX_TOL = [0.005, 0.005, 0.005, 0.0005];
-const mix = { T: MX.hoverT, tx: 0, ty: 0, tz: 0, strat: 'naive', res: null, cmd: [MX.hoverT, 0, 0, 0], ach: [MX.hoverT, 0, 0, 0], blades: [0.3, 1.1, 0.7, 1.9] };
+const mix = { T: MX.hoverT, tx: 0, ty: 0, tz: 0, strat: 'naive', form: 'f', res: null, cmd: [MX.hoverT, 0, 0, 0], ach: [MX.hoverT, 0, 0, 0], blades: [0.3, 1.1, 0.7, 1.9] };
 const mixUI = {};
 let mixQuad;
 const MIX_PRESETS = {
@@ -1601,7 +1640,7 @@ const MIX_PRESETS = {
 function mixSummary() {
   const r = mix.res, w = mix.cmd, a = mix.ach;
   const out = r.raw.map((v, i) => (inRange(v) ? null : MOTORS[i].name + ' at ' + fmt(v, 2) + ' N')).filter(Boolean);
-  if (!out.length) return 'All four motors are inside 0 to 8 N, so the command is met exactly.';
+  if (!out.length) return 'All four motors are inside 0 to ' + fmt(MX.fmax, 1) + ' N, so the command is met exactly.';
   const need = 'The exact solution needs ' + out.join(' and ') + '. ';
   if (mix.strat === 'naive') {
     const axes = ['thrust', 'roll', 'pitch', 'yaw'], units = ['N', 'N·m', 'N·m', 'N·m'];
@@ -1625,7 +1664,6 @@ function mixUpdate() {
   for (let i = 0; i < 4; i++) {
     const err = mix.ach[i] - w[i];
     $('mx-w' + i).textContent = fmt(mix.ach[i], AX_DEC[i]);
-    $('mx-f' + i).textContent = fmt(mix.res.f[i], 2);
     $('mx-c' + i).textContent = fmt(w[i], AX_DEC[i]);
     $('mx-a' + i).textContent = fmt(mix.ach[i], AX_DEC[i]);
     const cell = $('mx-e' + i);
@@ -1634,7 +1672,58 @@ function mixUpdate() {
   }
   $('mix-cap').textContent = 'Commanded vs achieved: ' + (mix.strat === 'prio' ? 'prioritise roll & pitch' : 'naive clipping');
   $('mix-summary').innerHTML = mixSummary();
+  mixRenderMatrix();
   markDirty();
+}
+/* The allocation matrix and the motor vector, in thrusts (N) or in rotor speeds squared. In the
+   speed form the matrix entries kf, kf d and km are shown in units of 1e-5 and w^2 in units of
+   1e5 rad^2/s^2, so each product is in N or N m directly. */
+function mixRenderMatrix() {
+  const d = MX.d, k = MX.kappa, wForm = mix.form === 'w';
+  const kf5 = MX.kf * 1e5, km5 = MX.km * 1e5;
+  const rows = wForm
+    ? [[kf5, kf5, kf5, kf5], [-kf5 * d, kf5 * d, kf5 * d, -kf5 * d], [kf5 * d, -kf5 * d, kf5 * d, -kf5 * d], [km5, km5, -km5, -km5]]
+    : [[1, 1, 1, 1], [-d, d, d, -d], [d, -d, d, -d], [k, k, -k, -k]];
+  const dec = wForm ? [2, 3, 3, 3] : [0, 3, 3, 3];
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) $('mx-b' + i + j).textContent = fmt(rows[i][j], dec[i]);
+    $('mx-f' + i).textContent = wForm ? fmt(mix.res.f[i] / MX.kf * 1e-5, 2) : fmt(mix.res.f[i], 2);
+  }
+  const vl = wForm ? ['ω<sub>1</sub>²', 'ω<sub>2</sub>²', 'ω<sub>3</sub>²', 'ω<sub>4</sub>²'] : ['f<sub>1</sub>', 'f<sub>2</sub>', 'f<sub>3</sub>', 'f<sub>4</sub>'];
+  const vlHtml = vl.map((s) => '<span>' + s + '</span>').join('');
+  if ($('mx-vl').innerHTML !== vlHtml) $('mx-vl').innerHTML = vlHtml;
+  const cap = wForm
+    ? 'Achieved [<i>T</i>; <i>τ<sub>x</sub></i>; <i>τ<sub>y</sub></i>; <i>τ<sub>z</sub></i>] (N, N·m) = <i>B<sub>ω</sub></i> × rotor speeds squared. The entries <i>k</i><sub>f</sub>, ±<i>k</i><sub>f</sub><i>d</i> and ±<i>k</i><sub>m</sub> are in ×10<sup>−5</sup> units and <i>ω</i>² in ×10<sup>5</sup> rad²/s², so each product is in N or N·m.'
+    : 'Achieved [<i>T</i>; <i>τ<sub>x</sub></i>; <i>τ<sub>y</sub></i>; <i>τ<sub>z</sub></i>] (N, N·m) = <i>B</i> × motor thrusts (N), with <i>d</i> = <i>l</i>/√2 = 0.177 m and <i>κ</i> = <i>k</i><sub>m</sub>/<i>k</i><sub>f</sub> = ' + fmt(k, 3) + ' m';
+  if ($('mix-eqcap').innerHTML !== cap) $('mix-eqcap').innerHTML = cap;
+}
+function mixState(id, s, text) {
+  const el = $(id);
+  if (el.dataset.s !== s) el.dataset.s = s;
+  if (el.textContent !== text) el.textContent = text;
+}
+function mixStratNote() {
+  $('mix-strat-note').textContent = mix.strat === 'prio'
+    ? 'Keep roll and pitch; give up yaw first, then shift collective thrust; clip only as a last resort (PX4-like).'
+    : 'Clip each motor to 0–' + fmt(MX.fmax, 1) + ' N on its own.';
+}
+const rpmOf = (w) => (10 * Math.round(w * 60 / (2 * Math.PI) / 10)).toLocaleString('en-GB');   // nearest 10 rpm
+/* After a coefficient slider moves: new limits, the derived numbers under the sliders, the badges. */
+function mixCoefChanged() {
+  mixCoef();
+  const hover4 = MX.m * G / 4, h = hover4 / MX.fmax, tw = 4 * MX.fmax / (MX.m * G);
+  const tzs = 4 * MX.kappa * (MX.fmax - hover4);
+  $('mix-kf-note').innerHTML = '<i>f</i><sub>max</sub> = <i>k</i><sub>f</sub> <i>ω</i><sub>max</sub>² = <strong>' + fmt(MX.fmax, 2) + ' N</strong> per motor · thrust-to-weight ' + fmt(tw, 1)
+    + (h <= 1 ? ' · hover at ' + rpmOf(Math.sqrt(hover4 / MX.kf)) + ' rpm (' + Math.round(100 * Math.sqrt(h)) + ' % of <i>ω</i><sub>max</sub>)' : '');
+  $('mix-km-note').innerHTML = '<i>κ</i> = <i>k</i><sub>m</sub>/<i>k</i><sub>f</sub> = <strong>' + fmt(MX.kappa, 3) + ' m</strong> (PX4: CA_ROTOR_KM)'
+    + (h < 1 ? ' · at hover, yaw saturates a motor at <i>τ<sub>z</sub></i> = 4<i>κ</i>(<i>f</i><sub>max</sub> − <i>m g</i>/4) = <strong>' + fmt(tzs, 3) + ' N·m</strong>' : '');
+  if (h > 1) mixState('mix-st-hover', 'bad', 'Cannot hover: 4 f_max = ' + fmt(4 * MX.fmax, 1) + ' N < m g = ' + fmt(MX.m * G, 1) + ' N');
+  else if (h > 0.8) mixState('mix-st-hover', 'warn', 'Hover uses ' + Math.round(100 * h) + ' % of each motor: little headroom');
+  else mixState('mix-st-hover', 'ok', 'Hover uses ' + Math.round(100 * h) + ' % of each motor');
+  mixState('mix-st-yaw', h < 1 ? 'idle' : 'bad', h < 1 ? 'Yaw authority at hover ±' + fmt(tzs, 3) + ' N·m' : 'No yaw authority at hover');
+  $('mix-bar-note').innerHTML = '<span>bars: 0 to <i>f</i><sub>max</sub> = ' + fmt(MX.fmax, 1) + ' N per motor</span>';
+  mixStratNote();
+  mixUpdate();
 }
 function applyMixPreset(p) {
   mixUI.T.set(p[0], true); mixUI.tx.set(p[1], true); mixUI.ty.set(p[2], true); mixUI.tz.set(p[3], true);
@@ -1701,7 +1790,9 @@ function drawQuad(st) {
     c.fillText(mm.name + ' · ' + (mm.ccw ? 'CCW' : 'CW'), tx, py - fs * 1.45);
     c.fillStyle = C.ink; c.font = 'bold ' + fsBig + 'px ' + FONT;
     c.fillText(fmt(f[i], 2) + ' N', tx, py);
-    let ny = py + fs * 1.65;
+    c.fillStyle = C['ink-2']; c.font = fs + 'px ' + FONT;
+    c.fillText(rpmOf(Math.sqrt(Math.max(f[i], 0) / MX.kf)) + ' rpm', tx, py + fs * 1.4);
+    let ny = py + fs * 2.85;
     if (!met && (f[i] <= 1e-6 || f[i] >= MX.fmax - 1e-6)) { badge(c, 'SAT', tx, ny, al, fs); ny += fs * 1.75; }
     if (Math.abs(res.raw[i] - f[i]) > 0.005) {
       c.textAlign = al; c.fillStyle = C['ink-2']; c.font = fs + 'px ' + FONT;
@@ -1727,16 +1818,18 @@ function setupMixer() {
   mixUI.tx = bindSlider('mix-tx', (v) => fmt(v, 2), (v) => { mix.tx = v; mixUpdate(); });
   mixUI.ty = bindSlider('mix-ty', (v) => fmt(v, 2), (v) => { mix.ty = v; mixUpdate(); });
   mixUI.tz = bindSlider('mix-tz', (v) => fmt(v, 3), (v) => { mix.tz = v; mixUpdate(); });
-  mixUI.strat = bindRadio('mix-strat', (v) => {
-    mix.strat = v;
-    $('mix-strat-note').textContent = v === 'prio'
-      ? 'Keep roll and pitch; give up yaw first, then shift collective thrust; clip only as a last resort (PX4-like).'
-      : 'Clip each motor to 0–8 N on its own.';
-    mixUpdate();
-  });
+  mixUI.strat = bindRadio('mix-strat', (v) => { mix.strat = v; mixStratNote(); mixUpdate(); });
+  mixUI.form = bindRadio('mix-form', (v) => { mix.form = v; mixUpdate(); });
+  mixUI.kf = bindSlider('mix-kf', (v) => fmt(v, 2), (v) => { MX.kf = v * 1e-5; mixCoefChanged(); });
+  mixUI.km = bindSlider('mix-km', (v) => fmt(v, 1), (v) => { MX.km = v * 1e-7; mixCoefChanged(); });
   Object.keys(MIX_PRESETS).forEach((id) => $(id).addEventListener('click', () => applyMixPreset(MIX_PRESETS[id])));
+  $('mix-pre-coef').addEventListener('click', () => {
+    mixUI.kf.set(1.25, true); mixUI.km.set(2, true);
+    MX.kf = 1.25e-5; MX.km = 2.0e-7;
+    mixCoefChanged();
+  });
   mixQuad = makeCanvas('mix-quad');
-  mixUpdate();
+  mixCoefChanged();
 }
 
 /* ======================================================================
@@ -1893,6 +1986,7 @@ function selfTest() {
     const w2 = mixForward(mixInverse(w));
     if (w.some((v, i) => Math.abs(v - w2[i]) > 1e-9)) errs.push('allocation round trip');
   });
+  if (Math.abs(1.25e-5 * 800 * 800 - 8) > 1e-9 || Math.abs(2.0e-7 / 1.25e-5 - 0.016) > 1e-9) errs.push('rotor coefficient defaults');
   const a = allocPrio([14.7, 1.2, 0, 0.25]), wa = mixForward(a.f);
   if (Math.abs(wa[1] - 1.2) > 1e-9 || Math.abs(wa[2]) > 1e-9 || Math.abs(wa[0] - 14.7) > 1e-9 || !(a.yaw < 1) || !a.f.every(inRange)) errs.push('prioritised allocation');
   const p = createPid();
