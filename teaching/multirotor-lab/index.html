@@ -26,6 +26,11 @@
   --s2: #EE7219;
   --s3: #00A99D;
   --s4: #AB1F2D;
+  /* text-safe versions of the series colours (contrast >= 5:1, checked for colour-vision deficiency) */
+  --s1-ink: #0A4FB5;
+  --s2-ink: #C2410C;
+  --s3-ink: #0F766E;
+  --s4-ink: #AB1F2D;
   --ok: #1D7A48;
   --ok-wash: #E6F4EC;
   --warn: #9A5800;
@@ -61,6 +66,7 @@
     --rule: #2C3136; --grid: #2A2F34; --axis: #474D53; --track: #3A4046; --thumb: #E6E8EA;
     --accent: #4DA6EC; --accent-ink: #7BBDF1; --accent-wash: #15263A; --on-accent: #0B1620;
     --s1: #3D9BE9; --s2: #DB7428; --s3: #16AA9D; --s4: #E0505E;
+    --s1-ink: #5FAEF5; --s2-ink: #F0945A; --s3-ink: #3FC8B8; --s4-ink: #F07A86;
     --ok: #5CC98C; --ok-wash: #12301F; --warn: #F0B055; --warn-wash: #33260F; --bad: #FF8A80; --bad-wash: #3A1715;
     --sky: #171B1F; --ground: #6B7378; --ground-fill: #23292E;
     --body: #4A5157; --arm: #7E878D; --dome: #E0505E; --disc: #8E989E; --disc-edge: #B5BDC2;
@@ -74,6 +80,7 @@
   --rule: #2C3136; --grid: #2A2F34; --axis: #474D53; --track: #3A4046; --thumb: #E6E8EA;
   --accent: #4DA6EC; --accent-ink: #7BBDF1; --accent-wash: #15263A; --on-accent: #0B1620;
   --s1: #3D9BE9; --s2: #DB7428; --s3: #16AA9D; --s4: #E0505E;
+    --s1-ink: #5FAEF5; --s2-ink: #F0945A; --s3-ink: #3FC8B8; --s4-ink: #F07A86;
   --ok: #5CC98C; --ok-wash: #12301F; --warn: #F0B055; --warn-wash: #33260F; --bad: #FF8A80; --bad-wash: #3A1715;
   --sky: #171B1F; --ground: #6B7378; --ground-fill: #23292E;
   --body: #4A5157; --arm: #7E878D; --dome: #E0505E; --disc: #8E989E; --disc-edge: #B5BDC2;
@@ -114,7 +121,7 @@ sub { font-size: 0.72em; line-height: 0; }
 .brand { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .eyebrow {
   margin: 0; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--muted);
+  text-transform: uppercase; color: var(--accent-ink);
 }
 h1 {
   margin: 0; font-family: var(--font-head); font-weight: 400; color: var(--accent);
@@ -123,7 +130,7 @@ h1 {
 .tabs { display: flex; flex-wrap: wrap; gap: 8px; }
 .tab {
   min-height: 48px; padding: 9px 20px; border-radius: 999px; cursor: pointer;
-  border: 1px solid var(--axis); background: var(--bg); color: var(--ink-2);
+  border: 1px solid var(--axis); background: var(--bg); color: var(--ink);
   font-size: 1rem; font-weight: 700;
 }
 .tab:hover { border-color: var(--accent); color: var(--accent-ink); }
@@ -167,12 +174,17 @@ h1 {
 .fig { margin: 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .fig-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 14px; }
 .fig-title { font-weight: 700; font-size: 0.95rem; }
-.fig-note { font-size: 0.82rem; color: var(--muted); }
-.legend { display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: 0.85rem; color: var(--ink-2); }
+.fig-note { font-size: 0.82rem; color: var(--accent-ink); }
+.legend { display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: 0.85rem; color: var(--ink); }
 .lg { display: inline-flex; align-items: center; gap: 6px; }
 .key { display: inline-block; width: 22px; height: 0; border-top: 3px solid var(--k, var(--s1)); }
 .key.dash { border-top-style: dashed; border-top-width: 2px; }
 .sw { display: inline-block; width: 14px; height: 14px; border-radius: 50%; background: var(--k, var(--s1)); }
+/* text colour-coded to a series (legend entries, readout labels) */
+.t1, .lg.t1, .ro dt.t1 { color: var(--s1-ink); }
+.t2, .lg.t2, .ro dt.t2 { color: var(--s2-ink); }
+.t3, .lg.t3, .ro dt.t3 { color: var(--s3-ink); }
+.t4, .lg.t4, .ro dt.t4 { color: var(--s4-ink); }
 .cbox {
   position: relative; width: 100%; height: clamp(160px, 23vh, 250px);
   border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; background: var(--bg);
@@ -205,7 +217,7 @@ h1 {
   gap: 8px 18px; margin: 0;
 }
 .ro { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.ro dt { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.ro dt { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); }
 .ro dt i, .ro dt sub { text-transform: none; letter-spacing: 0; font-size: 1.12em; }
 .ro dt sub { font-size: 0.8em; }
 .ro dd { margin: 0; font-size: 1.2rem; font-weight: 700; font-variant-numeric: tabular-nums; }
@@ -218,10 +230,11 @@ h1 {
 .state[data-s="ok"] { color: var(--ok); background: var(--ok-wash); }
 .state[data-s="warn"] { color: var(--warn); background: var(--warn-wash); }
 .state[data-s="bad"] { color: var(--bad); background: var(--bad-wash); }
-.state[data-s="idle"] { color: var(--muted); background: transparent; }
-.hint { margin: 0; font-size: 0.98rem; color: var(--ink-2); max-width: 78ch; }
+.state[data-s="idle"] { color: var(--ink-2); background: transparent; }
+.hint { margin: 0; font-size: 0.98rem; color: var(--ink); max-width: 78ch; }
 .hint strong { color: var(--ink); font-variant-numeric: tabular-nums; }
-.model { margin: 0; font-size: 0.86rem; color: var(--muted); max-width: 95ch; }
+.model { margin: 0; font-size: 0.86rem; color: var(--ink); max-width: 95ch; padding: 8px 12px; background: var(--panel); border-radius: 10px; }
+.model b { color: var(--accent-ink); }
 .model i, .hint i, .try i { font-family: Georgia, "Times New Roman", serif; }
 /* time-derivative dots drawn with CSS: combining marks render offset in most UI fonts */
 .dot, .ddot { position: relative; display: inline-block; line-height: 1; }
@@ -237,12 +250,12 @@ h1 {
 }
 .group h2 {
   margin: 0; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--muted);
+  text-transform: uppercase; color: var(--accent);
 }
 .slider { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 0 12px; }
 .slider label { font-weight: 700; font-size: 1rem; }
 .slider output { font-size: 1rem; font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
-.slider output .u { font-weight: 400; color: var(--muted); font-size: 0.86rem; }
+.slider output .u { font-weight: 400; color: var(--ink-2); font-size: 0.86rem; }
 .slider input { grid-column: 1 / -1; }
 input[type="range"] {
   -webkit-appearance: none; appearance: none; width: 100%; height: 34px; margin: 0;
@@ -278,15 +291,15 @@ input[type="range"]:focus-visible { outline: 3px solid var(--accent); outline-of
 .switch[aria-pressed="true"] .sw-track { background: var(--accent); }
 .switch[aria-pressed="true"] .sw-track::after { transform: translateX(20px); }
 .sw-label { min-width: 0; }
-.sw-label small { display: block; font-size: 0.8rem; color: var(--muted); }
-.sw-state { font-size: 0.82rem; font-weight: 700; color: var(--muted); min-width: 3ch; text-align: right; }
+.sw-label small { display: block; font-size: 0.8rem; color: var(--ink-2); }
+.sw-state { font-size: 0.82rem; font-weight: 700; color: var(--ink-2); min-width: 3ch; text-align: right; }
 .switch[aria-pressed="true"] .sw-state { color: var(--accent-ink); }
 
 .seg-label { font-weight: 700; font-size: 1rem; }
 .seg { display: flex; border: 1px solid var(--axis); border-radius: 10px; overflow: hidden; }
 .seg button {
   flex: 1 1 0; min-height: 44px; padding: 6px 8px; border: 0; border-right: 1px solid var(--axis);
-  background: var(--bg); color: var(--ink-2); font-size: 0.95rem; font-weight: 700; cursor: pointer;
+  background: var(--bg); color: var(--ink); font-size: 0.95rem; font-weight: 700; cursor: pointer;
 }
 .seg button:last-child { border-right: 0; }
 .seg button:hover { background: var(--panel); }
@@ -296,7 +309,7 @@ input[type="range"]:focus-visible { outline: 3px solid var(--accent); outline-of
 
 .ratio { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font-size: 0.98rem; }
 .ratio b { font-variant-numeric: tabular-nums; font-size: 1.1rem; }
-.keys { margin: 0; font-size: 0.82rem; color: var(--muted); }
+.keys { margin: 0; font-size: 0.82rem; color: var(--ink-2); }
 kbd {
   font-family: var(--font-mono); font-size: 0.8rem; padding: 1px 6px; border-radius: 5px;
   border: 1px solid var(--axis); border-bottom-width: 2px; background: var(--panel); color: var(--ink);
@@ -317,7 +330,7 @@ kbd {
 }
 .mix-side { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 .scroll-x { overflow-x: auto; }
-.eq-cap { margin: 0 0 4px; font-size: 0.86rem; color: var(--muted); }
+.eq-cap { margin: 0 0 4px; font-size: 0.86rem; color: var(--ink-2); }
 .mateq {
   display: inline-flex; align-items: center; gap: 10px; padding-block: 2px;
   font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 0.95rem; line-height: 1.5;
@@ -335,14 +348,14 @@ kbd {
 .cmp caption { text-align: left; font-weight: 700; padding-bottom: 6px; }
 .cmp th, .cmp td { padding: 6px 10px; border-bottom: 1px solid var(--rule); text-align: right; white-space: nowrap; }
 .cmp th[scope="row"], .cmp thead th:first-child { text-align: left; }
-.cmp thead th { font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.cmp thead th { font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); }
 .cmp td.lost { color: var(--bad); font-weight: 700; }
 .cmp td.kept { color: var(--ok); }
 
 .foot {
   display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 20px;
   margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--rule);
-  font-size: 0.84rem; color: var(--muted);
+  font-size: 0.84rem; color: var(--ink-2);
 }
 .foot p { margin: 0; }
 .foot .brandline { font-family: var(--font-head); color: var(--s4); }
@@ -388,21 +401,21 @@ kbd {
             </figure>
             <figure class="fig">
               <figcaption class="fig-head"><span class="fig-title">Altitude <i>z</i> (m)</span>
-                <span class="legend"><span class="lg"><span class="key" style="--k: var(--s1)"></span>altitude</span><span class="lg"><span class="key dash" style="--k: var(--s1)"></span>target</span></span>
+                <span class="legend"><span class="lg t1"><span class="key" style="--k: var(--s1)"></span>altitude</span><span class="lg t1"><span class="key dash" style="--k: var(--s1)"></span>target</span></span>
               </figcaption>
               <div class="cbox plot"><canvas id="pid-plot-z" role="img" aria-label="Altitude and target altitude over the last 12 seconds"></canvas></div>
             </figure>
             <figure class="fig">
               <figcaption class="fig-head"><span class="fig-title">Thrust (N)</span>
-                <span class="legend"><span class="lg"><span class="key" style="--k: var(--s2)"></span>commanded</span><span class="lg"><span class="key" style="--k: var(--s1)"></span>applied</span><span class="lg"><span class="key dash" style="--k: var(--ink-2)"></span><span><i>T</i><sub>max</sub> and hover <i>m g</i></span></span></span>
+                <span class="legend"><span class="lg t2"><span class="key" style="--k: var(--s2)"></span>commanded</span><span class="lg t1"><span class="key" style="--k: var(--s1)"></span>applied</span><span class="lg"><span class="key dash" style="--k: var(--ink-2)"></span><span><i>T</i><sub>max</sub> and hover <i>m g</i></span></span></span>
               </figcaption>
               <div class="cbox plot"><canvas id="pid-plot-t" role="img" aria-label="Commanded and applied thrust over the last 12 seconds, with the thrust limit and the hover thrust"></canvas></div>
             </figure>
           </div>
           <dl class="readouts">
             <div class="ro"><dt>Error <i>e</i></dt><dd id="pid-ro-err">0.00 m</dd></div>
-            <div class="ro"><dt>Altitude <i>z</i></dt><dd id="pid-ro-z">0.00 m</dd></div>
-            <div class="ro"><dt>Thrust applied</dt><dd id="pid-ro-t">0.0 N</dd></div>
+            <div class="ro"><dt class="t1">Altitude <i>z</i></dt><dd id="pid-ro-z">0.00 m</dd></div>
+            <div class="ro"><dt class="t1">Thrust applied</dt><dd id="pid-ro-t">0.0 N</dd></div>
             <div class="ro"><dt>Integral term</dt><dd id="pid-ro-i">0.0 N</dd></div>
           </dl>
           <div class="statusrow">
@@ -410,7 +423,7 @@ kbd {
             <span class="state" id="pid-st-int" data-s="idle">Integrator running</span>
           </div>
           <p class="hint" id="pid-hint">Expected steady state appears here.</p>
-          <p class="model">Plant: <i>m</i> <i class="ddot">z</i> = <i>T</i> − <i>m g</i> − <i>c</i> <i class="dot">z</i>, with <i>m</i> = 1.0 kg (1.4 kg with payload), <i>c</i> = 0.15 N·s/m, 0 ≤ <i>T</i> ≤ <i>T</i><sub>max</sub>. Controller: <i>T</i><sub>cmd</sub> = FF + <i>K</i><sub>p</sub><i>e</i> + <i>K</i><sub>i</sub>∫<i>e</i> d<i>t</i> − <i>K</i><sub>d</sub><i class="dot">z</i><sub>meas</sub>, FF = <i>m</i><sub>nom</sub><i>g</i> with <i>m</i><sub>nom</sub> = 1.0 kg; <i class="dot">z</i><sub>meas</sub> is a finite difference of the measured altitude at the controller rate.</p>
+          <p class="model"><b>Plant:</b> <i>m</i> <i class="ddot">z</i> = <i>T</i> − <i>m g</i> − <i>c</i> <i class="dot">z</i>, with <i>m</i> = 1.0 kg (1.4 kg with payload), <i>c</i> = 0.15 N·s/m, 0 ≤ <i>T</i> ≤ <i>T</i><sub>max</sub>. <b>Controller:</b> <i>T</i><sub>cmd</sub> = FF + <i>K</i><sub>p</sub><i>e</i> + <i>K</i><sub>i</sub>∫<i>e</i> d<i>t</i> − <i>K</i><sub>d</sub><i class="dot">z</i><sub>meas</sub>, FF = <i>m</i><sub>nom</sub><i>g</i> with <i>m</i><sub>nom</sub> = 1.0 kg; <i class="dot">z</i><sub>meas</sub> is a finite difference of the measured altitude at the controller rate.</p>
         </div>
 
         <aside class="controls" aria-label="Altitude PID controls">
@@ -502,25 +515,25 @@ kbd {
           <div class="plot-row">
             <figure class="fig">
               <figcaption class="fig-head"><span class="fig-title">Position (m)</span>
-                <span class="legend"><span class="lg"><span class="key" style="--k: var(--s1)"></span><i>x</i></span><span class="lg"><span class="key dash" style="--k: var(--s1)"></span><i>x</i> target</span><span class="lg"><span class="key" style="--k: var(--s2)"></span><i>z</i></span><span class="lg"><span class="key dash" style="--k: var(--s2)"></span><i>z</i> target</span></span>
+                <span class="legend"><span class="lg t1"><span class="key" style="--k: var(--s1)"></span><i>x</i></span><span class="lg t1"><span class="key dash" style="--k: var(--s1)"></span><i>x</i> target</span><span class="lg t2"><span class="key" style="--k: var(--s2)"></span><i>z</i></span><span class="lg t2"><span class="key dash" style="--k: var(--s2)"></span><i>z</i> target</span></span>
               </figcaption>
               <div class="cbox plot"><canvas id="cas-plot-pos" role="img" aria-label="Horizontal and vertical position with their targets over the last 12 seconds"></canvas></div>
             </figure>
             <figure class="fig">
               <figcaption class="fig-head"><span class="fig-title">Tilt (deg)</span>
-                <span class="legend"><span class="lg"><span class="key" style="--k: var(--s3)"></span><i>θ</i></span><span class="lg"><span class="key dash" style="--k: var(--s3)"></span><i>θ</i><sub>des</sub></span><span class="lg"><span class="key dash" style="--k: var(--ink-2)"></span>tilt limit</span></span>
+                <span class="legend"><span class="lg t3"><span class="key" style="--k: var(--s3)"></span><i>θ</i></span><span class="lg t3"><span class="key dash" style="--k: var(--s3)"></span><i>θ</i><sub>des</sub></span><span class="lg"><span class="key dash" style="--k: var(--ink-2)"></span>tilt limit</span></span>
               </figcaption>
               <div class="cbox plot"><canvas id="cas-plot-th" role="img" aria-label="Tilt angle and desired tilt over the last 12 seconds, with the tilt limit"></canvas></div>
             </figure>
           </div>
           <dl class="readouts">
-            <div class="ro"><dt>Tilt <i>θ</i></dt><dd id="cas-ro-th">0.0°</dd></div>
-            <div class="ro"><dt>Desired <i>θ</i><sub>des</sub></dt><dd id="cas-ro-thd">0.0°</dd></div>
+            <div class="ro"><dt class="t3">Tilt <i>θ</i></dt><dd id="cas-ro-th">0.0°</dd></div>
+            <div class="ro"><dt class="t3">Desired <i>θ</i><sub>des</sub></dt><dd id="cas-ro-thd">0.0°</dd></div>
             <div class="ro"><dt>Rotor <i>F</i><sub>1</sub> (left)</dt><dd id="cas-ro-f1">0.00 N</dd></div>
             <div class="ro"><dt>Rotor <i>F</i><sub>2</sub> (right)</dt><dd id="cas-ro-f2">0.00 N</dd></div>
             <div class="ro"><dt>Distance to target</dt><dd id="cas-ro-err">0.00 m</dd></div>
           </dl>
-          <p class="model"><i class="ddot">x</i> = −(<i>u</i><sub>1</sub>/<i>m</i>) sin <i>θ</i>, <i class="ddot">z</i> = (<i>u</i><sub>1</sub>/<i>m</i>) cos <i>θ</i> − <i>g</i>, <i class="ddot tall">θ</i> = <i>u</i><sub>2</sub>/<i>I</i>, with <i>u</i><sub>1</sub> = <i>F</i><sub>1</sub> + <i>F</i><sub>2</sub>, <i>u</i><sub>2</sub> = (<i>F</i><sub>2</sub> − <i>F</i><sub>1</sub>)<i>L</i>; <i>m</i> = 1 kg, <i>L</i> = 0.25 m, <i>I</i> = 0.01 kg·m², 0 ≤ <i>F<sub>i</sub></i> ≤ <i>m g</i> (<i>z</i> is the slides’ <i>y</i>). Outer loop: <i>a</i> = <i>ω</i><sub>o</sub>²(<i>p</i><sub>target</sub> − <i>p</i>) − 2<i>ω</i><sub>o</sub><i class="dot">p</i>, <i>θ</i><sub>des</sub> = atan2(−<i>a<sub>x</sub></i>, <i>g</i> + <i>a<sub>z</sub></i>), <i>u</i><sub>1</sub> = <i>m</i>(<i>g</i> + <i>a<sub>z</sub></i>)/cos <i>θ</i>. Inner loop: <i>u</i><sub>2</sub> = <i>I</i>(<i>ω</i><sub>i</sub>²(<i>θ</i><sub>des</sub> − <i>θ</i>) − 2<i>ω</i><sub>i</sub><i class="dot tall">θ</i>). Both loops critically damped (<i>ζ</i> = 1).</p>
+          <p class="model"><b>Dynamics:</b> <i class="ddot">x</i> = −(<i>u</i><sub>1</sub>/<i>m</i>) sin <i>θ</i>, <i class="ddot">z</i> = (<i>u</i><sub>1</sub>/<i>m</i>) cos <i>θ</i> − <i>g</i>, <i class="ddot tall">θ</i> = <i>u</i><sub>2</sub>/<i>I</i>, with <i>u</i><sub>1</sub> = <i>F</i><sub>1</sub> + <i>F</i><sub>2</sub>, <i>u</i><sub>2</sub> = (<i>F</i><sub>2</sub> − <i>F</i><sub>1</sub>)<i>L</i>; <i>m</i> = 1 kg, <i>L</i> = 0.25 m, <i>I</i> = 0.01 kg·m², 0 ≤ <i>F<sub>i</sub></i> ≤ <i>m g</i> (<i>z</i> is the slides’ <i>y</i>). <b>Outer loop:</b> <i>a</i> = <i>ω</i><sub>o</sub>²(<i>p</i><sub>target</sub> − <i>p</i>) − 2<i>ω</i><sub>o</sub><i class="dot">p</i>, <i>θ</i><sub>des</sub> = atan2(−<i>a<sub>x</sub></i>, <i>g</i> + <i>a<sub>z</sub></i>), <i>u</i><sub>1</sub> = <i>m</i>(<i>g</i> + <i>a<sub>z</sub></i>)/cos <i>θ</i>. <b>Inner loop:</b> <i>u</i><sub>2</sub> = <i>I</i>(<i>ω</i><sub>i</sub>²(<i>θ</i><sub>des</sub> − <i>θ</i>) − 2<i>ω</i><sub>i</sub><i class="dot tall">θ</i>). Both loops critically damped (<i>ζ</i> = 1).</p>
         </div>
 
         <aside class="controls" aria-label="Cascade controls">
@@ -586,7 +599,7 @@ kbd {
             <figure class="fig">
               <figcaption class="fig-head"><span class="fig-title">Top view, quad-X (PX4 numbering)</span><span class="fig-note">forward is up the screen</span></figcaption>
               <div class="cbox quad"><canvas id="mix-quad" role="img" aria-label="Top view of the quadrotor. Each rotor shows its thrust as a bar and a number, its spin direction, and a SAT badge when the motor sits at a limit."></canvas></div>
-              <span class="legend"><span class="lg"><span class="sw" style="--k: var(--slower)"></span>slower than <i>T</i>/4</span><span class="lg"><span class="sw" style="--k: var(--rotor-neutral)"></span>at <i>T</i>/4</span><span class="lg"><span class="sw" style="--k: var(--faster)"></span>faster</span><span class="lg">bars: 0 to 8 N per motor</span></span>
+              <span class="legend"><span class="lg t1"><span class="sw" style="--k: var(--slower)"></span>slower than <i>T</i>/4</span><span class="lg"><span class="sw" style="--k: var(--rotor-neutral)"></span>at <i>T</i>/4</span><span class="lg t4"><span class="sw" style="--k: var(--faster)"></span>faster</span><span class="lg">bars: 0 to 8 N per motor</span></span>
             </figure>
             <div class="mix-side">
               <div>
@@ -622,7 +635,7 @@ kbd {
               <p class="hint" id="mix-summary">All four motors are inside 0 to 8 N, so the command is met exactly.</p>
             </div>
           </div>
-          <p class="model">PX4 quad-X in the FRD body frame (<i>x</i> forward, <i>y</i> right, <i>z</i> down; thrust along −<i>z</i><sub>B</sub>): M1 front-right CCW, M2 rear-left CCW, M3 front-left CW, M4 rear-right CW. <i>l</i> = 0.25 m, <i>f</i><sub>max</sub> = 8 N per motor, <i>m</i> = 1.5 kg (hover 14.7 N). Inverse: <i>f</i><sub>1</sub> = <i>T</i>/4 − <i>τ<sub>x</sub></i>/4<i>d</i> + <i>τ<sub>y</sub></i>/4<i>d</i> + <i>τ<sub>z</sub></i>/4<i>κ</i>, and similarly for the others.</p>
+          <p class="model"><b>Geometry:</b> PX4 quad-X in the FRD body frame (<i>x</i> forward, <i>y</i> right, <i>z</i> down; thrust along −<i>z</i><sub>B</sub>): M1 front-right CCW, M2 rear-left CCW, M3 front-left CW, M4 rear-right CW. <i>l</i> = 0.25 m, <i>f</i><sub>max</sub> = 8 N per motor, <i>m</i> = 1.5 kg (hover 14.7 N). <b>Inverse:</b> <i>f</i><sub>1</sub> = <i>T</i>/4 − <i>τ<sub>x</sub></i>/4<i>d</i> + <i>τ<sub>y</sub></i>/4<i>d</i> + <i>τ<sub>z</sub></i>/4<i>κ</i>, and similarly for the others.</p>
         </div>
 
         <aside class="controls" aria-label="Control allocation controls">
@@ -739,7 +752,7 @@ const markDirty = () => { dirty = true; };
 
 /* ---------- colours come from the CSS tokens; re-read on every theme change ---------- */
 const TOKENS = ['bg', 'panel', 'ink', 'ink-2', 'muted', 'grid', 'axis', 'track', 'accent', 'accent-ink',
-  's1', 's2', 's3', 's4', 'ok', 'warn', 'bad', 'bad-wash', 'sky', 'ground', 'ground-fill',
+  's1', 's2', 's3', 's4', 's1-ink', 's2-ink', 's3-ink', 's4-ink', 'ok', 'warn', 'bad', 'bad-wash', 'sky', 'ground', 'ground-fill',
   'body', 'arm', 'dome', 'disc', 'disc-edge', 'rotor-neutral', 'faster', 'slower', 'thrust', 'force',
   'payload', 'payload-edge', 'nose', 'blade'];
 const C = {};
@@ -937,14 +950,14 @@ function drawStrip(st, ring, tNow, cfg) {
     const y = Math.round(Y(v)) + 0.5;
     c.strokeStyle = Math.abs(v) < 1e-9 ? C.axis : C.grid;
     c.beginPath(); c.moveTo(m.l, y); c.lineTo(m.l + pw, y); c.stroke();
-    c.fillStyle = C.muted; c.fillText(fmt(v, dec), m.l - 8, y);
+    c.fillStyle = C['ink-2']; c.fillText(fmt(v, dec), m.l - 8, y);
   }
   // vertical grid every 2 s
   c.textAlign = 'center'; c.textBaseline = 'top';
   for (let tt = Math.ceil(t0 / 2 - 1e-9) * 2; tt <= t1 + 1e-9; tt += 2) {
     const x = Math.round(X(tt)) + 0.5;
     c.strokeStyle = C.grid; c.beginPath(); c.moveTo(x, m.t); c.lineTo(x, m.t + ph); c.stroke();
-    c.fillStyle = C.muted; c.fillText(String(Math.round(tt)), x, m.t + ph + 7);
+    c.fillStyle = C['ink-2']; c.fillText(String(Math.round(tt)), x, m.t + ph + 7);
   }
   c.textAlign = 'right'; c.fillText('t (s)', m.l - 10, m.t + ph + 7);
   c.strokeStyle = C.axis; c.beginPath(); c.moveTo(m.l, m.t + ph + 0.5); c.lineTo(m.l + pw, m.t + ph + 0.5); c.stroke();
@@ -1036,7 +1049,7 @@ function drawTooltip(c, x, m, pw, head, rows) {
   c.fillStyle = withAlpha(C.bg, 0.95); c.strokeStyle = C.axis; c.lineWidth = 1;
   roundRect(c, bx + 0.5, by + 0.5, w, h, 6); c.fill(); c.stroke();
   c.textAlign = 'left'; c.textBaseline = 'middle';
-  c.fillStyle = C.muted; c.font = '13px ' + FONT;
+  c.fillStyle = C['ink-2']; c.font = '13px ' + FONT;
   c.fillText(head, bx + pad, by + pad + 6);
   rows.forEach((r, k) => {
     const yy = by + pad + 6 + 18 + lineH * k;
@@ -1185,7 +1198,7 @@ function drawPidScene(st, s) {
   for (let zz = 0; zz <= 5; zz++) {
     const y = Math.round(Y(zz)) + 0.5;
     c.strokeStyle = C.grid; c.beginPath(); c.moveTo(left, y); c.lineTo(W, y); c.stroke();
-    c.fillStyle = C.muted; c.fillText(zz + ' m', 8, y);
+    c.fillStyle = C['ink-2']; c.fillText(zz + ' m', 8, y);
   }
   // ground
   c.fillStyle = C['ground-fill']; c.fillRect(0, gy, W, H - gy);
@@ -1423,7 +1436,7 @@ function drawCasScene(st, s) {
   for (let z = 1; z < zv1; z++) { const Yz = Math.round(SY(z)) + 0.5; c.beginPath(); c.moveTo(0, Yz); c.lineTo(W, Yz); c.stroke(); }
   c.fillStyle = C['ground-fill']; c.fillRect(0, oy, W, H - oy);
   c.strokeStyle = C.ground; c.lineWidth = 2; c.beginPath(); c.moveTo(0, oy + 1); c.lineTo(W, oy + 1); c.stroke();
-  c.font = '13px ' + FONT; c.fillStyle = C.muted; c.textBaseline = 'middle'; c.textAlign = 'center';
+  c.font = '13px ' + FONT; c.fillStyle = C['ink-2']; c.textBaseline = 'middle'; c.textAlign = 'center';
   for (let x = Math.ceil(xv0 / 2) * 2; x <= xv1; x += 2) {
     if (SX(x) > 24 && SX(x) < W - 24) c.fillText(fmt(x, 0) + ' m', SX(x), oy + (H - oy) / 2 + 1);
   }
@@ -1656,7 +1669,7 @@ function drawQuad(st) {
   arrow(c, fx0, fy0, fx0 + 38, fy0, C['ink-2'], 2.5);
   label(c, 'x forward', fx0 + 8, fy0 - 40, { size: 12, color: C['ink-2'], bg: false });
   label(c, 'y right', fx0 + 44, fy0, { size: 12, color: C['ink-2'], bg: false });
-  label(c, 'z down, into the screen', fx0 - 4, fy0 + 16, { size: 12, color: C.muted, bg: false });
+  label(c, 'z down, into the screen', fx0 - 4, fy0 + 16, { size: 12, color: C['ink-2'], bg: false });
   // arms
   c.lineCap = 'round'; c.strokeStyle = C.arm; c.lineWidth = Math.max(4, 0.06 * A);
   MOTORS.forEach((mm) => { c.beginPath(); c.moveTo(cx, cy); c.lineTo(cx + mm.r * d, cy - mm.f * d); c.stroke(); });
@@ -1691,7 +1704,7 @@ function drawQuad(st) {
     let ny = py + fs * 1.65;
     if (!met && (f[i] <= 1e-6 || f[i] >= MX.fmax - 1e-6)) { badge(c, 'SAT', tx, ny, al, fs); ny += fs * 1.75; }
     if (Math.abs(res.raw[i] - f[i]) > 0.005) {
-      c.textAlign = al; c.fillStyle = C.muted; c.font = fs + 'px ' + FONT;
+      c.textAlign = al; c.fillStyle = C['ink-2']; c.font = fs + 'px ' + FONT;
       c.fillText('wants ' + fmt(res.raw[i], 2), tx, ny);
     }
   });
