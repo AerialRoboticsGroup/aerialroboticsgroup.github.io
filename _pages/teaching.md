@@ -13,7 +13,8 @@ Members of the Aerial Robotics Group teach on the following unit at the Universi
 
 _University of Bristol · MSc and final-year undergraduate_
 
-Aerial Robotics is a team-taught unit on the fundamentals of flight dynamics, control and avionics in the context of aerial robotics systems and applications.
+Aerial Robotics is a team-taught unit on the fundamentals of flight dynamics, control and avionics
+in the context of aerial robotics systems and applications.
 Alongside the legal requirements for drone (UAV) operations, students use software simulation tools for flight planning and algorithm development,
 including flight dynamics, sensor and control models, and are introduced to disruptive technologies such as autonomous navigation and bio-inspiration.
 By the end of the unit, students can plan a typical UAV operation in UK airspace, explain feedback control for UAVs and its role in flight dynamics
