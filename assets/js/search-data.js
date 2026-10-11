@@ -25,7 +25,7 @@ ninja.data = [{
           },
         },{id: "nav-teaching",
           title: "Teaching",
-          description: "Courses we teach on, with interactive labs to explore.",
+          description: "Aerial Robotics (AENGM0073) at the University of Bristol, with interactive labs that run in the browser.",
           section: "Navigation",
           handler: () => {
             window.location.href = "/teaching/";

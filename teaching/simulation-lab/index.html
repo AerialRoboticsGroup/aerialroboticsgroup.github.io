@@ -26,6 +26,11 @@
   --s2: #EE7219;
   --s3: #00A99D;
   --s4: #AB1F2D;
+  /* text-safe versions of the series colours (contrast >= 5:1, checked for colour-vision deficiency) */
+  --s1-ink: #0A4FB5;
+  --s2-ink: #C2410C;
+  --s3-ink: #0F766E;
+  --s4-ink: #AB1F2D;
   --ok: #1D7A48;
   --ok-wash: #E6F4EC;
   --warn: #9A5800;
@@ -57,6 +62,7 @@
     --rule: #2C3136; --grid: #2A2F34; --axis: #474D53; --track: #3A4046; --thumb: #E6E8EA;
     --accent: #4DA6EC; --accent-ink: #7BBDF1; --accent-wash: #15263A; --on-accent: #0B1620;
     --s1: #3D9BE9; --s2: #DB7428; --s3: #16AA9D; --s4: #E0505E;
+    --s1-ink: #5FAEF5; --s2-ink: #F0945A; --s3-ink: #3FC8B8; --s4-ink: #F07A86;
     --ok: #5CC98C; --ok-wash: #12301F; --warn: #F0B055; --warn-wash: #33260F; --bad: #FF8A80; --bad-wash: #3A1715;
     --sky: #171B1F; --ground: #6B7378; --ground-fill: #23292E;
     --body: #4A5157; --arm: #7E878D; --dome: #E0505E; --disc: #8E989E; --disc-edge: #B5BDC2;
@@ -69,6 +75,7 @@
   --rule: #2C3136; --grid: #2A2F34; --axis: #474D53; --track: #3A4046; --thumb: #E6E8EA;
   --accent: #4DA6EC; --accent-ink: #7BBDF1; --accent-wash: #15263A; --on-accent: #0B1620;
   --s1: #3D9BE9; --s2: #DB7428; --s3: #16AA9D; --s4: #E0505E;
+    --s1-ink: #5FAEF5; --s2-ink: #F0945A; --s3-ink: #3FC8B8; --s4-ink: #F07A86;
   --ok: #5CC98C; --ok-wash: #12301F; --warn: #F0B055; --warn-wash: #33260F; --bad: #FF8A80; --bad-wash: #3A1715;
   --sky: #171B1F; --ground: #6B7378; --ground-fill: #23292E;
   --body: #4A5157; --arm: #7E878D; --dome: #E0505E; --disc: #8E989E; --disc-edge: #B5BDC2;
@@ -108,7 +115,7 @@ sub, sup { font-size: 0.72em; line-height: 0; }
 .brand { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .eyebrow {
   margin: 0; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--muted);
+  text-transform: uppercase; color: var(--accent-ink);
 }
 h1 {
   margin: 0; font-family: var(--font-head); font-weight: 400; color: var(--accent);
@@ -117,7 +124,7 @@ h1 {
 .tabs { display: flex; flex-wrap: wrap; gap: 8px; }
 .tab {
   min-height: 48px; padding: 9px 20px; border-radius: 999px; cursor: pointer;
-  border: 1px solid var(--axis); background: var(--bg); color: var(--ink-2);
+  border: 1px solid var(--axis); background: var(--bg); color: var(--ink);
   font-size: 1rem; font-weight: 700;
 }
 .tab:hover { border-color: var(--accent); color: var(--accent-ink); }
@@ -163,8 +170,8 @@ h1 {
 .fig { margin: 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .fig-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 14px; }
 .fig-title { font-weight: 700; font-size: 0.95rem; }
-.fig-note { font-size: 0.82rem; color: var(--muted); }
-.legend { display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: 0.85rem; color: var(--ink-2); }
+.fig-note { font-size: 0.82rem; color: var(--accent-ink); }
+.legend { display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: 0.85rem; color: var(--ink); }
 .lg { display: inline-flex; align-items: center; gap: 6px; }
 .key { display: inline-block; width: 22px; height: 0; border-top: 3px solid var(--k, var(--s1)); flex: none; }
 .key.dash { border-top-style: dashed; border-top-width: 2px; }
@@ -172,6 +179,11 @@ h1 {
 .sw { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: var(--k, var(--s1)); flex: none; }
 .sw.sq { border-radius: 2px; }
 .sw.band { width: 18px; height: 12px; border-radius: 3px; background: var(--band); border: 1px dashed var(--ink-2); }
+/* text colour-coded to a series (legend entries, readout labels, legend toggles) */
+.t1, .lg.t1, .ro dt.t1, .ltog .ltxt.t1 { color: var(--s1-ink); }
+.t2, .lg.t2, .ro dt.t2, .ltog .ltxt.t2 { color: var(--s2-ink); }
+.t3, .lg.t3, .ro dt.t3, .ltog .ltxt.t3 { color: var(--s3-ink); }
+.t4, .lg.t4, .ro dt.t4, .ltog .ltxt.t4 { color: var(--s4-ink); }
 .cbox {
   position: relative; width: 100%; height: clamp(160px, 23vh, 250px);
   border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; background: var(--bg);
@@ -199,11 +211,11 @@ h1 {
   gap: 8px 18px; margin: 0;
 }
 .ro { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.ro dt { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.ro dt { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); display: flex; align-items: center; gap: 6px; }
 .ro dt i, .ro dt sub { text-transform: none; letter-spacing: 0; font-size: 1.12em; }
 .ro dt sub { font-size: 0.8em; }
 .ro dd { margin: 0; font-size: 1.2rem; font-weight: 700; font-variant-numeric: tabular-nums; }
-.ro dd small { font-size: 0.78rem; font-weight: 400; color: var(--muted); }
+.ro dd small { font-size: 0.78rem; font-weight: 400; color: var(--ink-2); }
 .statusrow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .state {
   display: inline-flex; align-items: center; gap: 7px; padding: 3px 11px;
@@ -213,10 +225,11 @@ h1 {
 .state[data-s="ok"] { color: var(--ok); background: var(--ok-wash); }
 .state[data-s="warn"] { color: var(--warn); background: var(--warn-wash); }
 .state[data-s="bad"] { color: var(--bad); background: var(--bad-wash); }
-.state[data-s="idle"] { color: var(--muted); background: transparent; }
-.hint { margin: 0; font-size: 0.98rem; color: var(--ink-2); max-width: 78ch; }
+.state[data-s="idle"] { color: var(--ink-2); background: transparent; }
+.hint { margin: 0; font-size: 0.98rem; color: var(--ink); max-width: 78ch; }
 .hint strong { color: var(--ink); font-variant-numeric: tabular-nums; }
-.model { margin: 0; font-size: 0.86rem; color: var(--muted); max-width: 100ch; }
+.model { margin: 0; font-size: 0.86rem; color: var(--ink); max-width: 100ch; padding: 8px 12px; background: var(--panel); border-radius: 10px; }
+.model b { color: var(--accent-ink); }
 .model i, .hint i, .try i, .eqbox i, .group i, .fig-title i, .ro i, .legend i { font-family: Georgia, "Times New Roman", serif; }
 /* time-derivative dots drawn with CSS: combining marks render offset in most UI fonts */
 .dot, .ddot { position: relative; display: inline-block; line-height: 1; }
@@ -233,10 +246,10 @@ h1 {
   display: grid; gap: 4px; padding: 10px 16px 12px; margin: 0;
   background: var(--panel); border-left: 4px solid var(--accent); border-radius: 0 12px 12px 0;
 }
-.eqhead { font-weight: 700; font-size: 0.95rem; }
+.eqhead { font-weight: 700; font-size: 0.95rem; color: var(--accent-ink); }
 .eqline { font-family: Georgia, "Times New Roman", serif; font-size: 1.1rem; line-height: 1.5; }
 .eqline + .eqline { margin-top: -2px; }
-.eqnote { font-size: 0.93rem; color: var(--ink-2); max-width: 90ch; }
+.eqnote { font-size: 0.93rem; color: var(--ink); max-width: 90ch; }
 .eqnote strong { color: var(--ink); font-variant-numeric: tabular-nums; }
 .eqlive { font-size: 0.95rem; font-variant-numeric: tabular-nums; color: var(--ink); }
 
@@ -247,13 +260,13 @@ h1 {
 }
 .group h2 {
   margin: 0; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--muted);
+  text-transform: uppercase; color: var(--accent);
 }
-.group h2 .tagline { text-transform: none; letter-spacing: 0; font-weight: 400; }
+.group h2 .tagline { text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--ink-2); }
 .slider { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 0 12px; }
 .slider label { font-weight: 700; font-size: 1rem; }
 .slider output { font-size: 1rem; font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
-.slider output .u { font-weight: 400; color: var(--muted); font-size: 0.86rem; }
+.slider output .u { font-weight: 400; color: var(--ink-2); font-size: 0.86rem; }
 .slider input { grid-column: 1 / -1; }
 input[type="range"] {
   -webkit-appearance: none; appearance: none; width: 100%; height: 34px; margin: 0;
@@ -289,15 +302,15 @@ input[type="range"]:focus-visible { outline: 3px solid var(--accent); outline-of
 .switch[aria-pressed="true"] .sw-track { background: var(--accent); }
 .switch[aria-pressed="true"] .sw-track::after { transform: translateX(20px); }
 .sw-label { min-width: 0; }
-.sw-label small { display: block; font-size: 0.8rem; color: var(--muted); }
-.sw-state { font-size: 0.82rem; font-weight: 700; color: var(--muted); min-width: 3ch; text-align: right; }
+.sw-label small { display: block; font-size: 0.8rem; color: var(--ink-2); }
+.sw-state { font-size: 0.82rem; font-weight: 700; color: var(--ink-2); min-width: 3ch; text-align: right; }
 .switch[aria-pressed="true"] .sw-state { color: var(--accent-ink); }
 
 .seg-label { font-weight: 700; font-size: 1rem; }
 .seg { display: flex; border: 1px solid var(--axis); border-radius: 10px; overflow: hidden; }
 .seg button {
   flex: 1 1 0; min-height: 44px; padding: 6px 8px; border: 0; border-right: 1px solid var(--axis);
-  background: var(--bg); color: var(--ink-2); font-size: 0.95rem; font-weight: 700; cursor: pointer;
+  background: var(--bg); color: var(--ink); font-size: 0.95rem; font-weight: 700; cursor: pointer;
 }
 .seg button:last-child { border-right: 0; }
 .seg button:hover { background: var(--panel); }
@@ -307,8 +320,10 @@ input[type="range"]:focus-visible { outline: 3px solid var(--accent); outline-of
 
 .ratio { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font-size: 0.98rem; }
 .ratio b { font-variant-numeric: tabular-nums; font-size: 1.1rem; }
-.keys { margin: 0; font-size: 0.82rem; color: var(--muted); }
-.note { margin: 0; font-size: 0.86rem; color: var(--ink-2); }
+.keys { margin: 0; font-size: 0.82rem; color: var(--ink-2); }
+.note { margin: 0; font-size: 0.86rem; color: var(--ink); }
+.note.ok { color: var(--ok); }
+.note.warn { color: var(--warn); }
 kbd {
   font-family: var(--font-mono); font-size: 0.8rem; padding: 1px 6px; border-radius: 5px;
   border: 1px solid var(--axis); border-bottom-width: 2px; background: var(--panel); color: var(--ink);
@@ -325,7 +340,7 @@ kbd {
 .ltog .tick { width: 1.1em; text-align: center; color: var(--accent-ink); }
 .ltog[aria-pressed="true"] .tick::before { content: "\2713"; }
 .ltog[aria-pressed="false"] { color: var(--muted); border-style: dashed; }
-.ltog[aria-pressed="false"] .ltxt { text-decoration: line-through; }
+.ltog[aria-pressed="false"] .ltxt { text-decoration: line-through; color: var(--muted); }
 .ltog[aria-pressed="false"] .key, .ltog[aria-pressed="false"] .sw { opacity: 0.35; }
 
 /* ---------- real-time factor card ---------- */
@@ -336,16 +351,16 @@ kbd {
 .rtf-seg.p { background: var(--s1); }
 .rtf-seg.r { background: var(--s2); }
 .rtf-mark { position: absolute; top: -2px; bottom: -2px; width: 0; border-left: 2px dashed var(--ink); }
-.rtf-scale { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.rtf-scale { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--ink-2); font-variant-numeric: tabular-nums; }
 .calc-tag {
   align-self: flex-start; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
-  padding: 2px 8px; border-radius: 999px; border: 1px dashed var(--ink-2); color: var(--ink-2);
+  padding: 2px 8px; border-radius: 999px; border: 1px solid var(--warn); color: var(--warn); background: var(--warn-wash);
 }
 
 /* ---------- batch result (tab 3) ---------- */
 .batch { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
 .batch-big { font-size: 1.9rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; }
-.ranges { margin: 0; padding-left: 1.1em; font-size: 0.86rem; color: var(--ink-2); display: grid; gap: 1px; }
+.ranges { margin: 0; padding-left: 1.1em; font-size: 0.86rem; color: var(--ink); display: grid; gap: 1px; }
 
 /* ---------- try this ---------- */
 .try { background: var(--accent-wash); border-radius: 12px; padding: 14px 20px 16px; align-self: start; }
@@ -356,7 +371,7 @@ kbd {
 .foot {
   display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 20px;
   margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--rule);
-  font-size: 0.84rem; color: var(--muted);
+  font-size: 0.84rem; color: var(--ink-2);
 }
 .foot p { margin: 0; }
 
@@ -398,13 +413,13 @@ kbd {
           <div class="plot-row phy">
             <figure class="fig">
               <figcaption class="fig-head"><span class="fig-title">Phase portrait, <i>x</i> against <i>v</i>/<i>ω</i></span>
-                <span class="legend"><span class="lg"><span class="key dash" style="--k: var(--ink-2)"></span>exact orbit</span><span class="lg"><span class="key" style="--k: var(--s1)"></span>simulated</span></span>
+                <span class="legend"><span class="lg"><span class="key dash" style="--k: var(--ink-2)"></span>exact orbit</span><span class="lg t1"><span class="key" style="--k: var(--s1)"></span>simulated</span></span>
               </figcaption>
               <div class="cbox phase"><canvas id="phy-phase" role="img" aria-label="Phase portrait of the oscillator: the exact solution is the dashed unit circle, the simulated trajectory is the blue curve, with a moving dot for each."></canvas></div>
             </figure>
             <figure class="fig">
               <figcaption class="fig-head"><span class="fig-title">Energy <i>E</i>/<i>E</i><sub>0</sub> (log scale)</span>
-                <span class="legend"><span class="lg"><span class="key" style="--k: var(--s1)"></span>simulated</span><span class="lg"><span class="key dash" style="--k: var(--s2)"></span>predicted</span><span class="lg"><span class="key dash" style="--k: var(--ink-2)"></span>exact (1)</span></span>
+                <span class="legend"><span class="lg t1"><span class="key" style="--k: var(--s1)"></span>simulated</span><span class="lg t2"><span class="key dash" style="--k: var(--s2)"></span>predicted</span><span class="lg"><span class="key dash" style="--k: var(--ink-2)"></span>exact (1)</span></span>
               </figcaption>
               <div class="cbox hov"><canvas id="phy-energy" role="img" aria-label="Energy relative to the starting energy over the simulated periods, on a logarithmic scale, with the predicted curve and the exact value 1."></canvas></div>
             </figure>
@@ -413,13 +428,13 @@ kbd {
           <dl class="readouts">
             <div class="ro"><dt>Steps per period</dt><dd id="phy-ro-spp">100</dd></div>
             <div class="ro"><dt>Per-step energy factor</dt><dd id="phy-ro-step">1.00395</dd></div>
-            <div class="ro"><dt><span class="m"><i>E</i>/<i>E</i><sub>0</sub></span> after <span id="phy-ro-nlab">10</span> periods</dt><dd id="phy-ro-sim">51.4</dd></div>
-            <div class="ro"><dt>Predicted</dt><dd id="phy-ro-pred">51.4</dd></div>
+            <div class="ro"><dt class="t1"><span class="m"><i>E</i>/<i>E</i><sub>0</sub></span> after <span id="phy-ro-nlab">10</span> periods</dt><dd id="phy-ro-sim">51.4</dd></div>
+            <div class="ro"><dt class="t2">Predicted</dt><dd id="phy-ro-pred">51.4</dd></div>
           </dl>
 
           <figure class="fig">
             <figcaption class="fig-head"><span class="fig-title">Attitude loop: tilt response to a 20° step (deg)</span>
-              <span class="legend"><span class="lg"><span class="key" style="--k: var(--s1)"></span>selected integrator at Δ<i>t</i></span><span class="lg"><span class="key dash" style="--k: var(--ink-2)"></span>true 250 Hz loop</span></span>
+              <span class="legend"><span class="lg t1"><span class="key" style="--k: var(--s1)"></span>selected integrator at Δ<i>t</i></span><span class="lg"><span class="key dash" style="--k: var(--ink-2)"></span>true 250 Hz loop</span></span>
             </figcaption>
             <div class="cbox att hov"><canvas id="phy-att" role="img" aria-label="Tilt angle after a 20 degree step command, simulated with the selected integrator and step size, compared with the true response of the 250 Hz loop."></canvas></div>
           </figure>
@@ -428,7 +443,7 @@ kbd {
             <span class="state" id="phy-att-rate" data-s="idle">Controller at 250 Hz</span>
           </div>
           <p class="hint" id="phy-att-note">Real physics engines typically step at Δ<i>t</i> = 1–4 ms (Gazebo's default maximum step size is 1 ms; PX4's Gazebo worlds use 4 ms): small enough that integrator error is invisible for a drone, cheap enough to run faster than real time.</p>
-          <p class="model">Oscillator: <i class="ddot">x</i> = −<i>ω</i>²<i>x</i>, <i>ω</i> = 2π rad/s (period <i>T</i> = 1 s), <i>x</i><sub>0</sub> = 1 m, <i>v</i><sub>0</sub> = 0, energy per unit mass <i>E</i> = ½<i>v</i>² + ½<i>ω</i>²<i>x</i>²; the trajectory is computed directly for <i>n</i> = <i>N T</i>/Δ<i>t</i> steps. Attitude loop: <i class="ddot tall">θ</i> = <i>u</i><sub>2</sub>/<i>I</i>, <i>I</i> = 0.01 kg·m², PD controller <i>u</i><sub>2</sub> = <i>I</i>(<i>K</i><sub>p</sub>(<i>θ</i><sub>ref</sub> − <i>θ</i>) − <i>K</i><sub>d</sub><i class="dot tall">θ</i>) with <i>K</i><sub>p</sub> = <i>ω</i><sub>a</sub>² = 625 s⁻², <i>K</i><sub>d</sub> = 2<i>ζ</i><sub>a</sub><i>ω</i><sub>a</sub> = 25 s⁻¹ (<i>ω</i><sub>a</sub> = 25 rad/s, <i>ζ</i><sub>a</sub> = 0.5), updated at 250 Hz and held between updates. The controller can only see states the physics engine produces, so when Δ<i>t</i> &gt; 4 ms it runs once per physics step (lockstep). Rotor limits are ignored here. Stability is judged over 4 s: an error that still grows between 2–3 s and 3–4 s is flagged.</p>
+          <p class="model"><b>Oscillator:</b> <i class="ddot">x</i> = −<i>ω</i>²<i>x</i>, <i>ω</i> = 2π rad/s (period <i>T</i> = 1 s), <i>x</i><sub>0</sub> = 1 m, <i>v</i><sub>0</sub> = 0, energy per unit mass <i>E</i> = ½<i>v</i>² + ½<i>ω</i>²<i>x</i>²; the trajectory is computed directly for <i>n</i> = <i>N T</i>/Δ<i>t</i> steps. <b>Attitude loop:</b> <i class="ddot tall">θ</i> = <i>u</i><sub>2</sub>/<i>I</i>, <i>I</i> = 0.01 kg·m², PD controller <i>u</i><sub>2</sub> = <i>I</i>(<i>K</i><sub>p</sub>(<i>θ</i><sub>ref</sub> − <i>θ</i>) − <i>K</i><sub>d</sub><i class="dot tall">θ</i>) with <i>K</i><sub>p</sub> = <i>ω</i><sub>a</sub>² = 625 s⁻², <i>K</i><sub>d</sub> = 2<i>ζ</i><sub>a</sub><i>ω</i><sub>a</sub> = 25 s⁻¹ (<i>ω</i><sub>a</sub> = 25 rad/s, <i>ζ</i><sub>a</sub> = 0.5), updated at 250 Hz and held between updates. The controller can only see states the physics engine produces, so when Δ<i>t</i> &gt; 4 ms it runs once per physics step (lockstep). Rotor limits are ignored here. <b>Stability check:</b> each run lasts 4 s, and the peak tilt error in 3–4 s is compared with that in 2–3 s: growing means the simulation is unstable, barely decaying is marginal, decaying but still above 0.1° is stable but poorly damped, and below 0.1° is stable.</p>
         </div>
 
         <aside class="controls" aria-label="Integrator and step size controls">
@@ -486,7 +501,7 @@ kbd {
               </div>
               <div class="rtf-scale"><span>0 s</span><span id="phy-rtf-max">wall-clock time per simulated second</span></div>
             </div>
-            <span class="legend"><span class="lg"><span class="sw sq" style="--k: var(--s1)"></span>physics</span><span class="lg"><span class="sw sq" style="--k: var(--s2)"></span>rendering</span><span class="lg"><span class="key dash" style="--k: var(--ink)"></span>1 s (real time)</span></span>
+            <span class="legend"><span class="lg t1"><span class="sw sq" style="--k: var(--s1)"></span>physics</span><span class="lg t2"><span class="sw sq" style="--k: var(--s2)"></span>rendering</span><span class="lg"><span class="key dash" style="--k: var(--ink)"></span>1 s (real time)</span></span>
             <p class="note" id="phy-rtf-text">RTF = simulated time / wall-clock time.</p>
           </div>
           <p class="keys">Keys: <kbd>Space</kbd> pause the dots · <kbd>R</kbd> restart them</p>
@@ -512,31 +527,31 @@ kbd {
             <figcaption class="fig-head"><span class="fig-title">Top view: figure-eight at about 4 m/s</span>
               <span class="toggles" role="group" aria-label="Show or hide">
                 <button type="button" class="ltog" id="sen-show-truth" aria-pressed="true"><span class="tick" aria-hidden="true"></span><span class="key" style="--k: var(--truth)"></span><span class="ltxt">Ground truth</span></button>
-                <button type="button" class="ltog" id="sen-show-gps" aria-pressed="true"><span class="tick" aria-hidden="true"></span><span class="sw" style="--k: var(--s2)"></span><span class="ltxt">GPS fixes</span></button>
-                <button type="button" class="ltog" id="sen-show-dr" aria-pressed="true"><span class="tick" aria-hidden="true"></span><span class="key dash" style="--k: var(--s3)"></span><span class="ltxt">Dead reckoning</span></button>
-                <button type="button" class="ltog" id="sen-show-kf" aria-pressed="true"><span class="tick" aria-hidden="true"></span><span class="key" style="--k: var(--s1)"></span><span class="ltxt">Fused (Kalman)</span></button>
+                <button type="button" class="ltog" id="sen-show-gps" aria-pressed="true"><span class="tick" aria-hidden="true"></span><span class="sw" style="--k: var(--s2)"></span><span class="ltxt t2">GPS fixes</span></button>
+                <button type="button" class="ltog" id="sen-show-dr" aria-pressed="true"><span class="tick" aria-hidden="true"></span><span class="key dash" style="--k: var(--s3)"></span><span class="ltxt t3">Dead reckoning</span></button>
+                <button type="button" class="ltog" id="sen-show-kf" aria-pressed="true"><span class="tick" aria-hidden="true"></span><span class="key" style="--k: var(--s1)"></span><span class="ltxt t1">Fused (Kalman)</span></button>
               </span>
             </figcaption>
             <div class="cbox map"><canvas id="sen-map" role="img" aria-label="Top view of the drone flying a figure-eight: the ground-truth trail, recent GPS fixes as dots, the dead-reckoning track and the fused Kalman estimate."></canvas></div>
           </figure>
           <figure class="fig">
             <figcaption class="fig-head"><span class="fig-title">Position error against ground truth (m), last 20 s</span>
-              <span class="legend"><span class="lg"><span class="key" style="--k: var(--s2)"></span>GPS only</span><span class="lg"><span class="key dash" style="--k: var(--s3)"></span>dead reckoning</span><span class="lg"><span class="key" style="--k: var(--s1)"></span>fused</span></span>
+              <span class="legend"><span class="lg t2"><span class="key" style="--k: var(--s2)"></span>GPS only</span><span class="lg t3"><span class="key dash" style="--k: var(--s3)"></span>dead reckoning</span><span class="lg t1"><span class="key" style="--k: var(--s1)"></span>fused</span></span>
             </figcaption>
             <div class="cbox err hov"><canvas id="sen-err" role="img" aria-label="Position error of each estimator over the last 20 seconds, computed against the simulator's ground truth."></canvas></div>
           </figure>
           <dl class="readouts">
-            <div class="ro"><dt><span class="key" style="--k: var(--s2)"></span>GPS-only RMS</dt><dd id="sen-ro-gps">–</dd></div>
-            <div class="ro"><dt><span class="key dash" style="--k: var(--s3)"></span>Dead reckoning RMS</dt><dd id="sen-ro-dr">–</dd></div>
-            <div class="ro"><dt><span class="key" style="--k: var(--s1)"></span>Fused RMS</dt><dd id="sen-ro-kf">–</dd></div>
+            <div class="ro"><dt class="t2"><span class="key" style="--k: var(--s2)"></span>GPS-only RMS</dt><dd id="sen-ro-gps">–</dd></div>
+            <div class="ro"><dt class="t3"><span class="key dash" style="--k: var(--s3)"></span>Dead reckoning RMS</dt><dd id="sen-ro-dr">–</dd></div>
+            <div class="ro"><dt class="t1"><span class="key" style="--k: var(--s1)"></span>Fused RMS</dt><dd id="sen-ro-kf">–</dd></div>
             <div class="ro"><dt>Bias estimate</dt><dd id="sen-ro-bias">–</dd></div>
           </dl>
           <div class="statusrow">
             <span class="state" id="sen-st-gps" data-s="ok">GPS 5 Hz · 200 ms late</span>
             <span class="state" id="sen-st-comp" data-s="idle">Latency compensated</span>
           </div>
-          <p class="hint" id="sen-hint">RMS over the last 20 s, against the simulator's ground truth. On a real flight there is no ground truth, so these numbers cannot be measured.</p>
-          <p class="model">Sensor models: accelerometer <i>a</i><sub>m</sub> = <i>a</i> + <i>b</i> + <i>n</i><sub>a</sub> (1 kHz, already rotated into the world frame with gravity removed), where <i>b</i> = turn-on bias (slider, fixed direction) + a slow drift (random walk 0.003 m/s²/√s, mean-reverting over 200 s) and <i>n</i><sub>a</sub> is white noise with σ<sub>a</sub>; GPS <i>p</i><sub>GPS</sub> = <i>p</i> + <i>n</i><sub>p</sub>, white noise σ<sub>p</sub> per axis, sampled at the GPS rate and delivered <i>L</i> late. Ground truth: <i>x</i> = 20 sin(0.2<i>t</i>), <i>y</i> = 10 sin(0.4<i>t</i>) m (speed 2.8–5.7 m/s). Dead reckoning: <i>v</i> ← <i>v</i> + <i>a</i><sub>m</sub>Δ<i>t</i>, <i>p</i> ← <i>p</i> + <i>v</i>Δ<i>t</i> from the last reset. Fused: linear Kalman filter per axis with state (<i>p</i>, <i>v</i>, <i>b</i>); it predicts with <i>a</i><sub>m</sub> − <i class="hat">b</i> at 1 kHz and corrects with each fix, <i class="hat">x</i> ← <i class="hat">x</i> + <i>K</i>(<i>p</i><sub>GPS</sub> − <i class="hat">p</i>), with the Kalman gain <i>K</i> computed from <i>R</i> = (assumed GPS σ)². With latency compensation it rewinds to the fix's timestamp, corrects, and re-predicts to now. GPS-only holds the latest fix.</p>
+          <p class="hint" id="sen-hint">RMS over the last 20 s, against the simulator's ground truth. On a real flight there is no exact ground truth (at best a reference such as RTK GPS or motion capture), so these errors can only be estimated.</p>
+          <p class="model"><b>Sensor models:</b> accelerometer <i>a</i><sub>m</sub> = <i>a</i> + <i>b</i> + <i>n</i><sub>a</sub> (1 kHz, already rotated into the world frame with gravity removed), where <i>b</i> = turn-on bias (slider, fixed direction) + a slow drift (random walk 0.003 m/s²/√s, mean-reverting over 200 s) and <i>n</i><sub>a</sub> is white noise with σ<sub>a</sub>; GPS <i>p</i><sub>GPS</sub> = <i>p</i> + <i>n</i><sub>p</sub>, white noise σ<sub>p</sub> per axis, sampled at the GPS rate and delivered <i>L</i> late. <b>Ground truth:</b> <i>x</i> = 20 sin(0.2<i>t</i>), <i>y</i> = 10 sin(0.4<i>t</i>) m (speed 2.6–5.7 m/s). <b>Dead reckoning:</b><i>v</i> ← <i>v</i> + <i>a</i><sub>m</sub>Δ<i>t</i>, <i>p</i> ← <i>p</i> + <i>v</i>Δ<i>t</i> from the last reset. <b>Fused:</b> linear Kalman filter per axis with state (<i>p</i>, <i>v</i>, <i>b</i>); it predicts with <i>a</i><sub>m</sub> − <i class="hat">b</i> at 1 kHz and corrects with each fix, <i class="hat">x</i> ← <i class="hat">x</i> + <i>K</i>(<i>p</i><sub>GPS</sub> − <i class="hat">p</i>), with the Kalman gain <i>K</i> computed from <i>R</i> = (assumed GPS σ)². With latency compensation it rewinds to the fix's timestamp, corrects, and re-predicts to now. <b>GPS-only:</b> holds the latest fix.</p>
         </div>
 
         <aside class="controls" aria-label="Sensor and estimator controls">
@@ -594,7 +609,7 @@ kbd {
         <section class="try" aria-labelledby="sen-try-h">
           <h2 id="sen-try-h">Try this</h2>
           <ol>
-            <li>Let it run for 20 s and compare the three RMS readouts. In the first seconds dead reckoning can look best: its error grows as ½<i>b t</i>², so how far should a 0.05 m/s² bias take it in 20 s? Why can you check this in simulation but never on a real flight?</li>
+            <li>Let it run for 20 s and compare the three RMS readouts. In the first seconds dead reckoning can look best: its error grows as ½<i>b t</i>², so how far should a 0.05 m/s² bias take it in 20 s? Why is this easy to check in simulation but hard on a real flight?</li>
             <li>Press <b>GPS dropout (5 s)</b> (or <kbd>D</kbd>). Watch the GPS-only marker freeze while the drone flies on. How far does the fused estimate drift without GPS, and how quickly does it recover?</li>
             <li>Set the latency to 500 ms, then switch <b>Compensate GPS latency</b> off. What happens to the fused RMS, and why? (PX4's EKF2 fuses GPS on a delayed time horizon for exactly this reason.)</li>
             <li>Sweep the filter's assumed GPS σ from 0.2 m to 15 m, giving the RMS about 20 s to settle each time. Where is the fused RMS lowest, and how does that compare with the true σ<sub>p</sub>?</li>
@@ -609,7 +624,7 @@ kbd {
         <div class="viz">
           <figure class="fig">
             <figcaption class="fig-head"><span class="fig-title">Sideways step: <i>x</i>(<i>t</i>) (m), one 8 s episode</span>
-              <span class="legend"><span class="lg"><span class="key" style="--k: var(--s1)"></span>live run (current reality)</span><span class="lg"><span class="key thin" style="--k: var(--s3)"></span>random world, good</span><span class="lg"><span class="key thin" style="--k: var(--s4)"></span>random world, failed (× = crash)</span><span class="lg"><span class="sw band"></span>±10 % band</span></span>
+              <span class="legend"><span class="lg t1"><span class="key" style="--k: var(--s1)"></span>live run (current reality)</span><span class="lg t3"><span class="key thin" style="--k: var(--s3)"></span>random world, good</span><span class="lg t4"><span class="key thin" style="--k: var(--s4)"></span>random world, failed (× = crash)</span><span class="lg"><span class="sw band"></span>±10 % band</span></span>
             </figcaption>
             <div class="cbox xep hov"><canvas id="gap-x" role="img" aria-label="Horizontal position during the episode: the live run, the plus or minus 10 percent band around the 2 metre target from 4 seconds on, and, after Randomise 20 worlds, one faint line per random world. Hover a faint line to see its world's parameters."></canvas></div>
           </figure>
@@ -620,13 +635,13 @@ kbd {
             </figure>
             <figure class="fig">
               <figcaption class="fig-head"><span class="fig-title">Tilt <i>θ</i> (deg)</span>
-                <span class="legend"><span class="lg"><span class="key" style="--k: var(--s1)"></span><i>θ</i></span><span class="lg"><span class="key dash" style="--k: var(--ink-2)"></span>±30° limit</span><span class="lg"><span class="sw band"></span>|<i>θ</i>| &lt; 15°</span></span>
+                <span class="legend"><span class="lg t1"><span class="key" style="--k: var(--s1)"></span><i>θ</i></span><span class="lg"><span class="key dash" style="--k: var(--ink-2)"></span>±30° limit</span><span class="lg"><span class="sw band"></span>|<i>θ</i>| &lt; 15°</span></span>
               </figcaption>
               <div class="cbox hov"><canvas id="gap-th" role="img" aria-label="Tilt angle during the live episode, with the 30 degree tilt limit and the 15 degree level band used to judge a good run."></canvas></div>
             </figure>
           </div>
           <dl class="readouts">
-            <div class="ro"><dt>Live run</dt><dd id="gap-ro-res">Running</dd></div>
+            <div class="ro"><dt class="t1">Live run</dt><dd id="gap-ro-res">Running</dd></div>
             <div class="ro"><dt>Enters ±10 % at</dt><dd id="gap-ro-settle">–</dd></div>
             <div class="ro"><dt>Overshoot</dt><dd id="gap-ro-over">–</dd></div>
             <div class="ro"><dt>Max |<i>θ</i>| after 4 s</dt><dd id="gap-ro-th">–</dd></div>
@@ -635,7 +650,7 @@ kbd {
             <span class="state" id="gap-st-run" data-s="idle">Episode running</span>
             <span class="state" id="gap-st-batch" data-s="idle">No random worlds yet</span>
           </div>
-          <p class="model"><i class="ddot">x</i> = −(<i>u</i><sub>1</sub>/<i>m</i>) sin <i>θ</i> + <i>F</i><sub>gust</sub>/<i>m</i>, <i class="ddot">z</i> = (<i>u</i><sub>1</sub>/<i>m</i>) cos <i>θ</i> − <i>g</i>, <i class="ddot tall">θ</i> = <i>u</i><sub>2</sub>/<i>I</i>, with <i>u</i><sub>1</sub> = <i>F</i><sub>1</sub> + <i>F</i><sub>2</sub>, <i>u</i><sub>2</sub> = (<i>F</i><sub>2</sub> − <i>F</i><sub>1</sub>)<i>L</i>; nominal <i>m</i> = 1 kg, <i>L</i> = 0.25 m, <i>I</i> = 0.01 kg·m², 0 ≤ <i>F<sub>i</sub></i> ≤ <i>m g</i>. Reality: each rotor lags its command, <i>τ</i><sub>m</sub><i class="dot">F</i> = <i>F</i><sub>cmd</sub> − <i>F</i>; the controller sees measurements one sensing/compute delay late; sensor noise 1× = σ of 2 cm, 5 cm/s, 0.5°, 2°/s; true mass and inertia = nominal × (1 + mass error) while the controller assumes 1 kg; gust = random sideways force (correlation time 1 s). Controller at 1 kHz: <i>a<sub>x</sub></i> = <i>ω</i><sub>o</sub>²(<i>x</i><sub>target</sub> − <i>x</i>) − 2<i>ω</i><sub>o</sub><i class="dot">x</i>, <i>θ</i><sub>des</sub> = atan2(−<i>a<sub>x</sub></i>, <i>g</i> + <i>a<sub>z</sub></i>) clipped to ±30°, <i>u</i><sub>1</sub> = <i>m</i>(<i>g</i> + <i>a<sub>z</sub></i>)/cos <i>θ</i>, <i>u</i><sub>2</sub> = <i>I</i>(<i>ω</i><sub>i</sub>²(<i>θ</i><sub>des</sub> − <i>θ</i>) − 2<i>ζ</i><sub>i</sub><i>ω</i><sub>i</sub><i class="dot tall">θ</i>); altitude loop <i>a<sub>z</sub></i> from <i>ω<sub>z</sub></i> = 3 rad/s, <i>ζ</i> = 1. Each episode starts hovering at <i>x</i> = 0, <i>z</i> = 1.5 m with the target at <i>x</i> = 2 m. <b>Good run</b>: from 4 s to 8 s, <i>x</i> stays within 1.8–2.2 m, |<i>θ</i>| stays below 15°, and no crash (crash = touching the ground or |<i>θ</i>| &gt; 90°).</p>
+          <p class="model"><b>Dynamics:</b> <i class="ddot">x</i> = −(<i>u</i><sub>1</sub>/<i>m</i>) sin <i>θ</i> + <i>F</i><sub>gust</sub>/<i>m</i>, <i class="ddot">z</i> = (<i>u</i><sub>1</sub>/<i>m</i>) cos <i>θ</i> − <i>g</i>, <i class="ddot tall">θ</i> = <i>u</i><sub>2</sub>/<i>I</i>, with <i>u</i><sub>1</sub> = <i>F</i><sub>1</sub> + <i>F</i><sub>2</sub>, <i>u</i><sub>2</sub> = (<i>F</i><sub>2</sub> − <i>F</i><sub>1</sub>)<i>L</i>; nominal <i>m</i> = 1 kg, <i>L</i> = 0.25 m, <i>I</i> = 0.01 kg·m², 0 ≤ <i>F<sub>i</sub></i> ≤ <i>m g</i>. <b>Reality:</b> each rotor lags its command, <i>τ</i><sub>m</sub><i class="dot">F</i> = <i>F</i><sub>cmd</sub> − <i>F</i>; the controller sees measurements one sensing/compute delay late; sensor noise 1× = σ of 2 cm, 5 cm/s, 0.5°, 2°/s; true mass and inertia = nominal × (1 + mass error) while the controller assumes 1 kg; gust = random sideways force (correlation time 1 s). <b>Controller at 1 kHz:</b> <i>a<sub>x</sub></i> =<i>ω</i><sub>o</sub>²(<i>x</i><sub>target</sub> − <i>x</i>) − 2<i>ω</i><sub>o</sub><i class="dot">x</i>, <i>θ</i><sub>des</sub> = atan2(−<i>a<sub>x</sub></i>, <i>g</i> + <i>a<sub>z</sub></i>) clipped to ±30°, <i>u</i><sub>1</sub> = <i>m</i>(<i>g</i> + <i>a<sub>z</sub></i>)/cos <i>θ</i>, <i>u</i><sub>2</sub> = <i>I</i>(<i>ω</i><sub>i</sub>²(<i>θ</i><sub>des</sub> − <i>θ</i>) − 2<i>ζ</i><sub>i</sub><i>ω</i><sub>i</sub><i class="dot tall">θ</i>); altitude loop <i>a<sub>z</sub></i> from <i>ω<sub>z</sub></i> = 3 rad/s, <i>ζ</i> = 1. Each episode starts hovering at <i>x</i> = 0, <i>z</i> = 1.5 m with the target at <i>x</i> = 2 m. <b>Good run</b>: from 4 s to 8 s, <i>x</i> stays within 1.8–2.2 m, |<i>θ</i>| stays below 15°, and no crash (crash = touching the ground or |<i>θ</i>| &gt; 90°).</p>
         </div>
 
         <aside class="controls" aria-label="Sim-to-real controls">
@@ -736,7 +751,7 @@ kbd {
   </main>
 
   <footer class="foot">
-    <p>Tabs 2 and 3 run fixed-step physics at 1 kHz (semi-implicit Euler); tab 1 computes its trajectories directly. Hover a plot for values.</p>
+    <p>Tabs 2 and 3 step at 1 kHz (tab 3's physics uses semi-implicit Euler); tab 1 computes its trajectories directly. Hover a plot for values.</p>
     <p>Companion to the lecture slides · every simulation runs in your browser</p>
   </footer>
   <div id="errlog" hidden></div>
@@ -835,7 +850,7 @@ let paused = false;
 
 /* ---------- colours come from the CSS tokens; re-read on every theme change ---------- */
 const TOKENS = ['bg', 'panel', 'ink', 'ink-2', 'muted', 'grid', 'axis', 'track', 'accent', 'accent-ink', 'accent-wash',
-  's1', 's2', 's3', 's4', 'ok', 'ok-wash', 'warn', 'bad', 'bad-wash', 'sky', 'ground', 'ground-fill',
+  's1', 's2', 's3', 's4', 's1-ink', 's2-ink', 's3-ink', 's4-ink', 'ok', 'ok-wash', 'warn', 'bad', 'bad-wash', 'sky', 'ground', 'ground-fill',
   'body', 'arm', 'dome', 'disc', 'disc-edge', 'thrust', 'force', 'truth', 'path', 'band'];
 const C = {};
 function readColors() {
@@ -1068,7 +1083,7 @@ function frame(st, o) {
     const y = Math.round(Y(tk.v)) + 0.5;
     c.strokeStyle = tk.axis ? C.axis : C.grid;
     c.beginPath(); c.moveTo(m.l, y); c.lineTo(m.l + pw, y); c.stroke();
-    c.fillStyle = C.muted; c.fillText(tk.label, m.l - 8, y);
+    c.fillStyle = C['ink-2']; c.fillText(tk.label, m.l - 8, y);
   }
   const xs = o.xStep || niceStep(o.x1 - o.x0, Math.max(2, Math.floor(pw / 80)));
   const xdec = decimalsFor(xs);
@@ -1076,7 +1091,7 @@ function frame(st, o) {
   for (let x = Math.ceil(o.x0 / xs - 1e-9) * xs; x <= o.x1 + 1e-9; x += xs) {
     const px = Math.round(X(x)) + 0.5;
     c.strokeStyle = C.grid; c.beginPath(); c.moveTo(px, m.t); c.lineTo(px, m.t + ph); c.stroke();
-    c.fillStyle = C.muted; c.fillText(Math.abs(x) < 1e-9 ? '0' : fmt(x, xdec), px, m.t + ph + 7);
+    c.fillStyle = C['ink-2']; c.fillText(Math.abs(x) < 1e-9 ? '0' : fmt(x, xdec), px, m.t + ph + 7);
   }
   if (o.xLabel) { c.textAlign = 'right'; c.fillText(o.xLabel, m.l - 12, m.t + ph + 7); }
   c.strokeStyle = C.axis; c.beginPath(); c.moveTo(m.l, m.t + ph + 0.5); c.lineTo(m.l + pw, m.t + ph + 0.5); c.stroke();
@@ -1148,7 +1163,7 @@ function drawTooltip(c, x, m, pw, head, rows) {
   c.fillStyle = withAlpha(C.bg, 0.95); c.strokeStyle = C.axis; c.lineWidth = 1;
   roundRect(c, bx + 0.5, by + 0.5, w, h, 6); c.fill(); c.stroke();
   c.textAlign = 'left'; c.textBaseline = 'middle';
-  c.fillStyle = C.muted; c.font = '13px ' + FONT;
+  c.fillStyle = C['ink-2']; c.font = '13px ' + FONT;
   c.fillText(head, bx + pad, by + pad + 6);
   rows.forEach((r, k) => {
     const yy = by + pad + 6 + 18 + lineH * k;
@@ -1456,10 +1471,10 @@ function drawPhase(st) {
     c.strokeStyle = g === 0 ? C.axis : C.grid;
     c.beginPath(); c.moveTo(X(g) + 0.5, Y(-R)); c.lineTo(X(g) + 0.5, Y(R)); c.stroke();
     c.beginPath(); c.moveTo(X(-R), Y(g) + 0.5); c.lineTo(X(R), Y(g) + 0.5); c.stroke();
-    c.fillStyle = C.muted; c.textAlign = 'center'; c.textBaseline = 'top'; c.fillText(fmt(g, 0), X(g), Y(-R) + 6);
+    c.fillStyle = C['ink-2']; c.textAlign = 'center'; c.textBaseline = 'top'; c.fillText(fmt(g, 0), X(g), Y(-R) + 6);
     c.textAlign = 'right'; c.textBaseline = 'middle'; c.fillText(fmt(g, 0), X(-R) - 6, Y(g));
   }
-  c.fillStyle = C.muted; c.textAlign = 'right'; c.textBaseline = 'top'; c.fillText('x (m)', X(R), Y(-R) + 20);
+  c.fillStyle = C['ink-2']; c.textAlign = 'right'; c.textBaseline = 'top'; c.fillText('x (m)', X(R), Y(-R) + 20);
   c.save(); c.translate(X(-R) - 26, Y(0)); c.rotate(-Math.PI / 2); c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('v/ω (m)', 0, 0); c.restore();
   // exact orbit (unit circle)
   c.save(); c.setLineDash([6, 5]); c.strokeStyle = C['ink-2']; c.lineWidth = 1.5;
@@ -1500,7 +1515,7 @@ function drawPhase(st) {
   if (!offPlot) dotAt(c, X(sx), Y(sv), 6.5, C.s1);
   // annotations
   if (leave >= 0) label(c, 'leaves the plot at t = ' + fmt(leave * o.h, 2) + ' s', X(R) - 6, Y(R) + 12, { align: 'right', size: 13, bold: true, color: C['ink-2'] });
-  if (offPlot) { const rr = Math.hypot(sx, sv); label(c, '● simulated state now ' + (rr < 100 ? fmt(rr, 1) : fmtRatio(rr)) + ' m from the origin', X(R) - 6, Y(R) + 32, { align: 'right', size: 13, color: C.s1 }); }
+  if (offPlot) { const rr = Math.hypot(sx, sv); label(c, '● simulated state now ' + (rr < 100 ? fmt(rr, 1) : fmtRatio(rr)) + ' m from the origin', X(R) - 6, Y(R) + 32, { align: 'right', size: 13, color: C['s1-ink'] }); }
   label(c, '○ exact  ● simulated', X(-R) + 6, Y(-R) - 12, { size: 12, color: C['ink-2'] });
   drawPaused(c, X(R) - 6, Y(-R) - 32, 'right');
 }
@@ -1535,7 +1550,7 @@ function drawEnergy(st) {
   c.strokeStyle = withAlpha(C.ink, 0.35); c.lineWidth = 1; c.beginPath(); c.moveTo(px, fr.m.t); c.lineTo(px, fr.m.t + fr.ph); c.stroke();
   const ki = Math.min(n, Math.round(tA / o.h));
   dotAt(c, fr.X(ki * o.h), fr.Y(o.e[ki]), 5, C.s1);
-  label(c, 'E/E₀ = ' + fmtRatio(o.e[n]) + ' after ' + phy.N + ' periods', fr.m.l + 8, fr.m.t + 12, { size: 13, bold: true });
+  label(c, 'E/E₀ = ' + fmtRatio(o.e[n]) + ' after ' + phy.N + ' periods', fr.m.l + 8, fr.m.t + 12, { size: 13, bold: true, color: C['s1-ink'] });
   // hover
   if (st.hover && st.hover.x >= fr.m.l && st.hover.x <= fr.m.l + fr.pw) {
     const tt = clamp(fr.invX(st.hover.x), 0, phy.N), i = Math.min(n, Math.round(tt / o.h));
@@ -1806,14 +1821,14 @@ function drawMap(st, s) {
   for (let gx = Math.ceil(vx0 / 5) * 5; gx <= vx1; gx += 5) {
     c.strokeStyle = gx === 0 ? C.axis : C.grid; const X = Math.round(SX(gx)) + 0.5;
     c.beginPath(); c.moveTo(X, 0); c.lineTo(X, H); c.stroke();
-    if (gx % 10 === 0 && X > ml && X < W - 52) { c.fillStyle = C.muted; c.textAlign = 'center'; c.textBaseline = 'bottom'; c.fillText(fmt(gx, 0), X, H - 5); }
+    if (gx % 10 === 0 && X > ml && X < W - 52) { c.fillStyle = C['ink-2']; c.textAlign = 'center'; c.textBaseline = 'bottom'; c.fillText(fmt(gx, 0), X, H - 5); }
   }
   for (let gy = Math.ceil(vy0 / 5) * 5; gy <= vy1; gy += 5) {
     c.strokeStyle = gy === 0 ? C.axis : C.grid; const Y = Math.round(SY(gy)) + 0.5;
     c.beginPath(); c.moveTo(0, Y); c.lineTo(W, Y); c.stroke();
-    if (gy % 10 === 0 && Y > 10 && Y < H - mb) { c.fillStyle = C.muted; c.textAlign = 'left'; c.textBaseline = 'middle'; c.fillText(fmt(gy, 0), 6, Y); }
+    if (gy % 10 === 0 && Y > 10 && Y < H - mb) { c.fillStyle = C['ink-2']; c.textAlign = 'left'; c.textBaseline = 'middle'; c.fillText(fmt(gy, 0), 6, Y); }
   }
-  c.fillStyle = C.muted; c.textAlign = 'right'; c.textBaseline = 'bottom'; c.fillText('x (m)', W - 8, H - 5);
+  c.fillStyle = C['ink-2']; c.textAlign = 'right'; c.textBaseline = 'bottom'; c.fillText('x (m)', W - 8, H - 5);
   c.textAlign = 'left'; c.textBaseline = 'top'; c.fillText('y (m)', 6, 6);
   // 10 m scale bar
   const sbx = W - 16 - 10 * k, sby = 22;
@@ -1837,7 +1852,7 @@ function drawMap(st, s) {
   if (senShow.dr) {
     trail(s.trail.dr, C.s3, 2.5, true, s.dr.px, s.dr.py);
     if (inView(s.dr.px, s.dr.py)) { c.fillStyle = C.s3; c.strokeStyle = C.bg; c.lineWidth = 2; c.beginPath(); c.rect(SX(s.dr.px) - 5.5, SY(s.dr.py) - 5.5, 11, 11); c.fill(); c.stroke(); }
-    else offView.push({ x: s.dr.px, y: s.dr.py, color: C.s3, text: 'dead reckoning ' + fmt(Math.hypot(s.dr.px - T.px, s.dr.py - T.py), 0) + ' m away' });
+    else offView.push({ x: s.dr.px, y: s.dr.py, color: C['s3-ink'], text: 'dead reckoning ' + fmt(Math.hypot(s.dr.px - T.px, s.dr.py - T.py), 0) + ' m away' });
   }
   if (senShow.gps) {
     for (const f of s.fixes) {
@@ -1853,7 +1868,7 @@ function drawMap(st, s) {
   if (senShow.kf) {
     trail(s.trail.kf, C.s1, 2.5, false, s.X[0], s.X[3]);
     if (inView(s.X[0], s.X[3])) dotAt(c, SX(s.X[0]), SY(s.X[3]), 6, C.s1);
-    else offView.push({ x: s.X[0], y: s.X[3], color: C.s1, text: 'fused ' + fmt(Math.hypot(s.X[0] - T.px, s.X[3] - T.py), 0) + ' m away' });
+    else offView.push({ x: s.X[0], y: s.X[3], color: C['s1-ink'], text: 'fused ' + fmt(Math.hypot(s.X[0] - T.px, s.X[3] - T.py), 0) + ' m away' });
   }
   if (senShow.truth) drawTopQuad(c, SX(T.px), SY(T.py), Math.atan2(-T.vy, T.vx), clamp(k * 0.55, 7, 12));
   // off-view markers on the edge
@@ -1886,12 +1901,14 @@ function senReadouts() {
 const fmtRmsM = (v) => (v < 10 ? fmt(v, 2) : v < 100 ? fmt(v, 1) : fmt(v, 0)) + ' m';
 function senKnobNote() {
   const r = sen.rSig, t = sen.sig;
-  let txt;
+  let txt, kind = '';
   if (t <= 0) txt = 'The true GPS noise is zero: any σ above zero is cautious.';
-  else if (Math.abs(Math.log(r / t)) < 0.2) txt = 'Close to the true GPS noise (' + fmt(t, 1) + ' m).';
-  else if (r < t) txt = 'Smaller than the true ' + fmt(t, 1) + ' m: the filter trusts GPS too much.';
-  else txt = 'Larger than the true ' + fmt(t, 1) + ' m: the filter trusts the IMU more.';
+  else if (Math.abs(Math.log(r / t)) < 0.2) { txt = 'Close to the true GPS noise (' + fmt(t, 1) + ' m).'; kind = 'ok'; }
+  else if (r < t) { txt = 'Smaller than the true ' + fmt(t, 1) + ' m: the filter trusts GPS too much.'; kind = 'warn'; }
+  else { txt = 'Larger than the true ' + fmt(t, 1) + ' m: the filter trusts the IMU more.'; kind = 'warn'; }
   setText('sen-r-note', txt);
+  const cls = 'note' + (kind ? ' ' + kind : '');
+  if ($('sen-r-note').className !== cls) $('sen-r-note').className = cls;
 }
 function senDropout() { sen.dropout = 5; markDirty(); }
 function setupSensors() {
@@ -2055,7 +2072,7 @@ function updateGapRatio() {
   setText('gap-ratio', fmt(r, 1) + '×');
   if (r >= 5) setState('gap-ratio-state', 'ok', 'Well separated');
   else if (r > 2) setState('gap-ratio-state', 'warn', 'Too close: expect overshoot');
-  else setState('gap-ratio-state', 'bad', 'Unstable: needs more than 2×');
+  else setState('gap-ratio-state', 'bad', 'Far too close: expect instability');
 }
 function applyGains(g) {
   gapUI.wo.set(g.wo, true); gapUI.wi.set(g.wi, true); gapUI.zi.set(g.zi, true);
@@ -2193,7 +2210,7 @@ function drawGapScene(st) {
   for (let z = 1; z < oy / ppm; z++) { const Yz = Math.round(SY(z)) + 0.5; c.beginPath(); c.moveTo(0, Yz); c.lineTo(W, Yz); c.stroke(); }
   c.fillStyle = C['ground-fill']; c.fillRect(0, oy, W, H - oy);
   c.strokeStyle = C.ground; c.lineWidth = 2; c.beginPath(); c.moveTo(0, oy + 1); c.lineTo(W, oy + 1); c.stroke();
-  c.font = '12px ' + FONT; c.fillStyle = C.muted; c.textBaseline = 'middle'; c.textAlign = 'center';
+  c.font = '12px ' + FONT; c.fillStyle = C['ink-2']; c.textBaseline = 'middle'; c.textAlign = 'center';
   for (let x = Math.ceil((0 - ox) / ppm); x <= (W - ox) / ppm; x++) if (SX(x) > 18 && SX(x) < W - 18) c.fillText(fmt(x, 0) + ' m', SX(x), oy + (H - oy) / 2 + 1);
   // ±10 % band and target
   c.fillStyle = C.band; c.fillRect(SX(GAP.xs - GAP.band), 0, 2 * GAP.band * ppm, oy);
