@@ -232,7 +232,8 @@ sass:
 
 jekyll-minifier:
   compress_javascript: false # set to false since we are using terser as the js minifier
-  exclude: ["robots.txt", "assets/js/search/*.js"]
+  # The self-contained teaching labs have inline CSS that the minifier would break (it strips the spaces inside clamp()).
+  exclude: ["robots.txt", "assets/js/search/*.js", "teaching/simulation-lab/index.html", "teaching/multirotor-lab/index.html"]
 
 # -----------------------------------------------------------------------------
 # Terser
