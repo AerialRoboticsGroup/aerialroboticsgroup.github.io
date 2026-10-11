@@ -30,6 +30,13 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/teaching/";
           },
+        },{id: "nav-join-us",
+          title: "Join Us",
+          description: "Postdoctoral, PhD, fellowship and visiting opportunities in the Aerial Robotics Group at the University of Bristol.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/join/";
+          },
         },{id: "post-a-post-with-image-galleries",
       
         title: "a post with image galleries",
