@@ -48,6 +48,19 @@ United Kingdom
 <div class="row">
   <div class="col-sm-3 abbr">
     <abbr class="badge rounded w-100">October 2026</abbr>
+    <img src="../assets/img/news/26_seminar.jpg" class="preview z-depth-1 rounded" width="100%" alt="Bahadir Kocer presenting at the Drone International Symposium in Florence">
+  </div>
+  <div class="col-sm-9">
+    <div class="title">Drone International Symposium in Florence</div>
+    <p>On 28 October, Dr. Bahadir Kocer presented our recent research, “Towards more functional aerial robots for environment”, at the <a href="https://www.internationalsymposium.it/">Drone International Symposium</a> in lovely Florence. It was a real pleasure to share the group's work and to exchange ideas with colleagues from across the drone community. Many thanks to the organisers for a wonderful event, and to everyone who joined for the thoughtful questions and conversations.</p>
+  </div>
+</div>
+</li>
+
+<li>
+<div class="row">
+  <div class="col-sm-3 abbr">
+    <abbr class="badge rounded w-100">October 2026</abbr>
     <img src="../assets/img/news/icra2027.jpg" class="preview z-depth-1 rounded" width="100%" alt="ICRA 2027 Seoul logo">
   </div>
   <div class="col-sm-9">
